@@ -3,6 +3,4 @@
 use App\Http\Controllers\Api\AnnouncementController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::apiResource('/announcement', AnnouncementController::class);
