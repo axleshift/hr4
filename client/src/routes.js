@@ -2,7 +2,9 @@ import React from 'react'
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const Landingpage = React.lazy(() => import('./views/dashboardtest'))
-const Modules = React.lazy(() => import('./views/module'))
+const Announcement = React.lazy(() => import('./views/crud/crudAnnouncement'))
+const LMS = React.lazy(() => import('./views/ui/LearningManagement/LMS'))
+const TrainingRecords = React.lazy(() => import('./views/ui/TrainingManagement/Records'))
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
 const Typography = React.lazy(() => import('./views/theme/typography/Typography'))
 
@@ -56,8 +58,10 @@ const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
-  { path: '/dashboardtest', name: 'index', element: Landingpage },
-  { path: '/module', name: 'index', element: Modules },
+  { path: '/dashboardtest', name: 'Dashboard', element: Landingpage },
+  { path: '/crud', name: 'Announcement', element: Announcement },
+  { path: '/ui/LearningManagement/LMS', name: 'LMS', element: LMS },
+  { path: '/ui/TrainingManagement/Records', name: 'Records', element: TrainingRecords },
   { path: '/theme', name: 'Theme', element: Colors, exact: true },
   { path: '/theme/colors', name: 'Colors', element: Colors },
   { path: '/theme/typography', name: 'Typography', element: Typography },

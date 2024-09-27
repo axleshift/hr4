@@ -3,16 +3,24 @@ import {
   CButton,
   CCard,
   CCardBody,
+  CCardFooter,
+  CCardGroup,
   CCardHeader,
-  CCarousel,
-  CCarouselCaption,
-  CCarouselItem,
+  CCardImage,
+  CCardLink,
+  CCardSubtitle,
+  CCardText,
+  CCardTitle,
+  CListGroup,
+  CListGroupItem,
+  CNav,
+  CNavItem,
+  CNavLink,
   CCol,
   CRow,
 } from '@coreui/react'
-import ReactImg from 'src/assets/images/react.jpg'
-import VueImg from 'src/assets/images/vue.jpg'
 
+import ReactImg from 'src/assets/images/react.jpg'  
 
 
 const DashboardTest = () => {
@@ -49,31 +57,36 @@ const DashboardTest = () => {
     return (
       <CRow>
         <CCol xs={12}>
-          <CCard className="mb-4">
-            <CCardHeader>
-              <strong>Announcement</strong>
-            </CCardHeader>
-            <CCardBody>
-                <CCarousel controls indicators>
-                {slides.map((slide) => (
-                  <CCarouselItem key={slide.id}>
-                    <img className="d-block w-100" src={ReactImg} alt="slide 1" />
-                    <CCarouselCaption className="d-none d-md-block">
-                      <h5>{slide.label}</h5>
-                      <p>{slide.description}</p>
-                    </CCarouselCaption>
-                  </CCarouselItem>
-                  ))}
-                </CCarousel>
-            </CCardBody>
+        <CCard className="mb-4">
+          <CCardHeader>
+            <strong>MODULES</strong>
             <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-                <CButton color="primary" className="me-md-2" onClick={addSlide}>
-                  ADD
-                </CButton>
-                <CButton color="primary">UPDATE</CButton>
-                <CButton color="primary" onClick={removeLastSlide}>DELETE</CButton>
-              </div>
-          </CCard>
+              <CButton color="primary" className="me-md-2" onClick={addSlide}>
+                ADD MODULE
+              </CButton>
+            </div>
+          </CCardHeader>
+          <CCardBody>
+              <CCard style={{ width: '18rem' }}>
+                <CCardImage orientation="top" src={ReactImg} />
+                <CCardBody>
+                  <CCardTitle>Card title</CCardTitle>
+                  <CCardText>
+                    Some quick example text to build on the card title and make up the bulk of the
+                    card&#39;s content.
+                  </CCardText>
+                  <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+                   <CButton color="primary" className="me-md-2" onClick={addSlide}>
+                     EDIT
+                    </CButton>
+                    <CButton color="primary" className="me-md-2" onClick={addSlide}>
+                     DELETE
+                    </CButton>
+                 </div>
+                </CCardBody>
+              </CCard>
+          </CCardBody>
+        </CCard>
         </CCol>
       </CRow>
     )

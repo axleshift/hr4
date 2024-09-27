@@ -35,16 +35,66 @@ const _nav = [
       color: 'info',
       text: 'NEW',
     },
-  },
-  {
+  },{
     component: CNavItem,
-    name: 'index',
-    to: '/module',
+    name: 'Announcement',
+    to: '/crud',
     icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon" />,
     badge: {
       color: 'info',
       text: 'NEW',
     },
+  },
+  {
+    component: CNavGroup,
+    name: 'LMS',
+    icon: <CIcon icon={cilNotes} customClassName="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'LMS',
+        to: '/ui/LearningManagement/LMS',
+      },
+    ],
+  },
+  {
+    component: CNavGroup,
+    name: 'TrainingManagement',
+    icon: <CIcon icon={cilNotes} customClassName="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'TrainingDashboard',
+        to: '/module',
+      },
+      {
+        component: CNavItem,
+        name: 'TrainingDelivery',
+        to: '/module',
+      },
+      {
+        component: CNavItem,
+        name: 'Notices',
+        to: '/module',
+      },
+      {
+        component: CNavItem,
+        name: 'Records',
+        to: '/ui/TrainingManagement/Records',
+      },
+    ],
+  },
+  {
+    component: CNavItem,
+    name: 'Budget Management',
+    to: '/theme/colors',
+    icon: <CIcon icon={cilDrop} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: 'Evaluation And Feedback',
+    to: '/theme/colors',
+    icon: <CIcon icon={cilDrop} customClassName="nav-icon" />,
   },
   {
     component: CNavTitle,

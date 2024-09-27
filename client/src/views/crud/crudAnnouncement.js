@@ -14,8 +14,15 @@ import {
 import ReactImg from 'src/assets/images/react.jpg'
 import VueImg from 'src/assets/images/vue.jpg'
 
-const DashboardTest = () => {
-  const [slides, setSlides] = useState([])  
+const crudAnnouncement = () => {
+  const [slides, setSlides] = useState([
+    {
+      id: 1,
+      imgSrc: ReactImg,
+      label: 'First slide label',
+      description: 'Some representative placeholder content for the first slide.',
+    },
+  ]);
 
   // Fetch announcements from the backend
   useEffect(() => {
@@ -118,4 +125,4 @@ const DashboardTest = () => {
   )
 }
 
-export default DashboardTest
+export default crudAnnouncement
