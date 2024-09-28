@@ -4,6 +4,9 @@ const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const Landingpage = React.lazy(() => import('./views/dashboardtest'))
 const Announcement = React.lazy(() => import('./views/crud/crudAnnouncement'))
 const LMS = React.lazy(() => import('./views/ui/LearningManagement/LMS'))
+const TrainingDelivery = React.lazy(() => import('./views/ui/TrainingManagement/TrainingDelivery'))
+const ClassOfTraining = React.lazy(() => import('./views/ui/TrainingManagement/ClassOfTraining'))
+const ImportantTrainingNotice = React.lazy(() => import('./views/ui/TrainingManagement/ImportantTrainingNotice'))
 const TrainingRecords = React.lazy(() => import('./views/ui/TrainingManagement/Records'))
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
 const Typography = React.lazy(() => import('./views/theme/typography/Typography'))
@@ -61,6 +64,9 @@ const routes = [
   { path: '/dashboardtest', name: 'Dashboard', element: Landingpage },
   { path: '/crud', name: 'Announcement', element: Announcement },
   { path: '/ui/LearningManagement/LMS', name: 'LMS', element: LMS },
+  { path: '/ui/TrainingManagement/TrainingDelivery', name: 'TrainingDelivery', element: TrainingDelivery },
+  { path: '/ui/TrainingManagement/ClassOftraining', name: 'ClassOfTraining', element: ClassOfTraining },
+  { path: '/ui/TrainingManagement/ImportantTrainingNotice', name: 'ImportantTrainingNotice', element: ImportantTrainingNotice },
   { path: '/ui/TrainingManagement/Records', name: 'Records', element: TrainingRecords },
   { path: '/theme', name: 'Theme', element: Colors, exact: true },
   { path: '/theme/colors', name: 'Colors', element: Colors },

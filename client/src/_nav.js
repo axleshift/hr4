@@ -65,17 +65,17 @@ const _nav = [
       {
         component: CNavItem,
         name: 'TrainingDashboard',
-        to: '/module',
+        to: '/ui/TrainingManagement/TrainingDelivery',
       },
       {
         component: CNavItem,
         name: 'TrainingDelivery',
-        to: '/module',
+        to: '/ui/TrainingManagement/ClassOfTraining',
       },
       {
         component: CNavItem,
         name: 'Notices',
-        to: '/module',
+        to: '/ui/TrainingManagement/ImportantTrainingNotice',
       },
       {
         component: CNavItem,
