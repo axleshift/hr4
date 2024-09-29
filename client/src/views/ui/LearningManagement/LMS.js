@@ -26,7 +26,7 @@ import ReactImg from 'src/assets/images/react.jpg'
 const LMS = () => {
 
   //Variable or Placeholder para ma call
-  
+  const [visibleXL, setVisibleXL] = useState(false)
   
     return (
         

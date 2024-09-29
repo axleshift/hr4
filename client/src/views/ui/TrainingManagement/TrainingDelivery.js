@@ -25,7 +25,7 @@ import {
   CTableHead,
   CTableHeaderCell,
   CTableRow,
-  CDatePicker,
+  CTooltip,
 } from '@coreui/react'
 
 //datepicker sunod
@@ -39,30 +39,53 @@ const TrainingDelivery = () => {
             <strong>Ongoing Training</strong>
             <div className="d-grid gap-2 d-md-flex justify-content-md-end">
                 <CButton color="primary" onClick={() => setVisibleXL(!visibleXL)}>
-                    Create Module
+                    Add Stuff 
                 </CButton>
                 <CModal alignment="center" backdrop="static" size="lg   " visible={visibleXL} onClose={() => setVisibleXL(false)}>
                   <CModalHeader>
-                    <CModalTitle>Create Module</CModalTitle>
+                    <CModalTitle>Add Stuff</CModalTitle>
                   </CModalHeader>
                   <CModalBody>
                         <CForm validated={true}>
+                          <CFormLabel htmlFor="exampleFormControlInput1">Department</CFormLabel>
+                          <div className="mb-3">
+                          <CTooltip content="Description here." placement="top">
+                            <CButton CButton color="secondary" className="me-2">Operational Department</CButton>
+                          </CTooltip>
+                          <CTooltip content="Description here." placement="top">
+                            <CButton color="secondary">+</CButton>
+                          </CTooltip>
+                          </div>
+                          <CFormLabel htmlFor="exampleFormControlInput1">Training Class</CFormLabel>
+                          <div className="mb-3">
+                          <CTooltip content="Description here." placement="top">
+                            <CButton CButton color="secondary" className="me-2">Onboarding</CButton>
+                          </CTooltip>
+                          <CTooltip content="Description here." placement="top">
+                            <CButton color="secondary">+</CButton>
+                          </CTooltip>
+                          </div>
+                          <CFormLabel htmlFor="exampleFormControlInput1">Type of Agenda</CFormLabel>
+                          <div className="mb-3">
+                          <CTooltip content="Description here." placement="top">
+                            <CButton CButton color="secondary" className="me-2">Seminar</CButton>
+                          </CTooltip>
+                          <CTooltip content="Description here." placement="top">
+                            <CButton color="secondary">+</CButton>
+                          </CTooltip>
+                          </div>
                             <div className="mb-3">
-                                <CFormLabel htmlFor="formFile">Input Image (Optional)</CFormLabel>
-                                <CFormInput type="file" id="formFile"/>
+                                <CFormLabel htmlFor="exampleFormControlInput1">Location /  Mode</CFormLabel>
+                                <CFormInput type="email" id="exampleFormControlInput1" placeholder="Input Location"/>
                             </div>
                             <div className="mb-3">
-                                <CFormLabel htmlFor="exampleFormControlInput1">Module Title</CFormLabel>
-                                <CFormInput required type="email" id="exampleFormControlInput1" placeholder="Input title"/>
-                            </div>
-                            <div className="mb-3">
-                                <CFormLabel htmlFor="exampleFormControlTextarea1">Description</CFormLabel>
-                                <CFormTextarea id="exampleFormControlTextarea1" rows={3}></CFormTextarea>
-                            </div>
-                            <div className="mb-3">
-                                <CFormLabel htmlFor="formFile">Upload File</CFormLabel>
-                                <CFormInput required type="file" id="formFile"/>
-                            </div>
+                          <CTooltip content="Description here." placement="top">
+                            <CButton CButton color="secondary" className="me-2">Seminar</CButton>
+                          </CTooltip>
+                          <CTooltip content="Description here." placement="top">
+                            <CButton color="secondary">+</CButton>
+                          </CTooltip>
+                          </div>
                         </CForm>    
                   </CModalBody>
                     <CModalFooter>
@@ -81,8 +104,11 @@ const TrainingDelivery = () => {
                 <CTableRow>
                   <CTableHeaderCell scope="col">#</CTableHeaderCell>
                   <CTableHeaderCell scope="col">Department</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">Training Type</CTableHeaderCell>
+                  <CTableHeaderCell scope="col">training Class</CTableHeaderCell>
+                  <CTableHeaderCell scope="col">Agenda</CTableHeaderCell>
+                  <CTableHeaderCell scope="col">Location / Mode</CTableHeaderCell>
                   <CTableHeaderCell scope="col">Schedule</CTableHeaderCell>
+                  <CTableHeaderCell scope="col">Status</CTableHeaderCell>
                 </CTableRow>
               </CTableHead>
               <CTableBody>
@@ -91,6 +117,9 @@ const TrainingDelivery = () => {
                   <CTableDataCell>Operation Department</CTableDataCell>
                   <CTableDataCell>Seminar</CTableDataCell>
                   <CTableDataCell>@mdo</CTableDataCell>
+                  <CTableDataCell>@mdo</CTableDataCell>
+                  <CTableDataCell>@mdo</CTableDataCell>
+                  <CTableDataCell>Mandatory</CTableDataCell>
                 </CTableRow>
               </CTableBody>
             </CTable>
