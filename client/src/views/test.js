@@ -1,41 +1,89 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   CButton,
+  CCard,
+  CCardBody,
+  CCardHeader,
   CCol,
-  CContainer,
+  CForm,
   CFormInput,
-  CInputGroup,
-  CInputGroupText,
+  CFormLabel,
+  CModal,
+  CModalBody,
+  CModalFooter,
+  CModalHeader,
+  CModalTitle,
   CRow,
-} from '@coreui/react'
-import CIcon from '@coreui/icons-react'
-import { cilMagnifyingGlass } from '@coreui/icons'
+  CTable,
+  CTableBody,
+  CTableDataCell,
+  CTableHead,
+  CTableHeaderCell,
+  CTableRow,
+} from '@coreui/react';
 
-const Test = () => {
+const TrainingDelivery = () => {
+  const [visibleXL, setVisibleXL] = useState(false)
+
   return (
-    <div className="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center">
-      <CContainer>
-        <CRow className="justify-content-center">
-          <CCol md={6}>
-            <div className="clearfix">
-              <h1 className="float-start display-3 me-4">404</h1>
-              <h4 className="pt-3">WOOOPSY! You{"'"}re lost.</h4>
-              <p className="text-body-secondary float-start">
-                The page you are looking for was not found.
-              </p>
+    <CRow>
+      <CCol xs={12}>
+        <CCard className="mb-4">
+          <CCardHeader>
+            <strong>Ongoing Training</strong>
+            <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+              <CButton color="primary" onClick={() => setVisibleXL(true)}>
+                Add Stuff
+              </CButton>
+              <CModal alignment="center" backdrop="static" size="lg" visible={visibleXL} onClose={() => setVisibleXL(false)}>
+                <CModalHeader>
+                  <CModalTitle>Add Stuff</CModalTitle>
+                </CModalHeader>
+                <CModalBody>
+                  <CForm>
+                    <CFormLabel >user_id</CFormLabel>
+                    <CFormInput type="text"  name="department"  required />
+                    <CFormLabel >vendor_id</CFormLabel>
+                    <CFormInput type="text"  name="training_class"  required />
+                    <CFormLabel >payment_confirmed</CFormLabel>
+                    <CFormInput type="text"  name="agenda"  required />
+                    <CFormLabel >reference_number</CFormLabel>
+                    <CFormInput type="text"  name="agenda"  required />
+                    <CModalFooter>
+                      <CButton color="secondary" onClick={() => setVisibleXL(false)}>
+                        Cancel
+                      </CButton>
+                      <CButton color="primary" type="submit">
+                        Add Module
+                      </CButton>
+                    </CModalFooter>
+                  </CForm>
+                </CModalBody>
+              </CModal>
             </div>
-            <CInputGroup className="input-prepend">
-              <CInputGroupText>
-                <CIcon icon={cilMagnifyingGlass} />
-              </CInputGroupText>
-              <CFormInput type="text" placeholder="What are you looking for?" />
-              <CButton color="info">Search</CButton>
-            </CInputGroup>
-          </CCol>
-        </CRow>
-      </CContainer>
-    </div>
+          </CCardHeader>
+          <CCardBody>
+            <CTable>
+              <CTableHead>
+                <CTableRow>
+                  <CTableHeaderCell>Title</CTableHeaderCell>
+                  <CTableHeaderCell>Description</CTableHeaderCell>
+                  <CTableHeaderCell>test</CTableHeaderCell>
+                </CTableRow>
+              </CTableHead>
+              <CTableBody>
+              <CTableRow>
+                  <CTableDataCell>test</CTableDataCell>
+                  <CTableDataCell>testtest</CTableDataCell>
+                  <CTableDataCell>testtesttest</CTableDataCell>
+                </CTableRow>
+              </CTableBody>
+            </CTable>
+          </CCardBody>
+        </CCard>
+      </CCol>
+    </CRow>
   )
 }
 
-export default Test
+export default TrainingDelivery;
