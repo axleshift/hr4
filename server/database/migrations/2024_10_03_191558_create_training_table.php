@@ -16,8 +16,9 @@ return new class extends Migration
             $table->string('training_class');
             $table->string('agenda');
             $table->string('location');
-            $table->date('schedule');
-            $table->string('status');
+            $table->time('schedule');
+            $table->string('start_time');
+            $table->string('end_time');
             $table->timestamps();
         });
     }

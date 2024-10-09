@@ -14,6 +14,7 @@ class training extends Model
         'agenda',
         'location',
         'schedule',
-        'status',
+        'start_time',
+        'end_time',
     ];
 }

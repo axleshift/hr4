@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import {
+    CBadge,
     CButton,
     CCard,
     CCardBody,
@@ -30,9 +31,11 @@ const TrainingDelivery = () => {
         agenda: '',
         location: '',
         schedule: '',
-        status: '',
+        start_time: '',
+        end_time: '',
     })
 
+    // CRUD
     useEffect(() => {
         fetchTrainings()
     }, [])
@@ -55,18 +58,42 @@ const TrainingDelivery = () => {
         e.preventDefault()
         try {
             await axios.post('http://localhost:8000/api/training', formData)
-            setVisibleXL(false) // Close modal
-            fetchTrainings() // Refresh training list
+            setVisibleXL(false)
+            fetchTrainings()
             setFormData({
                 training_class: '',
                 agenda: '',
                 location: '',
                 schedule: '',
-                status: '',
-            }) // Reset form data
+                start_time: '',
+                end_time: '',
+            })
         } catch (error) {
             console.error('Error adding training:', error)
         }
+    }
+    // FILTER
+    const uniqueTrainingClasses = trainings.filter(
+        (training, index, self) =>
+            index === self.findIndex((t) => t.training_class === training.training_class),
+    )
+
+    const uniqueAgenda = trainings.filter(
+        (agenda, index, self) => index === self.findIndex((a) => a.agenda === agenda.agenda),
+    )
+    // DATE TIME
+    const isPending = (scheduleDate) => {
+        const today = new Date()
+        const schedule = new Date(scheduleDate)
+        return schedule > today
+    }
+
+    const formatTime = (time) => {
+        const [hours, minutes] = time.split(':')
+        const hours24 = parseInt(hours, 10)
+        const suffix = hours24 >= 12 ? 'PM' : 'AM'
+        const hours12 = hours24 % 12 || 12
+        return `${hours12}:${minutes} ${suffix}`
     }
 
     return (
@@ -102,6 +129,24 @@ const TrainingDelivery = () => {
                                             onChange={handleInputChange}
                                             required
                                         />
+                                        <div>
+                                            {uniqueTrainingClasses.map((training) => (
+                                                <CButton
+                                                    key={training.id}
+                                                    color="secondary"
+                                                    variant="outline"
+                                                    className="me-2"
+                                                    onClick={() =>
+                                                        setFormData({
+                                                            ...formData,
+                                                            training_class: training.training_class,
+                                                        })
+                                                    }
+                                                >
+                                                    {training.training_class}
+                                                </CButton>
+                                            ))}
+                                        </div>
                                         <CFormLabel htmlFor="agenda">Type of Agenda</CFormLabel>
                                         <CFormInput
                                             type="text"
@@ -111,6 +156,24 @@ const TrainingDelivery = () => {
                                             onChange={handleInputChange}
                                             required
                                         />
+                                        <div>
+                                            {uniqueAgenda.map((agenda) => (
+                                                <CButton
+                                                    key={agenda.id}
+                                                    color="secondary"
+                                                    variant="outline"
+                                                    className="me-2"
+                                                    onClick={() =>
+                                                        setFormData({
+                                                            ...formData,
+                                                            agenda: agenda.agenda,
+                                                        })
+                                                    }
+                                                >
+                                                    {agenda.agenda}
+                                                </CButton>
+                                            ))}
+                                        </div>
                                         <CFormLabel htmlFor="location">Location / Mode</CFormLabel>
                                         <CFormInput
                                             type="text"
@@ -129,12 +192,21 @@ const TrainingDelivery = () => {
                                             onChange={handleInputChange}
                                             required
                                         />
-                                        <CFormLabel htmlFor="status">Status</CFormLabel>
+                                        <CFormLabel htmlFor="start_time">Start Time</CFormLabel>
                                         <CFormInput
-                                            type="text"
-                                            id="status"
-                                            name="status"
-                                            value={formData.status}
+                                            type="time"
+                                            id="start_time"
+                                            name="start_time"
+                                            value={formData.start_time}
+                                            onChange={handleInputChange}
+                                            required
+                                        />
+                                        <CFormLabel htmlFor="end_time">End Time</CFormLabel>
+                                        <CFormInput
+                                            type="time"
+                                            id="end_time"
+                                            name="end_time"
+                                            value={formData.end_time}
                                             onChange={handleInputChange}
                                             required
                                         />
@@ -162,6 +234,8 @@ const TrainingDelivery = () => {
                                     <CTableHeaderCell>Agenda</CTableHeaderCell>
                                     <CTableHeaderCell>Location</CTableHeaderCell>
                                     <CTableHeaderCell>Schedule</CTableHeaderCell>
+                                    <CTableHeaderCell></CTableHeaderCell>
+                                    <CTableHeaderCell></CTableHeaderCell>
                                     <CTableHeaderCell>Status</CTableHeaderCell>
                                 </CTableRow>
                             </CTableHead>
@@ -172,7 +246,13 @@ const TrainingDelivery = () => {
                                         <td>{training.agenda}</td>
                                         <td>{training.location}</td>
                                         <td>{training.schedule}</td>
-                                        <td>{training.status}</td>
+                                        <td>{formatTime(training.start_time)}</td>
+                                        <td>{formatTime(training.end_time)}</td>
+                                        {isPending(training.schedule) && (
+                                            <CBadge color="warning" className="ms-2">
+                                                Pending
+                                            </CBadge>
+                                        )}
                                     </CTableRow>
                                 ))}
                             </CTableBody>

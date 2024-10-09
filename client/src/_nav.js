@@ -76,22 +76,7 @@ const _nav = [
             {
                 component: CNavItem,
                 name: 'TrainingDashboard',
-                to: '/ui/TrainingManagement/TrainingDelivery',
-            },
-            {
-                component: CNavItem,
-                name: 'TrainingDelivery',
-                to: '/ui/TrainingManagement/ClassOfTraining',
-            },
-            {
-                component: CNavItem,
-                name: 'Notices',
-                to: '/ui/TrainingManagement/ImportantTrainingNotice',
-            },
-            {
-                component: CNavItem,
-                name: 'Records',
-                to: '/ui/TrainingManagement/Records',
+                to: '/ui/TrainingManagement',
             },
         ],
     },
