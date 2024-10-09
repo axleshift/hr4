@@ -24,7 +24,6 @@ class TrainingController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'department' => 'required|string|max:255',
             'training_class' => 'required|string|max:255',
             'agenda' => 'required|string|max:255',
             'location' => 'required|string|max:255',
@@ -40,7 +39,6 @@ class TrainingController extends Controller
     {
         $post = Training::findOrFail($id);
         $validated = $request->validate([
-            'department' => 'sometimes|required|string|max:255',
             'training_class' => 'sometimes|required|string|max:255',
             'agenda' => 'sometimes|required|string|max:255',
             'location' => 'sometimes|required|string|max:255',

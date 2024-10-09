@@ -58,7 +58,7 @@ const LMS = () => {
                                   <CFormTextarea id="exampleFormControlTextarea1" rows={3}></CFormTextarea>
                               </div>
                               <div className="mb-3">
-                                  <CFormLabel htmlFor="formFile">Upload File</CFormLabel>
+                                  <CFormLabel htmlFor="formFile">Upload docx or pdf File</CFormLabel>
                                   <CFormInput required type="file" id="formFile"/>
                               </div>
                           </CForm>    
