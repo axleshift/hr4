@@ -82,10 +82,15 @@ const TrainingDelivery = () => {
         (agenda, index, self) => index === self.findIndex((a) => a.agenda === agenda.agenda),
     )
     // DATE TIME
-    const isPending = (scheduleDate) => {
-        const today = new Date()
-        const schedule = new Date(scheduleDate)
-        return schedule > today
+    const getTrainingStatus = (scheduleDate, startTime, endTime) => {
+        const now = new Date()
+        const start = new Date(`${scheduleDate}T${startTime}`)
+        const end = new Date(`${scheduleDate}T${endTime}`)
+
+        // Determine the status based on the time comparison
+        if (now < start) return 'Pending' // Training hasn't started yet
+        if (now <= end) return 'Ongoing' // Training is ongoing
+        return 'Complete' // Training is complete
     }
 
     const formatTime = (time) => {
@@ -96,12 +101,21 @@ const TrainingDelivery = () => {
         return `${hours12}:${minutes} ${suffix}`
     }
 
+    const [setCurrentTime] = useState(new Date())
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setCurrentTime(new Date()) // Updates the state every second
+        }, 1000)
+
+        return () => clearInterval(interval) // Clean up interval on component unmount
+    }, [])
+
     return (
         <CRow>
             <CCol xs={12}>
                 <CCard className="mb-4">
                     <CCardHeader>
-                        <strong>Ongoing Training</strong>
+                        <strong>Training Schedule</strong>
                         <div className="d-grid gap-2 d-md-flex justify-content-md-end">
                             <CButton color="primary" onClick={() => setVisibleXL(true)}>
                                 Add Stuff
@@ -248,11 +262,30 @@ const TrainingDelivery = () => {
                                         <td>{training.schedule}</td>
                                         <td>{formatTime(training.start_time)}</td>
                                         <td>{formatTime(training.end_time)}</td>
-                                        {isPending(training.schedule) && (
-                                            <CBadge color="warning" className="ms-2">
-                                                Pending
-                                            </CBadge>
-                                        )}
+                                        <CBadge
+                                            color={
+                                                getTrainingStatus(
+                                                    training.schedule,
+                                                    training.start_time,
+                                                    training.end_time,
+                                                ) === 'Pending'
+                                                    ? 'warning'
+                                                    : getTrainingStatus(
+                                                            training.schedule,
+                                                            training.start_time,
+                                                            training.end_time,
+                                                        ) === 'Ongoing'
+                                                      ? 'info'
+                                                      : 'success'
+                                            }
+                                            className="ms-2"
+                                        >
+                                            {getTrainingStatus(
+                                                training.schedule,
+                                                training.start_time,
+                                                training.end_time,
+                                            )}
+                                        </CBadge>
                                     </CTableRow>
                                 ))}
                             </CTableBody>
