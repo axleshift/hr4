@@ -1,5 +1,6 @@
 import React from 'react'
 import classNames from 'classnames'
+import { Navigate } from 'react-router-dom'
 
 import {
     CAvatar,
