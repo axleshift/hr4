@@ -28,7 +28,8 @@ class TrainingController extends Controller
             'agenda' => 'required|string|max:255',
             'location' => 'required|string|max:255',
             'schedule' => 'required|date',
-            'status' => 'required|string|max:255',
+            'start_time' => 'required|string',
+            'end_time' => 'required|string',
         ]);
 
         $post = Training::create($validated);
@@ -43,7 +44,8 @@ class TrainingController extends Controller
             'agenda' => 'sometimes|required|string|max:255',
             'location' => 'sometimes|required|string|max:255',
             'schedule' => 'sometimes|required|date',
-            'status' => 'sometimes|required|string|max:255',
+            'start_time' => 'sometimes|required|time',
+            'end_time' => 'sometimes|required|time',
         ]);
 
         $post = Training::create($validated);
