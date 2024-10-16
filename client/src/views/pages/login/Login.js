@@ -20,9 +20,8 @@ import { cilLockLocked, cilUser } from '@coreui/icons'
 const Login = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [errorMessage, setErrorMessage] = useState('')
     const navigate = useNavigate()
-
-    axios.defaults.withCredentials = true
 
     const handleLogin = async (e) => {
         e.preventDefault()
@@ -31,34 +30,12 @@ const Login = () => {
                 email,
                 password,
             })
-            console.log('Login Response:', response)
-
-            // If login is successful
-            if (response.status === 200) {
-                console.log('Login successful, fetching protected data...')
-
-                // Fetch protected data after login
-                await getProtectedData()
-
-                // Navigate to the dashboard
-                navigate('/dashboard')
-            } else {
-                console.error('Login failed:', response.data.message)
-            }
+            console.log(response.data)
+            // The JWT token will be automatically handled by Laravel using the cookie
+            navigate('/dashboard') // Redirect to the desired page after login
         } catch (error) {
-            console.error(
-                'Error during login:',
-                error.response ? error.response.data : error.message,
-            )
-        }
-    }
-
-    const getProtectedData = async () => {
-        try {
-            const response = await axios.get('http://localhost:8000/api/protected-route')
-            console.log('Protected Data:', response.data)
-        } catch (error) {
-            console.error('Error fetching protected data:', error)
+            setErrorMessage(error.response?.data?.error || 'Login failed. Please try again.')
+            console.error(error.response.data)
         }
     }
 
@@ -75,6 +52,9 @@ const Login = () => {
                                         <p className="text-body-secondary">
                                             Sign In to your account
                                         </p>
+                                        {errorMessage && (
+                                            <p className="text-danger">{errorMessage}</p>
+                                        )}
                                         <CInputGroup className="mb-3">
                                             <CInputGroupText>
                                                 <CIcon icon={cilUser} />

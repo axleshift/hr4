@@ -11,22 +11,13 @@ import {
 } from '@coreui/react'
 import { cilEnvelopeOpen, cilUser } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
-import axios from 'axios'
-import Cookies from 'js-cookie' // Make sure to import the Cookies library
 
 import avatar8 from './../../assets/images/avatars/8.jpg'
 
-const API_URL = 'http://localhost:8000/api/' // Replace with your actual API URL
-
 const logout = async () => {
-    try {
-        await axios.post(`${API_URL}logout`, {}, { withCredentials: true })
-        Cookies.remove('token')
-        delete axios.defaults.headers.common['Authorization']
-        window.location.href = '/login'
-    } catch (error) {
-        console.error('Logout error:', error)
-    }
+    await axios.post(`${API_URL}logout`)
+    Cookies.remove('token')
+    delete axios.defaults.headers.common['Authorization']
 }
 
 const AppHeaderDropdown = () => {
@@ -51,8 +42,7 @@ const AppHeaderDropdown = () => {
                     </CBadge>
                 </CDropdownItem>
                 <CDropdownDivider />
-                <CDropdownItem onClick={logout}>Logout</CDropdownItem>{' '}
-                {/* Change onChange to onClick */}
+                <CDropdownItem onChange={logout}>Logout</CDropdownItem>
             </CDropdownMenu>
         </CDropdown>
     )

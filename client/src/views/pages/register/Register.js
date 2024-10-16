@@ -22,7 +22,7 @@ const Register = () => {
     const [password, setPassword] = useState('')
     const [passwordConfirmation, setPasswordConfirmation] = useState('')
     const [errorMessage, setErrorMessage] = useState('')
-    const navigate = useNavigate() // Initialize useNavigate
+    const navigate = useNavigate()
 
     const handleRegister = async (e) => {
         e.preventDefault()
@@ -34,7 +34,7 @@ const Register = () => {
                 password_confirmation: passwordConfirmation,
             })
             console.log(response.data)
-            navigate('/login') // Correct the path to your login route
+            navigate('/login')
         } catch (error) {
             setErrorMessage(
                 error.response?.data?.message || 'Registration failed. Please try again.',
