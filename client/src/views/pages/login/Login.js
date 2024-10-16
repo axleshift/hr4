@@ -22,6 +22,8 @@ const Login = () => {
     const [password, setPassword] = useState('')
     const navigate = useNavigate()
 
+    axios.defaults.withCredentials = true
+
     const handleLogin = async (e) => {
         e.preventDefault()
         try {
@@ -31,21 +33,12 @@ const Login = () => {
             })
             console.log('Login Response:', response)
 
-            if (response.data.token) {
-                // Store the token in local storage
-                localStorage.setItem('token', response.data.token)
+            // If login is successful
+            if (response.status === 200) {
+                console.log('Login successful, fetching protected data...')
 
-                // Fetch protected data
-                const token = localStorage.getItem('token')
-                const protectedResponse = await axios.get(
-                    'http://localhost:8000/api/protected-route',
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    },
-                )
-                console.log('Protected Response:', protectedResponse.data) // Handle the protected data as needed
+                // Fetch protected data after login
+                await getProtectedData()
 
                 // Navigate to the dashboard
                 navigate('/dashboard')
@@ -57,6 +50,15 @@ const Login = () => {
                 'Error during login:',
                 error.response ? error.response.data : error.message,
             )
+        }
+    }
+
+    const getProtectedData = async () => {
+        try {
+            const response = await axios.get('http://localhost:8000/api/protected-route')
+            console.log('Protected Data:', response.data)
+        } catch (error) {
+            console.error('Error fetching protected data:', error)
         }
     }
 

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
+use Illuminate\Support\Facades\Cookie;
 
 class AuthController extends Controller
 {
@@ -28,38 +29,35 @@ class AuthController extends Controller
         return response()->json(['message' => 'User registered successfully', 'user' => $user], 201);
     }
 
-    public function login(Request $request) {
-        // Validate the incoming request
+    public function login(Request $request)
+    {
         $request->validate([
             'email' => 'required|string|email',
             'password' => 'required|string',
         ]);
-    
-        // Get the credentials from the request
+
         $credentials = $request->only('email', 'password');
-    
+
         try {
-            // Attempt to create a token using the credentials
             if (!$token = JWTAuth::attempt($credentials)) {
-                // If the credentials are incorrect, throw a validation exception
                 throw ValidationException::withMessages([
                     'email' => ['The provided credentials are incorrect.'],
                 ]);
             }
         } catch (JWTException $e) {
-            // Handle JWT creation errors
             return response()->json(['error' => 'Could not create token'], 500);
         }
-    
-        // Retrieve the authenticated user using JWTAuth
+
+        // Retrieve the authenticated user
         $user = JWTAuth::user();
-    
-        // Return a successful response with the user and token
+
+        // Create a cookie to store the JWT token
+        $cookie = Cookie::make('token', $token, 60 * 24); // 1-day expiration
+
         return response()->json([
             'message' => 'Login successful',
-            'user' => $user, // Use JWTAuth::user() to get the authenticated user
-            'token' => $token,
-        ]);
+            'user' => $user,
+        ])->withCookie($cookie); // Attach the cookie to the response
     }
 
     public function index()

@@ -340,8 +340,8 @@ const _nav = [
             },
             {
                 component: CNavItem,
-                name: 'LandingPage1',
-                to: '/landingpage',
+                name: 'Database',
+                to: '/database',
             },
             {
                 component: CNavItem,
