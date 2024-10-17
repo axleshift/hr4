@@ -31,8 +31,7 @@ const Login = () => {
                 password,
             })
             console.log(response.data)
-            // The JWT token will be automatically handled by Laravel using the cookie
-            navigate('/dashboard') // Redirect to the desired page after login
+            navigate('/dashboard')
         } catch (error) {
             setErrorMessage(error.response?.data?.error || 'Login failed. Please try again.')
             console.error(error.response.data)

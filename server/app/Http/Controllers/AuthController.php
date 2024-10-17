@@ -9,6 +9,7 @@ use Illuminate\Validation\ValidationException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -29,7 +30,7 @@ class AuthController extends Controller
         return response()->json(['message' => 'User registered successfully', 'user' => $user], 201);
     }
 
-    public function login(Request $request)
+    public function sessionLogin(Request $request)
     {
         $request->validate([
             'email' => 'required|string|email',
@@ -38,26 +39,17 @@ class AuthController extends Controller
 
         $credentials = $request->only('email', 'password');
 
-        try {
-            if (!$token = JWTAuth::attempt($credentials)) {
-                throw ValidationException::withMessages([
-                    'email' => ['The provided credentials are incorrect.'],
-                ]);
-            }
-        } catch (JWTException $e) {
-            return response()->json(['error' => 'Could not create token'], 500);
+        if (Auth::attempt($credentials)) {
+            return response()->json(['message' => 'Login successful', 'user' => Auth::user()]);
         }
 
-        // Retrieve the authenticated user
-        $user = JWTAuth::user();
+        return response()->json(['error' => 'Invalid credentials'], 401);
+    }
 
-        // Create a cookie to store the JWT token
-        $cookie = Cookie::make('token', $token, 60 * 24); // 1-day expiration
-
-        return response()->json([
-            'message' => 'Login successful',
-            'user' => $user,
-        ])->withCookie($cookie); // Attach the cookie to the response
+    public function logout()
+    {
+        Auth::logout();
+        return response()->json(['message' => 'Logout successful']);
     }
 
     public function index()
