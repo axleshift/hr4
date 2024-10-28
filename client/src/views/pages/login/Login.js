@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
     CButton,
     CCard,
@@ -23,6 +23,14 @@ const Login = () => {
     const [errorMessage, setErrorMessage] = useState('')
     const navigate = useNavigate()
 
+    useEffect(() => {
+        const fetchCsrfToken = async () => {
+            await axios.get('http://localhost:8000/sanctum/csrf-cookie')
+        }
+
+        fetchCsrfToken()
+    }, [])
+
     const handleLogin = async (e) => {
         e.preventDefault()
         try {
@@ -30,8 +38,12 @@ const Login = () => {
                 email,
                 password,
             })
-            console.log(response.data)
-            navigate('/dashboard')
+            if (response.data.success) {
+                // Optionally save user data in local storage or context
+                navigate('/dashboard')
+            } else {
+                setErrorMessage('Login failed. Please try again.')
+            }
         } catch (error) {
             setErrorMessage(error.response?.data?.error || 'Login failed. Please try again.')
             console.error(error.response.data)
@@ -59,8 +71,9 @@ const Login = () => {
                                                 <CIcon icon={cilUser} />
                                             </CInputGroupText>
                                             <CFormInput
+                                                type="email"
                                                 placeholder="Email"
-                                                autoComplete="username"
+                                                autoComplete="email"
                                                 value={email}
                                                 onChange={(e) => setEmail(e.target.value)}
                                             />
@@ -77,22 +90,9 @@ const Login = () => {
                                                 onChange={(e) => setPassword(e.target.value)}
                                             />
                                         </CInputGroup>
-                                        <CRow>
-                                            <CCol xs={6}>
-                                                <CButton
-                                                    color="primary"
-                                                    className="px-4"
-                                                    type="submit"
-                                                >
-                                                    Login
-                                                </CButton>
-                                            </CCol>
-                                            <CCol xs={6} className="text-right">
-                                                <CButton color="link" className="px-0">
-                                                    Forgot password?
-                                                </CButton>
-                                            </CCol>
-                                        </CRow>
+                                        <CButton type="submit" color="primary" className="px-4">
+                                            Login
+                                        </CButton>
                                     </CForm>
                                 </CCardBody>
                             </CCard>
