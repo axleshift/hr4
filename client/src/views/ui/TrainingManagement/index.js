@@ -101,7 +101,7 @@ const TrainingDelivery = () => {
         return `${hours12}:${minutes} ${suffix}`
     }
 
-    const [setCurrentTime] = useState(new Date())
+    const [currentTime, setCurrentTime] = useState(new Date())
     useEffect(() => {
         const interval = setInterval(() => {
             setCurrentTime(new Date()) // Updates the state every second
@@ -256,36 +256,44 @@ const TrainingDelivery = () => {
                             <CTableBody>
                                 {trainings.map((training) => (
                                     <CTableRow key={training.id}>
-                                        <td>{training.training_class}</td>
-                                        <td>{training.agenda}</td>
-                                        <td>{training.location}</td>
-                                        <td>{training.schedule}</td>
-                                        <td>{formatTime(training.start_time)}</td>
-                                        <td>{formatTime(training.end_time)}</td>
-                                        <CBadge
-                                            color={
-                                                getTrainingStatus(
+                                        <CTableHeaderCell>
+                                            {training.training_class}
+                                        </CTableHeaderCell>
+                                        <CTableHeaderCell>{training.agenda}</CTableHeaderCell>
+                                        <CTableHeaderCell>{training.location}</CTableHeaderCell>
+                                        <CTableHeaderCell>{training.schedule}</CTableHeaderCell>
+                                        <CTableHeaderCell>
+                                            {formatTime(training.start_time)}
+                                        </CTableHeaderCell>
+                                        <CTableHeaderCell>
+                                            {formatTime(training.end_time)}
+                                        </CTableHeaderCell>
+                                        <CTableHeaderCell>
+                                            <CBadge
+                                                color={
+                                                    getTrainingStatus(
+                                                        training.schedule,
+                                                        training.start_time,
+                                                        training.end_time,
+                                                    ) === 'Pending'
+                                                        ? 'warning'
+                                                        : getTrainingStatus(
+                                                                training.schedule,
+                                                                training.start_time,
+                                                                training.end_time,
+                                                            ) === 'Ongoing'
+                                                          ? 'info'
+                                                          : 'success'
+                                                }
+                                                className="ms-2"
+                                            >
+                                                {getTrainingStatus(
                                                     training.schedule,
                                                     training.start_time,
                                                     training.end_time,
-                                                ) === 'Pending'
-                                                    ? 'warning'
-                                                    : getTrainingStatus(
-                                                            training.schedule,
-                                                            training.start_time,
-                                                            training.end_time,
-                                                        ) === 'Ongoing'
-                                                      ? 'info'
-                                                      : 'success'
-                                            }
-                                            className="ms-2"
-                                        >
-                                            {getTrainingStatus(
-                                                training.schedule,
-                                                training.start_time,
-                                                training.end_time,
-                                            )}
-                                        </CBadge>
+                                                )}
+                                            </CBadge>
+                                        </CTableHeaderCell>
                                     </CTableRow>
                                 ))}
                             </CTableBody>

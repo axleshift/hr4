@@ -23,14 +23,6 @@ const Login = () => {
     const [errorMessage, setErrorMessage] = useState('')
     const navigate = useNavigate()
 
-    useEffect(() => {
-        const fetchCsrfToken = async () => {
-            await axios.get('http://localhost:8000/sanctum/csrf-cookie')
-        }
-
-        fetchCsrfToken()
-    }, [])
-
     const handleLogin = async (e) => {
         e.preventDefault()
         try {
