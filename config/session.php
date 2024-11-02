@@ -18,7 +18,7 @@ return [
     |
     */
 
-    'driver' => 'file', // Change to 'file' if you want file-based sessions
+    'driver' => 'database', // Change to 'file' if you want file-based sessions
 
     /*
     |----------------------------------------------------------------------
