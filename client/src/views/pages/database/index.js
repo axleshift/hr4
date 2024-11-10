@@ -11,6 +11,7 @@ import {
 
 const UsersList = () => {
     const [users, setUsers] = useState([])
+    const [error, setError] = useState('')
 
     useEffect(() => {
         fetchUsers()
@@ -22,12 +23,14 @@ const UsersList = () => {
             setUsers(response.data)
         } catch (error) {
             console.error('Error fetching users:', error)
+            setError('Could not fetch users. Please try again later.')
         }
     }
 
     return (
         <div>
             <h1>User List</h1>
+            {error && <p style={{ color: 'red' }}>{error}</p>} {/* Error message display */}
             <CTable striped hover>
                 <CTableHead>
                     <CTableRow>

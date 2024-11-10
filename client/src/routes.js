@@ -3,7 +3,8 @@ import React from 'react'
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const Landingpage = React.lazy(() => import('./views/dashboardtest'))
 const Announcement = React.lazy(() => import('./views/crud/crudAnnouncement'))
-const LMS = React.lazy(() => import('./views/ui/LearningManagement'))
+const LMS = React.lazy(() => import('./views/ui/LearningManagement/index'))
+const ModuleDetails = React.lazy(() => import('./views/ui/LearningManagement/Modules/index'))
 const TrainingDashboard = React.lazy(() => import('./views/ui/TrainingManagement/index'))
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
 const Typography = React.lazy(() => import('./views/theme/typography/Typography'))
@@ -61,7 +62,8 @@ const routes = [
     { path: '/dashboard', name: 'Dashboard', element: Dashboard },
     { path: '/dashboardtest', name: 'Dashboard', element: Landingpage },
     { path: '/crud', name: 'Announcement', element: Announcement },
-    { path: '/ui/LearningManagement/LMS', name: 'LMS', element: LMS },
+    { path: '/ui/LearningManagement/index', name: 'LMS', element: LMS },
+    { path: '/ui/LearningManagement/Modules/index', name: 'Module', element: ModuleDetails },
     {
         path: '/ui/TrainingManagement',
         name: 'TrainingDashboard',

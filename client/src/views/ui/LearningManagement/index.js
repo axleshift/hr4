@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import {
     CButton,
     CCard,
@@ -19,20 +19,55 @@ import {
     CModalTitle,
     CRow,
 } from '@coreui/react'
+import { useNavigate } from 'react-router-dom' // Import useNavigate hook
 
 import ReactImg from 'src/assets/images/react.jpg'
 
 const LMS = () => {
+    const navigate = useNavigate() // Initialize the navigate function
     const [visibleXL, setVisibleXL] = useState(false)
-    const [isAdmin, setIsAdmin] = useState(false) // State for tracking if user is admin
+    const [modules, setModules] = useState([]) // Local module list
+    const [newModule, setNewModule] = useState({
+        title: '',
+        description: '',
+        image: null,
+    })
 
-    // Simulating getting user info from localStorage or API
-    useEffect(() => {
-        const user = JSON.parse(localStorage.getItem('user')) // Replace this with your actual user fetching logic
-        if (user && user.is_admin) {
-            setIsAdmin(true) // Set isAdmin to true if the user is an admin
-        }
-    }, [])
+    // Handle form submission (without axios)
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        setModules([...modules, newModule]) // Add new module to the list
+        setVisibleXL(false) // Close modal after submission
+        setNewModule({ title: '', description: '', image: null }) // Reset form fields
+    }
+
+    // Handle form inputs
+    const handleInputChange = (e) => {
+        const { id, value } = e.target
+        setNewModule((prevModule) => ({
+            ...prevModule,
+            [id]: value,
+        }))
+    }
+
+    const handleImageChange = (e) => {
+        const { id, files } = e.target
+        setNewModule((prevModule) => ({
+            ...prevModule,
+            [id]: files[0], // Store the file object
+        }))
+    }
+
+    // Handle click on title
+    const handleTitleClick = (module) => {
+        navigate(`/learning-management/module/${module.title}`, { state: { module } })
+    }
+
+    // Handle deletion of a module
+    const handleDelete = (index) => {
+        const updatedModules = modules.filter((module, i) => i !== index)
+        setModules(updatedModules) // Update the modules state
+    }
 
     return (
         <CRow>
@@ -40,89 +75,107 @@ const LMS = () => {
                 <CCard className="mb-4">
                     <CCardHeader>
                         <strong>MODULES</strong>
-                        {isAdmin && ( // Conditionally render button for admin
-                            <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-                                <CButton color="primary" onClick={() => setVisibleXL(!visibleXL)}>
-                                    Create Module
-                                </CButton>
-                                <CModal
-                                    alignment="center"
-                                    backdrop="static"
-                                    size="lg"
-                                    visible={visibleXL}
-                                    onClose={() => setVisibleXL(false)}
-                                >
-                                    <CModalHeader>
-                                        <CModalTitle>Create Module</CModalTitle>
-                                    </CModalHeader>
-                                    <CModalBody>
-                                        <CForm validated={true}>
-                                            <div className="mb-3">
-                                                <CFormLabel htmlFor="formFile">
-                                                    Input Image (Optional)
-                                                </CFormLabel>
-                                                <CFormInput type="file" id="formFile" />
-                                            </div>
-                                            <div className="mb-3">
-                                                <CFormLabel htmlFor="exampleFormControlInput1">
-                                                    Module Title
-                                                </CFormLabel>
-                                                <CFormInput
-                                                    required
-                                                    type="text"
-                                                    id="exampleFormControlInput1"
-                                                    placeholder="Input title"
-                                                />
-                                            </div>
-                                            <div className="mb-3">
-                                                <CFormLabel htmlFor="exampleFormControlTextarea1">
-                                                    Description
-                                                </CFormLabel>
-                                                <CFormTextarea
-                                                    id="exampleFormControlTextarea1"
-                                                    rows={3}
-                                                ></CFormTextarea>
-                                            </div>
-                                            <div className="mb-3">
-                                                <CFormLabel htmlFor="formFile">
-                                                    Upload docx or pdf File
-                                                </CFormLabel>
-                                                <CFormInput required type="file" id="formFile" />
-                                            </div>
-                                        </CForm>
-                                    </CModalBody>
-                                    <CModalFooter>
-                                        <CButton
-                                            color="secondary"
-                                            onClick={() => setVisibleXL(false)}
-                                        >
-                                            Cancel
-                                        </CButton>
-                                        <CButton color="primary">Add Module</CButton>
-                                    </CModalFooter>
-                                </CModal>
-                            </div>
-                        )}
+                        <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <CButton color="primary" onClick={() => setVisibleXL(!visibleXL)}>
+                                Create Module
+                            </CButton>
+                            <CModal
+                                alignment="center"
+                                backdrop="static"
+                                size="lg"
+                                visible={visibleXL}
+                                onClose={() => setVisibleXL(false)}
+                            >
+                                <CModalHeader>
+                                    <CModalTitle>Create Module</CModalTitle>
+                                </CModalHeader>
+                                <CModalBody>
+                                    <CForm validated={true}>
+                                        <div className="mb-3">
+                                            <CFormLabel htmlFor="image">
+                                                Input Image (Optional)
+                                            </CFormLabel>
+                                            <CFormInput
+                                                type="file"
+                                                id="image"
+                                                onChange={handleImageChange}
+                                            />
+                                        </div>
+                                        <div className="mb-3">
+                                            <CFormLabel htmlFor="title">Module Title</CFormLabel>
+                                            <CFormInput
+                                                required
+                                                type="text"
+                                                id="title"
+                                                value={newModule.title}
+                                                onChange={handleInputChange}
+                                                placeholder="Input title"
+                                            />
+                                        </div>
+                                        <div className="mb-3">
+                                            <CFormLabel htmlFor="description">
+                                                Description
+                                            </CFormLabel>
+                                            <CFormTextarea
+                                                id="description"
+                                                rows={3}
+                                                value={newModule.description}
+                                                onChange={handleInputChange}
+                                            ></CFormTextarea>
+                                        </div>
+                                    </CForm>
+                                </CModalBody>
+                                <CModalFooter>
+                                    <CButton color="secondary" onClick={() => setVisibleXL(false)}>
+                                        Cancel
+                                    </CButton>
+                                    <CButton color="primary" onClick={handleSubmit}>
+                                        Add Module
+                                    </CButton>
+                                </CModalFooter>
+                            </CModal>
+                        </div>
                     </CCardHeader>
                     <CCardBody>
-                        <CCard style={{ width: '18rem' }}>
-                            <CCardImage orientation="top" src={ReactImg} />
-                            <CCardBody>
-                                <CCardTitle>Module Title</CCardTitle>
-                                <CCardText>
-                                    Some quick example text to build on the card title and make up
-                                    the bulk of the cards content.
-                                </CCardText>
-                                <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-                                    <CButton color="primary" className="me-md-2">
-                                        EDIT
-                                    </CButton>
-                                    <CButton color="primary" className="me-md-2">
-                                        DELETE
-                                    </CButton>
-                                </div>
-                            </CCardBody>
-                        </CCard>
+                        <CRow>
+                            {modules.map((module, index) => (
+                                <CCol xs={12} md={4} key={index} className="mb-4">
+                                    <CCard>
+                                        <CCardImage
+                                            orientation="top"
+                                            src={
+                                                module.image
+                                                    ? URL.createObjectURL(module.image)
+                                                    : ReactImg
+                                            }
+                                        />
+                                        <CCardBody>
+                                            {/* Make title clickable */}
+                                            <CCardTitle
+                                                style={{ cursor: 'pointer' }}
+                                                onClick={() => handleTitleClick(module)} // Navigate to details page
+                                            >
+                                                {module.title}
+                                            </CCardTitle>
+                                            <CCardText>{module.description}</CCardText>
+                                            <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+                                                <CButton color="primary" className="me-md-2">
+                                                    EDIT
+                                                </CButton>
+                                                {/* Add Delete button */}
+                                                <CButton
+                                                    color="danger"
+                                                    className="me-md-2"
+                                                    onClick={() => handleDelete(index)}
+                                                >
+                                                    DELETE
+                                                </CButton>
+                                            </div>
+                                        </CCardBody>
+                                    </CCard>
+                                </CCol>
+                            ))}
+                        </CRow>
                     </CCardBody>
                 </CCard>
             </CCol>

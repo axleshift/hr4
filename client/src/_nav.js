@@ -54,7 +54,12 @@ const _nav = [
             {
                 component: CNavItem,
                 name: 'LMS',
-                to: '/ui/LearningManagement/LMS',
+                to: '/ui/LearningManagement/index',
+            },
+            {
+                component: CNavItem,
+                name: 'Module',
+                to: '/ui/LearningManagement/Modules/index',
             },
         ],
     },
