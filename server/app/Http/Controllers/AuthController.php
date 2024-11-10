@@ -6,7 +6,6 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 
 class AuthController extends Controller
 {
@@ -29,30 +28,27 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
+        // Validate the login form data
         $request->validate([
             'email' => 'required|email',
-            'password' => 'required',
+            'password' => 'required|min:6',
         ]);
 
-        if (Auth::attempt($request->only('email', 'password'))) {
-            $request->session()->regenerate();
-
-            return response()->json([
-                'message' => 'Logged in successfully',
-                'session_token' => Session::getId()
-            ], 200);
+        // Attempt to log the user in using credentials
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password], $request->remember)) {
+            // If successful, redirect to the dashboard
+            return redirect()->route('dashboard');
         }
 
-        return response()->json(['error' => 'Invalid credentials'], 401);
+        // If login fails, redirect back with error
+        return redirect()->back()->withErrors(['email' => 'Invalid credentials.'])->withInput();
     }
 
-    public function logout(Request $request)
+    // Handle logout request
+    public function logout()
     {
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return response()->json(['message' => 'Logged out successfully']);
+        Auth::logout(); // Log the user out
+        return redirect()->route('login'); // Redirect to login page
     }
 
     public function index()
