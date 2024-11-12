@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { CCard, CCardBody, CCardHeader, CCardText, CCardTitle, CButton } from '@coreui/react'
-import * as pdfjsLib from 'pdfjs-dist'
 import mammoth from 'mammoth'
 
 const LMS = () => {
@@ -17,55 +16,11 @@ const LMS = () => {
         }
     }
 
-    // Function to process the file (DOCX or PDF)
+    // Function to process DOCX or TXT file
     const processFile = async (file) => {
         const fileType = file.type
 
-        if (fileType === 'application/pdf') {
-            const fileReader = new FileReader()
-            fileReader.onload = async () => {
-                const typedArray = new Uint8Array(fileReader.result)
-                const pdf = await pdfjsLib.getDocument(typedArray).promise
-                const page = await pdf.getPage(1)
-                const textContent = await page.getTextContent()
-                let text = ''
-                let bold = []
-                let images = []
-
-                // Extract text and detect bold
-                textContent.items.forEach((item) => {
-                    text += item.str + ' '
-
-                    // Detect bold font by fontName, fontWeight or text transform (uppercase)
-                    if (item.fontName && item.fontName.includes('Bold')) {
-                        bold.push(item.str)
-                    }
-                    if (item.fontWeight && item.fontWeight > 400) {
-                        bold.push(item.str) // Assuming 400 is normal weight and anything higher is bold
-                    }
-                    if (
-                        item.str === item.str.toUpperCase() &&
-                        item.str !== item.str.toLowerCase()
-                    ) {
-                        bold.push(item.str) // Fallback for uppercase text (might indicate emphasis)
-                    }
-                })
-
-                // Extract images from PDF (if any)
-                const imagesData = await page.getOperatorList()
-                imagesData.fnArray.forEach((fn, index) => {
-                    if (fn === pdfjsLib.OPS.paintImageXObject) {
-                        const img = page.objs[index]
-                        images.push(img)
-                    }
-                })
-
-                setFileContent(text)
-                setBoldText(bold)
-                setImages(images)
-            }
-            fileReader.readAsArrayBuffer(file)
-        } else if (
+        if (
             fileType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
         ) {
             const reader = new FileReader()
@@ -94,6 +49,14 @@ const LMS = () => {
                 setImages(imageMatches)
             }
             reader.readAsArrayBuffer(file)
+        } else if (fileType === 'text/plain') {
+            const reader = new FileReader()
+            reader.onload = () => {
+                setFileContent(reader.result)
+                setBoldText([]) // No bold text in plain text files
+                setImages([]) // No images in plain text files
+            }
+            reader.readAsText(file)
         }
     }
 
@@ -226,7 +189,7 @@ const LMS = () => {
                 <CCardTitle>Document Content</CCardTitle>
 
                 {/* File input */}
-                <input type="file" onChange={handleFileChange} accept=".pdf, .docx" />
+                <input type="file" onChange={handleFileChange} accept=".docx, .txt" />
 
                 {/* Render the content */}
                 <div>{renderContent()}</div>
