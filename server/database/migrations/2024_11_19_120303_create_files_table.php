@@ -8,18 +8,17 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('modules', function (Blueprint $table) {
+        Schema::create('files', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->text('description');
-            $table->string('image_path')->nullable(); // Store the image path
+            $table->string('original_name'); // File name
+            $table->string('file_type'); // MIME type
+            $table->text('base64_content'); // Base64 content
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('modules');
+        Schema::dropIfExists('files');
     }
 };
-

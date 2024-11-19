@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
 import {
     CButton,
     CCard,
@@ -19,29 +20,60 @@ import {
     CModalTitle,
     CRow,
 } from '@coreui/react'
-import { useNavigate } from 'react-router-dom' // Import useNavigate hook
-
+import { useNavigate } from 'react-router-dom'
 import ReactImg from 'src/assets/images/react.jpg'
 
 const LMS = () => {
-    const navigate = useNavigate() // Initialize the navigate function
+    const navigate = useNavigate()
     const [visibleXL, setVisibleXL] = useState(false)
-    const [modules, setModules] = useState([]) // Local module list
+    const [modules, setModules] = useState([])
     const [newModule, setNewModule] = useState({
         title: '',
         description: '',
         image: null,
     })
 
-    // Handle form submission (without axios)
-    const handleSubmit = (e) => {
+    // Fetch modules on component mount
+    useEffect(() => {
+        const fetchModules = async () => {
+            try {
+                const response = await axios.get('http://localhost:8000/api/modules')
+                setModules(response.data.data) // Load modules from backend
+            } catch (error) {
+                console.error('Error fetching modules:', error)
+            }
+        }
+
+        fetchModules()
+    }, [])
+
+    const handleSubmit = async (e) => {
         e.preventDefault()
-        setModules([...modules, newModule]) // Add new module to the list
-        setVisibleXL(false) // Close modal after submission
-        setNewModule({ title: '', description: '', image: null }) // Reset form fields
+
+        const formData = new FormData()
+        formData.append('title', newModule.title)
+        formData.append('description', newModule.description)
+        if (newModule.image) {
+            formData.append('image', newModule.image) // Attach the image
+        }
+
+        try {
+            const response = await axios.post('http://localhost:8000/api/modules', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+            })
+
+            // Add the new module to the state
+            setModules([...modules, response.data.data])
+
+            // Reset the form fields
+            setVisibleXL(false)
+            setNewModule({ title: '', description: '', image: null })
+            document.getElementById('image').value = null // Clear the file input field
+        } catch (error) {
+            console.error('Error adding module:', error)
+        }
     }
 
-    // Handle form inputs
     const handleInputChange = (e) => {
         const { id, value } = e.target
         setNewModule((prevModule) => ({
@@ -54,19 +86,39 @@ const LMS = () => {
         const { id, files } = e.target
         setNewModule((prevModule) => ({
             ...prevModule,
-            [id]: files[0], // Store the file object
+            [id]: files[0],
         }))
     }
 
-    // Handle click on title
-    const handleTitleClick = (module) => {
-        navigate(`/learning-management/module/${module.title}`, { state: { module } })
+    // Fetch module details when clicking on a module title
+    const handleTitleClick = async (module) => {
+        try {
+            // Fetch the module details including its files
+            const response = await axios.get(`http://localhost:8000/api/modules/${module.id}`)
+            const fetchedModule = response.data.data
+
+            console.log('Module Details:', fetchedModule) // Debug
+            console.log('Associated Files:', fetchedModule.files) // Debug
+
+            // Navigate to the module page with fetched module details
+            navigate(`/learning-management/module/${module.id}`, {
+                state: { module: fetchedModule },
+            })
+        } catch (error) {
+            console.error('Error fetching module details:', error)
+        }
     }
 
-    // Handle deletion of a module
-    const handleDelete = (index) => {
-        const updatedModules = modules.filter((module, i) => i !== index)
-        setModules(updatedModules) // Update the modules state
+    const handleDelete = async (index) => {
+        const moduleToDelete = modules[index]
+        try {
+            // Send DELETE request
+            await axios.delete(`http://localhost:8000/api/modules/${moduleToDelete.id}`)
+            const updatedModules = modules.filter((_, i) => i !== index)
+            setModules(updatedModules)
+        } catch (error) {
+            console.error('Error deleting module:', error)
+        }
     }
 
     return (
@@ -145,15 +197,15 @@ const LMS = () => {
                                             orientation="top"
                                             src={
                                                 module.image
-                                                    ? URL.createObjectURL(module.image)
+                                                    ? `data:image/jpeg;base64,${module.image}` // Display Base64 image
                                                     : ReactImg
                                             }
                                         />
+
                                         <CCardBody>
-                                            {/* Make title clickable */}
                                             <CCardTitle
                                                 style={{ cursor: 'pointer' }}
-                                                onClick={() => handleTitleClick(module)} // Navigate to details page
+                                                onClick={() => handleTitleClick(module)}
                                             >
                                                 {module.title}
                                             </CCardTitle>
@@ -162,7 +214,6 @@ const LMS = () => {
                                                 <CButton color="primary" className="me-md-2">
                                                     EDIT
                                                 </CButton>
-                                                {/* Add Delete button */}
                                                 <CButton
                                                     color="danger"
                                                     className="me-md-2"

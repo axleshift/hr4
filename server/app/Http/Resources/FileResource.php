@@ -5,16 +5,20 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ModuleResource extends JsonResource
+class FileResource extends JsonResource
 {
+    /**
+     * Transform the resource into an array.
+     *
+     * @return array<string, mixed>
+     */
     public function toArray(Request $request): array
     {
         return [
             'id' => $this->id,
-            'title' => $this->title,
-            'description' => $this->description,
-            'image' => $this->image_path,
-            'files' => FileResource::collection($this->whenLoaded('files')), // Include files
+            'original_name' => $this->original_name,
+            'file_type' => $this->file_type,
+            'base64_content' => $this->base64_content,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
