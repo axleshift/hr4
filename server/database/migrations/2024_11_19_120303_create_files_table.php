@@ -10,9 +10,10 @@ return new class extends Migration
     {
         Schema::create('files', function (Blueprint $table) {
             $table->id();
-            $table->string('original_name'); // File name
-            $table->string('file_type'); // MIME type
-            $table->text('base64_content'); // Base64 content
+            $table->string('original_name');
+            $table->string('file_type');
+            $table->text('base64_content');
+            $table->foreignId('module_id')->constrained('modules')->onDelete('cascade'); // Added relation
             $table->timestamps();
         });
     }
@@ -22,3 +23,4 @@ return new class extends Migration
         Schema::dropIfExists('files');
     }
 };
+

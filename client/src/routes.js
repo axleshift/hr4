@@ -63,7 +63,7 @@ const routes = [
     { path: '/dashboardtest', name: 'Dashboard', element: Landingpage },
     { path: '/crud', name: 'Announcement', element: Announcement },
     { path: '/ui/LearningManagement/index', name: 'LMS', element: LMS },
-    { path: '/ui/LearningManagement/Modules/index', name: 'Module', element: ModuleDetails },
+    { path: '/ui/LearningManagement/Modules/:moduleId', name: 'Module', element: ModuleDetails },
     {
         path: '/ui/TrainingManagement',
         name: 'TrainingDashboard',

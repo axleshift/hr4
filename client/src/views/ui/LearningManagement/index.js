@@ -92,7 +92,8 @@ const LMS = () => {
 
     // Fetch module details when clicking on a module title
     const handleTitleClick = (module) => {
-        navigate(`/learning-management/module/${module.id}`) // Only pass the module ID
+        // Navigate to the Fileviewer page, passing the moduleId in the URL
+        navigate(`/ui/LearningManagement/Modules/${module.id}`) // Pass the module ID
     }
 
     const handleDelete = async (index) => {
