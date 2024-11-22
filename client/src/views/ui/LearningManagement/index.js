@@ -91,22 +91,8 @@ const LMS = () => {
     }
 
     // Fetch module details when clicking on a module title
-    const handleTitleClick = async (module) => {
-        try {
-            // Fetch the module details including its files
-            const response = await axios.get(`http://localhost:8000/api/modules/${module.id}`)
-            const fetchedModule = response.data.data
-
-            console.log('Module Details:', fetchedModule) // Debug
-            console.log('Associated Files:', fetchedModule.files) // Debug
-
-            // Navigate to the module page with fetched module details
-            navigate(`/learning-management/module/${module.id}`, {
-                state: { module: fetchedModule },
-            })
-        } catch (error) {
-            console.error('Error fetching module details:', error)
-        }
+    const handleTitleClick = (module) => {
+        navigate(`/learning-management/module/${module.id}`) // Only pass the module ID
     }
 
     const handleDelete = async (index) => {

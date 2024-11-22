@@ -19,3 +19,4 @@ Route::post('/logout', [AuthController::class, 'logout']);
 //LMS MODULE
 Route::apiResource('/modules', ModuleController::class);
 Route::apiResource('/files', FileController::class);
+Route::get('/files/module/{moduleId}', [FileController::class, 'getFilesForModule']);

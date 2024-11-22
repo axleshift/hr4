@@ -9,14 +9,6 @@ use Illuminate\Http\Request;
 
 class FileController extends Controller
 {
-    // Get all files
-    public function index()
-    {
-        $files = File::all();
-        return FileResource::collection($files);
-    }
-
-    // Store a new file
     // Store a new file
     public function store(Request $request)
     {
@@ -38,33 +30,11 @@ class FileController extends Controller
         return new FileResource($file);
     }
 
-
-    // Show a specific file
     public function show(File $file)
     {
         return new FileResource($file);
     }
 
-    // Update a file
-    public function update(Request $request, File $file)
-    {
-        $validated = $request->validate([
-            'file' => 'nullable|file|mimes:docx,txt,html|max:5120',
-        ]);
-
-        if ($request->hasFile('file')) {
-            $uploadedFile = $request->file('file');
-            $file->update([
-                'original_name' => $uploadedFile->getClientOriginalName(),
-                'file_type' => $uploadedFile->getClientMimeType(),
-                'base64_content' => base64_encode(file_get_contents($uploadedFile->getRealPath())),
-            ]);
-        }
-
-        return new FileResource($file);
-    }
-
-    // Delete a file
     public function destroy(File $file)
     {
         $file->delete();
