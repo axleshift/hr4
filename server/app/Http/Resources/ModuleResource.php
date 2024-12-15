@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+
 class ModuleResource extends JsonResource
 {
     public function toArray(Request $request): array
@@ -14,7 +15,6 @@ class ModuleResource extends JsonResource
             'title' => $this->title,
             'description' => $this->description,
             'image' => $this->image_path,
-            'files' => FileResource::collection($this->whenLoaded('files')), // Include files
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

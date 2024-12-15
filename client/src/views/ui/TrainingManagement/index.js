@@ -248,9 +248,11 @@ const TrainingDelivery = () => {
                                     <CTableHeaderCell>Agenda</CTableHeaderCell>
                                     <CTableHeaderCell>Location</CTableHeaderCell>
                                     <CTableHeaderCell>Schedule</CTableHeaderCell>
-                                    <CTableHeaderCell></CTableHeaderCell>
-                                    <CTableHeaderCell></CTableHeaderCell>
+                                    <CTableHeaderCell>Start Time</CTableHeaderCell>
+                                    <CTableHeaderCell>End Time</CTableHeaderCell>
                                     <CTableHeaderCell>Status</CTableHeaderCell>
+                                    <CTableHeaderCell>Participants</CTableHeaderCell>
+                                    {/* New Column */}
                                 </CTableRow>
                             </CTableHead>
                             <CTableBody>
@@ -293,6 +295,12 @@ const TrainingDelivery = () => {
                                                     training.end_time,
                                                 )}
                                             </CBadge>
+                                        </CTableHeaderCell>
+                                        <CTableHeaderCell>
+                                            {/* Button to view participants */}
+                                            <CButton color="primary" variant="outline">
+                                                View Participants
+                                            </CButton>
                                         </CTableHeaderCell>
                                     </CTableRow>
                                 ))}

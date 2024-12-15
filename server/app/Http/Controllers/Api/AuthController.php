@@ -11,7 +11,7 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-    // Register method (already existing)
+    // Register method
     public function register(Request $request)
     {
         $validated = $request->validate([

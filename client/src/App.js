@@ -31,7 +31,7 @@ const App = () => {
         }
 
         setColorMode(storedTheme)
-    }, []) // eslint-disable-line react-hooks/exhaustive-deps
+    }, [])
 
     return (
         <HashRouter>
@@ -43,6 +43,7 @@ const App = () => {
                 }
             >
                 <Routes>
+                    <Route exact path="/" name="Dashboard" element={<DefaultLayout />} />
                     <Route exact path="/login" name="Login Page" element={<Login />} />
                     <Route exact path="/register" name="Register Page" element={<Register />} />
                     <Route exact path="/database" name="Database" element={<Database />} />

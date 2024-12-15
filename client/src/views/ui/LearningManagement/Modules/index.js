@@ -1,11 +1,58 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { CCard, CCardBody, CCardHeader, CButton } from '@coreui/react'
+import { useLocation } from 'react-router-dom'
+import axios from 'axios'
 import mammoth from 'mammoth'
 
 const Fileviewer = () => {
     const [fileContent, setFileContent] = useState('')
     const [selectedFile, setSelectedFile] = useState(null)
+    const [uploading, setUploading] = useState(false)
+    const [fileCount, setFileCount] = useState(0) // To hold the file count
+    const location = useLocation()
+    const { title, fileId } = location.state || {}
 
+    // Fetch the file content on component mount (when the page reloads)
+    useEffect(() => {
+        if (fileId) {
+            const storedContent = localStorage.getItem(`file-${fileId}`)
+            if (storedContent) {
+                setFileContent(storedContent) // Use the stored content if available
+            } else {
+                fetchFileContent(fileId)
+            }
+        }
+        fetchFileCount() // Fetch file count on component mount
+    }, [fileId])
+
+    // Function to fetch file count from the backend
+    const fetchFileCount = async () => {
+        try {
+            const response = await axios.get('http://your-backend-url/api/files/count')
+            setFileCount(response.data.count) // Set the file count in state
+        } catch (error) {
+            console.error('Error fetching file count:', error)
+        }
+    }
+
+    // Function to fetch file content from the backend
+    const fetchFileContent = async (id) => {
+        try {
+            const response = await axios.get(`http://your-backend-url/api/files/${id}`)
+            const { content } = response.data
+
+            if (content) {
+                // Decode the Base64 content and update the state
+                const decodedContent = atob(content)
+                setFileContent(decodedContent)
+                localStorage.setItem(`file-${id}`, decodedContent) // Store content in localStorage
+            }
+        } catch (error) {
+            console.error('Error fetching file content:', error)
+        }
+    }
+
+    // Handle file selection and content parsing
     const handleFileChange = async (e) => {
         const file = e.target.files[0]
         if (!file) return
@@ -29,8 +76,9 @@ const Fileviewer = () => {
 
         if (fileType === 'text/plain' || fileType === 'text/html') {
             const reader = new FileReader()
-            reader.onload = (event) => {
-                setFileContent(event.target.result)
+            reader.onload = async (event) => {
+                const content = event.target.result
+                setFileContent(content)
             }
             reader.readAsText(file)
             return
@@ -39,55 +87,55 @@ const Fileviewer = () => {
         alert('Unsupported file type')
     }
 
-    const handleUpload = async () => {
+    // Function to upload file and its content
+    // Fileviewer Component
+
+    const uploadFile = async () => {
         if (!selectedFile) {
-            alert('No file selected')
+            alert('No file selected!')
             return
         }
 
-        const reader = new FileReader()
-        reader.onload = async (event) => {
-            const base64Content = event.target.result.split(',')[1] // Extract Base64
-            const payload = {
-                original_name: selectedFile.name,
-                file_type: selectedFile.type,
-                base64_content: base64Content,
-                module_id: 1, // Replace with actual module_id
-            }
+        try {
+            setUploading(true)
+            const formData = new FormData()
+            formData.append('file', selectedFile) // Upload raw file for backend storage
+            formData.append('title', title) // Pass title (this should be set in the location state)
+            formData.append('content', fileContent) // File content (HTML or plain text)
 
-            try {
-                const response = await fetch('http://localhost:8000/api/files', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload),
-                })
+            const response = await axios.post('http://localhost:8000/api/files', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+            })
 
-                if (!response.ok) {
-                    const errorData = await response.json()
-                    console.error('Upload failed:', errorData)
-                    alert('Failed to upload file: ' + errorData.message)
-                    return
-                }
-
-                const data = await response.json()
-                alert('File uploaded successfully!')
-            } catch (error) {
-                console.error('Error:', error)
-                alert('An error occurred during upload.')
-            }
+            alert('File uploaded successfully!')
+            console.log(response.data)
+            fetchFileCount() // Update file count after upload
+        } catch (error) {
+            console.error('Error uploading file:', error)
+            alert('Failed to upload the file.')
+        } finally {
+            setUploading(false)
         }
-        reader.readAsDataURL(selectedFile)
     }
 
     return (
         <CCard>
             <CCardHeader>
+                <h2>{title}</h2>
                 <input type="file" onChange={handleFileChange} accept=".docx,.txt,.html" />
-                <CButton color="primary" onClick={handleUpload} className="ml-2">
-                    Upload
+                <CButton onClick={uploadFile} color="primary" disabled={uploading}>
+                    {uploading ? 'Uploading...' : 'Upload File'}
+                </CButton>
+                <CButton
+                    onClick={() => fetchFileContent(fileId)}
+                    color="secondary"
+                    className="ml-2"
+                >
+                    Fetch File Content
                 </CButton>
             </CCardHeader>
             <CCardBody>
+                {/* Display the file content */}
                 <div dangerouslySetInnerHTML={{ __html: fileContent }} />
             </CCardBody>
         </CCard>
