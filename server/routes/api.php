@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\Route;
 Route::apiResource('/announcement', AnnouncementController::class);
 Route::apiResource('/training', TrainingController::class);
 Route::post('register', [AuthController::class, 'register']);
+Route::post('login', [AuthController::class, 'login']);
+
 
 //LMS MODULE
 Route::apiResource('/modules', ModuleController::class);

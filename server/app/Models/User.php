@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
+use Illuminate\Foundation\Auth\User as Authenticatable;  // Make sure this is imported
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 
-class User extends Model
+class User extends Authenticatable // Ensure it extends Authenticatable
 {
     use HasFactory;
 
@@ -24,4 +24,3 @@ class User extends Model
         'email_verified_at' => 'datetime',
     ];
 }
-
