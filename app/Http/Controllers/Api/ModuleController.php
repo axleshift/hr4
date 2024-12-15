@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Api;
+
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ModuleResource;
 use App\Models\Module;
@@ -8,83 +9,124 @@ use Illuminate\Http\Request;
 
 class ModuleController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    // Get all modules
     public function index()
     {
-        //
+        $modules = Module::all();
+        return ModuleResource::collection($modules);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
+    // Store a new module
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            'title' => 'required|string|max:255',
+        $validated = $request->validate([
+            'title' => 'required|string|max:255|unique:modules,title',
             'description' => 'nullable|string',
-            'file' => 'nullable|file|mimes:pdf,docx',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => 'nullable|file|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        // Handle file upload for module
-        if ($request->hasFile('file')) {
-            $filePath = $request->file('file')->store('modules/files');
-            $validatedData['file_path'] = $filePath;
-        }
+        $imageBase64 = null;
 
-        // Handle image upload for module
+        // Convert uploaded image to Base64
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('modules/images');
-            $validatedData['image_path'] = $imagePath;
+            $image = $request->file('image');
+            $imageBase64 = base64_encode(file_get_contents($image->getRealPath()));
         }
 
-        // Save the module to the database
-        $post = Module::create($validatedData);
-        return new ModuleResource($post);
+        // Create the new module
+        $module = Module::create([
+            'title' => $validated['title'],
+            'description' => $validated['description'] ?? '',
+            'image_path' => $imageBase64,
+        ]);
 
-        return response()->json(['message' => 'Module created successfully!'], 201);
+        return new ModuleResource($module);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
 
     /**
-     * Show the form for editing the specified resource.
+     * Resize image to specific width and height using GD library
      */
-    public function edit(string $id)
+    private function resizeImage($image, $width, $height)
     {
-        //
+        $srcImage = null;
+        $imageType = $image->getClientOriginalExtension();
+
+        // Create a GD image resource based on file type
+        if (in_array($imageType, ['jpeg', 'jpg'])) {
+            $srcImage = imagecreatefromjpeg($image->getRealPath());
+        } elseif ($imageType === 'png') {
+            $srcImage = imagecreatefrompng($image->getRealPath());
+        }
+
+        if (!$srcImage) {
+            throw new \Exception('Unsupported image type.');
+        }
+
+        // Create a blank canvas for the resized image
+        $resizedImage = imagecreatetruecolor($width, $height);
+
+        // Preserve transparency for PNG
+        if ($imageType === 'png') {
+            imagealphablending($resizedImage, false);
+            imagesavealpha($resizedImage, true);
+        }
+
+        // Resize the source image to fit the new dimensions
+        imagecopyresampled(
+            $resizedImage, $srcImage, 
+            0, 0, 0, 0, 
+            $width, $height, 
+            imagesx($srcImage), imagesy($srcImage)
+        );
+
+        // Output the resized image to a string
+        ob_start();
+        if (in_array($imageType, ['jpeg', 'jpg'])) {
+            imagejpeg($resizedImage);
+        } elseif ($imageType === 'png') {
+            imagepng($resizedImage);
+        }
+        $imageData = ob_get_clean();
+
+        // Cleanup
+        imagedestroy($srcImage);
+        imagedestroy($resizedImage);
+
+        return $imageData;
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+
+    // Show a specific module
+    public function show(Module $module)
     {
-        //
+        return new ModuleResource($module->load('files'));
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    // Update a module
+    public function update(Request $request, Module $module)
     {
-        Module::destroy($id);
-        return response()->noContent();
+        $validated = $request->validate([
+            'title' => 'sometimes|required|string|max:255',
+            'description' => 'nullable|string',
+            'image' => 'nullable|file|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        // Handle image upload and convert to Base64
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $module->image_path = base64_encode(file_get_contents($image->getRealPath()));
+        }
+
+        $module->update($validated);
+
+        return new ModuleResource($module);
+    }
+
+    // Delete a module
+    public function destroy(Module $module)
+    {
+        $module->delete();
+        return response()->json(['message' => 'Module deleted successfully']);
     }
 }

@@ -1,3 +1,4 @@
+
 <?php
 
 return [
@@ -37,11 +38,7 @@ return [
 
     'guards' => [
         'web' => [
-            'driver' => 'session', // Session guard
-            'provider' => 'users',
-        ],
-        'api' => [
-            'driver' => 'jwt', // JWT guard
+            'driver' => 'session',
             'provider' => 'users',
         ],
     ],
