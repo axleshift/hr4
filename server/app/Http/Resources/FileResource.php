@@ -1,26 +1,29 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
+use App\Models\User;
 
-class FileResource extends JsonResource
+class AuthController extends Controller
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
-     */
-    public function toArray(Request $request): array
+    public function login(Request $request)
     {
-        return [
-            'id' => $this->id,
-            'original_name' => $this->original_name,
-            'file_type' => $this->file_type,
-            'base64_content' => $this->base64_content,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-        ];
+        // Validate the request
+        $validated = $request->validate([
+            'username' => 'required|string',
+            'password' => 'required|string',
+        ]);
+
+        // Find user by username
+        $user = User::where('username', $validated['username'])->first();
+
+        // Check if user exists and password matches
+        if ($user && $user->password === $validated['password']) {
+            // You can return a response or something else here
+            return response()->json(['message' => 'Login successful!'], 200);
+        }
+
+        return response()->json(['message' => 'Invalid username or password'], 401);
     }
 }

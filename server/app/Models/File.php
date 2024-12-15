@@ -12,13 +12,7 @@ class File extends Model
     protected $fillable = [
         'original_name',
         'file_type',
-        'base64_content',
-        'module_id',
+        'path',
+        // pag nilalagyan ko neto nag eerror'title',
     ];
-
-    // Define the relationship with Module
-    public function module()
-    {
-        return $this->belongsTo(Module::class);
-    }
 }
