@@ -1,4 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
+import axios from 'axios'
+import Cookies from 'js-cookie'
 import {
     CAvatar,
     CBadge,
@@ -14,10 +16,23 @@ import CIcon from '@coreui/icons-react'
 
 import avatar8 from './../../assets/images/avatars/8.jpg'
 
+// Logout function
 const logout = async () => {
-    await axios.post(`${API_URL}logout`)
-    Cookies.remove('token')
-    delete axios.defaults.headers.common['Authorization']
+    try {
+        // Send logout request to the backend
+        await axios.post(`${API_URL}logout`, {}, { withCredentials: true })
+
+        // Remove session token from the cookies (if set)
+        Cookies.remove('session_token')
+
+        // Clear Authorization header if it's being used
+        delete axios.defaults.headers.common['Authorization']
+
+        // Redirect user to the login page (optional)
+        window.location.href = '/login' // or use a router method like history.push('/login')
+    } catch (error) {
+        console.error('Logout error:', error)
+    }
 }
 
 const AppHeaderDropdown = () => {
@@ -42,7 +57,7 @@ const AppHeaderDropdown = () => {
                     </CBadge>
                 </CDropdownItem>
                 <CDropdownDivider />
-                <CDropdownItem onChange={logout}>Logout</CDropdownItem>
+                <CDropdownItem onClick={logout}>Logout</CDropdownItem>
             </CDropdownMenu>
         </CDropdown>
     )

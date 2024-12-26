@@ -41,17 +41,33 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($validated)) {
-            // Authentication passed, return the user data
             $user = Auth::user();
+            $sessionToken = session()->getId(); // Get session ID
+
             return response()->json([
                 'message' => 'Login successful!',
                 'user' => $user,
+                'session_token' => $sessionToken,
             ]);
         } else {
-            // Authentication failed
             throw ValidationException::withMessages([
                 'email' => ['The provided credentials are incorrect.'],
             ]);
         }
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::logout(); // Log the user out
+
+        // Invalidate the session
+        $request->session()->invalidate();
+
+        // Regenerate the session token to prevent session fixation
+        $request->session()->regenerateToken();
+
+        return response()->json([
+            'message' => 'Successfully logged out',
+        ]);
     }
 }

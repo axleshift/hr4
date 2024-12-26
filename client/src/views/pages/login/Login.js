@@ -16,6 +16,7 @@ import {
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
 import axios from 'axios'
+import Cookies from 'js-cookie'
 
 const Login = () => {
     const [email, setEmail] = useState('')
@@ -35,12 +36,18 @@ const Login = () => {
                 password,
             })
 
-            // If login is successful, you can store the user session (Laravel will handle this)
-            // For example, you could store user info in localStorage or context if needed
+            // If login is successful, store session in a cookie
+            Cookies.set('session_token', response.data.session_token, {
+                expires: 1, // Cookie expires in 1 day
+                secure: true, // Ensure it's only sent over HTTPS
+                sameSite: 'Strict', // Prevent cross-site attacks
+            })
+
+            // Store user info in localStorage if needed
             localStorage.setItem('user', JSON.stringify(response.data.user))
 
             // Redirect the user after successful login
-            navigate('/dashboard') // Adjust the route accordingly
+            navigate('/dashboard')
         } catch (err) {
             setLoading(false)
             const message =
