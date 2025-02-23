@@ -11,8 +11,9 @@ return new class extends Migration
         Schema::create('modules', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->text('description');
-            $table->string('image_path')->nullable(); // Store the image path
+            $table->text('description')->nullable();
+            $table->string('image_path')->nullable();
+            $table->string('file_path')->nullable();
             $table->timestamps();
         });
     }
@@ -22,4 +23,3 @@ return new class extends Migration
         Schema::dropIfExists('modules');
     }
 };
-

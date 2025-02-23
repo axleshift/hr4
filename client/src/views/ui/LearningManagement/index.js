@@ -184,11 +184,8 @@ const LMS = () => {
                                     <CCard>
                                         <CCardImage
                                             orientation="top"
-                                            src={
-                                                module.image
-                                                    ? `data:image/jpeg;base64,${module.image}` // Display Base64 image
-                                                    : ReactImg
-                                            }
+                                            src={`http://localhost:8000/storage/${module.image_path}`}
+                                            onError={(e) => (e.target.src = ReactImg)}
                                         />
 
                                         <CCardBody>

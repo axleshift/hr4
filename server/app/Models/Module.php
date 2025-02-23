@@ -13,11 +13,6 @@ class Module extends Model
         'title',
         'description',
         'image_path',
+        'file_path',
     ];
-
-    // Define the relationship with File
-    public function files()
-    {
-        return $this->hasMany(File::class);
-    }
 }
