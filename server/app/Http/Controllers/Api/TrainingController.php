@@ -24,9 +24,9 @@ class TrainingController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'training_class' => 'required|string|max:255',
-            'agenda' => 'required|string|max:255',
-            'location' => 'required|string|max:255',
+            'event_title' => 'required|string|max:255',
+            'delivery_method' => 'required|string|max:255',
+            'event_location' => 'required|string|max:255',
             'schedule' => 'required|date',
             'start_time' => 'required|string',
             'end_time' => 'required|string',
@@ -40,9 +40,9 @@ class TrainingController extends Controller
     {
         $post = Training::findOrFail($id);
         $validated = $request->validate([
-            'training_class' => 'sometimes|required|string|max:255',
-            'agenda' => 'sometimes|required|string|max:255',
-            'location' => 'sometimes|required|string|max:255',
+            'event_title' => 'sometimes|required|string|max:255',
+            'delivery_method' => 'sometimes|required|string|max:255',
+            'event_location' => 'sometimes|required|string|max:255',
             'schedule' => 'sometimes|required|date',
             'start_time' => 'sometimes|required|time',
             'end_time' => 'sometimes|required|time',

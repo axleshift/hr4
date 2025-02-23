@@ -75,9 +75,11 @@ const Dashboard = () => {
                                     pendingTrainings.map((training) => (
                                         <CTableRow key={training.id}>
                                             <CTableHeaderCell>
-                                                {training.training_class}
+                                                {training.event_title}
                                             </CTableHeaderCell>
-                                            <CTableHeaderCell>{training.agenda}</CTableHeaderCell>
+                                            <CTableHeaderCell>
+                                                {training.delivery_method}
+                                            </CTableHeaderCell>
                                             <CTableHeaderCell>{training.schedule}</CTableHeaderCell>
                                             <CTableHeaderCell>
                                                 {training.start_time}

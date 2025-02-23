@@ -10,9 +10,9 @@ class training extends Model
     use HasFactory;
 
     protected $fillable = [
-        'training_class',
-        'agenda',
-        'location',
+        'event_title',
+        'delivery_method',
+        'event_location',
         'schedule',
         'start_time',
         'end_time',

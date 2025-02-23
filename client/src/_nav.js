@@ -49,8 +49,13 @@ const _nav = [
         items: [
             {
                 component: CNavItem,
+                name: 'Programs',
+                to: '/ui/TrainingManagement/Programs',
+            },
+            {
+                component: CNavItem,
                 name: 'Schedule',
-                to: '/ui/TrainingManagement',
+                to: '/ui/TrainingManagement/Schedule',
             },
         ],
     },

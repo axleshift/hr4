@@ -23,13 +23,13 @@ import {
 } from '@coreui/react'
 import axios from 'axios'
 
-const TrainingDelivery = () => {
+const TrainingSchedule = () => {
     const [visibleXL, setVisibleXL] = useState(false)
     const [trainings, setTrainings] = useState([])
     const [formData, setFormData] = useState({
-        training_class: '',
-        agenda: '',
-        location: '',
+        event_title: '',
+        delivery_method: '',
+        event_location: '',
         schedule: '',
         start_time: '',
         end_time: '',
@@ -61,9 +61,9 @@ const TrainingDelivery = () => {
             setVisibleXL(false)
             fetchTrainings()
             setFormData({
-                training_class: '',
-                agenda: '',
-                location: '',
+                event_title: '',
+                delivery_method: '',
+                event_location: '',
                 schedule: '',
                 start_time: '',
                 end_time: '',
@@ -75,11 +75,12 @@ const TrainingDelivery = () => {
     // FILTER
     const uniqueTrainingClasses = trainings.filter(
         (training, index, self) =>
-            index === self.findIndex((t) => t.training_class === training.training_class),
+            index === self.findIndex((t) => t.event_title === training.event_title),
     )
 
-    const uniqueAgenda = trainings.filter(
-        (agenda, index, self) => index === self.findIndex((a) => a.agenda === agenda.agenda),
+    const uniqueDelivery_method = trainings.filter(
+        (delivery_method, index, self) =>
+            index === self.findIndex((a) => a.delivery_method === delivery_method.delivery_method),
     )
     // DATE TIME
     const getTrainingStatus = (scheduleDate, startTime, endTime) => {
@@ -132,14 +133,14 @@ const TrainingDelivery = () => {
                                 </CModalHeader>
                                 <CModalBody>
                                     <CForm onSubmit={handleSubmit}>
-                                        <CFormLabel htmlFor="training_class">
+                                        <CFormLabel htmlFor="event_title">
                                             Training Class
                                         </CFormLabel>
                                         <CFormInput
                                             type="text"
-                                            id="training_class"
-                                            name="training_class"
-                                            value={formData.training_class}
+                                            id="event_title"
+                                            name="event_title"
+                                            value={formData.event_title}
                                             onChange={handleInputChange}
                                             required
                                         />
@@ -153,47 +154,52 @@ const TrainingDelivery = () => {
                                                     onClick={() =>
                                                         setFormData({
                                                             ...formData,
-                                                            training_class: training.training_class,
+                                                            event_title: training.event_title,
                                                         })
                                                     }
                                                 >
-                                                    {training.training_class}
+                                                    {training.event_title}
                                                 </CButton>
                                             ))}
                                         </div>
-                                        <CFormLabel htmlFor="agenda">Type of Agenda</CFormLabel>
+                                        <CFormLabel htmlFor="delivery_method">
+                                            Type of Delivery Method
+                                        </CFormLabel>
                                         <CFormInput
                                             type="text"
-                                            id="agenda"
-                                            name="agenda"
-                                            value={formData.agenda}
+                                            id="delivery_method"
+                                            name="delivery_method"
+                                            value={formData.delivery_method}
                                             onChange={handleInputChange}
                                             required
                                         />
                                         <div>
-                                            {uniqueAgenda.map((agenda) => (
+                                            {uniqueDelivery_method.map((delivery_method) => (
                                                 <CButton
-                                                    key={agenda.id}
+                                                    key={delivery_method.id}
                                                     color="secondary"
                                                     variant="outline"
                                                     className="me-2"
                                                     onClick={() =>
                                                         setFormData({
                                                             ...formData,
-                                                            agenda: agenda.agenda,
+                                                            delivery_method:
+                                                                delivery_method.delivery_method,
                                                         })
                                                     }
                                                 >
-                                                    {agenda.agenda}
+                                                    {delivery_method.delivery_method}
                                                 </CButton>
                                             ))}
                                         </div>
-                                        <CFormLabel htmlFor="location">Location / Mode</CFormLabel>
+                                        <CFormLabel htmlFor="event_location">
+                                            event_location / Mode
+                                        </CFormLabel>
                                         <CFormInput
                                             type="text"
-                                            id="location"
-                                            name="location"
-                                            value={formData.location}
+                                            id="event_location"
+                                            name="event_location"
+                                            value={formData.event_location}
                                             onChange={handleInputChange}
                                             required
                                         />
@@ -245,8 +251,8 @@ const TrainingDelivery = () => {
                             <CTableHead>
                                 <CTableRow>
                                     <CTableHeaderCell>Training Class</CTableHeaderCell>
-                                    <CTableHeaderCell>Agenda</CTableHeaderCell>
-                                    <CTableHeaderCell>Location</CTableHeaderCell>
+                                    <CTableHeaderCell>Delivery Method</CTableHeaderCell>
+                                    <CTableHeaderCell>Event Location</CTableHeaderCell>
                                     <CTableHeaderCell>Schedule</CTableHeaderCell>
                                     <CTableHeaderCell>Start Time</CTableHeaderCell>
                                     <CTableHeaderCell>End Time</CTableHeaderCell>
@@ -258,11 +264,13 @@ const TrainingDelivery = () => {
                             <CTableBody>
                                 {trainings.map((training) => (
                                     <CTableRow key={training.id}>
+                                        <CTableHeaderCell>{training.event_title}</CTableHeaderCell>
                                         <CTableHeaderCell>
-                                            {training.training_class}
+                                            {training.delivery_method}
                                         </CTableHeaderCell>
-                                        <CTableHeaderCell>{training.agenda}</CTableHeaderCell>
-                                        <CTableHeaderCell>{training.location}</CTableHeaderCell>
+                                        <CTableHeaderCell>
+                                            {training.event_location}
+                                        </CTableHeaderCell>
                                         <CTableHeaderCell>{training.schedule}</CTableHeaderCell>
                                         <CTableHeaderCell>
                                             {formatTime(training.start_time)}
@@ -313,4 +321,4 @@ const TrainingDelivery = () => {
     )
 }
 
-export default TrainingDelivery
+export default TrainingSchedule

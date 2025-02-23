@@ -5,7 +5,8 @@ const Landingpage = React.lazy(() => import('./views/dashboardtest'))
 const Announcement = React.lazy(() => import('./views/crud/crudAnnouncement'))
 const LMS = React.lazy(() => import('./views/ui/LearningManagement/index'))
 const ModuleDetails = React.lazy(() => import('./views/ui/LearningManagement/Modules/index'))
-const TrainingDashboard = React.lazy(() => import('./views/ui/TrainingManagement/index'))
+const TrainingDashboard = React.lazy(() => import('./views/ui/TrainingManagement/Programs/index'))
+const TrainingShedule = React.lazy(() => import('./views/ui/TrainingManagement/Schedule/index'))
 const TalentManagement = React.lazy(() => import('./views/ui/TalentManagement/index'))
 const BudgetReports = React.lazy(() => import('./views/ui/BudgetManagement/index'))
 const TrainingEngagement = React.lazy(() => import('./views/ui/TrainingEngagement/index'))
@@ -21,9 +22,14 @@ const routes = [
     { path: '/ui/LearningManagement/index', name: 'LMS', element: LMS },
     { path: '/ui/LearningManagement/Modules/:moduleId', name: 'Module', element: ModuleDetails },
     {
-        path: '/ui/TrainingManagement',
+        path: '/ui/TrainingManagement/Programs',
         name: 'TrainingDashboard',
         element: TrainingDashboard,
+    },
+    {
+        path: '/ui/TrainingManagement/Schedule',
+        name: 'TrainingDashboard',
+        element: TrainingShedule,
     },
     { path: '/ui/TalentManagement', name: 'TalentManagement', element: TalentManagement },
     { path: '/ui/BudgetManagement', name: 'BudgetReports', element: BudgetReports },
