@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
+import React from 'react'
+import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import Cookies from 'js-cookie'
 import {
     CAvatar,
-    CBadge,
     CDropdown,
     CDropdownDivider,
     CDropdownHeader,
@@ -11,31 +11,44 @@ import {
     CDropdownMenu,
     CDropdownToggle,
 } from '@coreui/react'
-import { cilEnvelopeOpen, cilUser } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
+import { cilUser, cilEnvelopeOpen } from '@coreui/icons'
 
 import avatar8 from './../../assets/images/avatars/8.jpg'
 
-// Logout function
-const logout = async () => {
-    try {
-        // Send logout request to the backend
-        await axios.post(`${API_URL}logout`, {}, { withCredentials: true })
-
-        // Remove session token from the cookies (if set)
-        Cookies.remove('session_token')
-
-        // Clear Authorization header if it's being used
-        delete axios.defaults.headers.common['Authorization']
-
-        // Redirect user to the login page (optional)
-        window.location.href = '/login' // or use a router method like history.push('/login')
-    } catch (error) {
-        console.error('Logout error:', error)
-    }
-}
-
 const AppHeaderDropdown = () => {
+    const navigate = useNavigate() // React Router navigation hook
+
+    const handleLogout = async () => {
+        try {
+            // Retrieve session token from cookies
+            const sessionToken = Cookies.get('session_token')
+
+            // Send logout request to the API with session token in headers
+            const response = await axios.post('http://localhost:8000/api/logout', null, {
+                withCredentials: true,
+                headers: {
+                    'X-Session-Token': sessionToken, // Include session token
+                },
+            })
+
+            if (response.status === 200) {
+                console.log('Logout successful:', response.data.message)
+
+                // Remove session token and clear storage
+                Cookies.remove('session_token')
+                sessionStorage.clear()
+                localStorage.clear()
+
+                // Redirect to login page after logout
+                navigate('/login')
+            }
+        } catch (error) {
+            console.error('Logout failed:', error.response?.data || error.message)
+            alert('An error occurred during logout. Please try again.')
+        }
+    }
+
     return (
         <CDropdown variant="nav-item">
             <CDropdownToggle placement="bottom-end" className="py-0 pe-0" caret={false}>
@@ -52,12 +65,9 @@ const AppHeaderDropdown = () => {
                 <CDropdownItem href="#">
                     <CIcon icon={cilEnvelopeOpen} className="me-2" />
                     Messages
-                    <CBadge color="success" className="ms-2">
-                        42
-                    </CBadge>
                 </CDropdownItem>
                 <CDropdownDivider />
-                <CDropdownItem onClick={logout}>Logout</CDropdownItem>
+                <CDropdownItem onClick={handleLogout}>Logout</CDropdownItem>
             </CDropdownMenu>
         </CDropdown>
     )

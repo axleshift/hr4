@@ -36,17 +36,14 @@ const Login = () => {
                 password,
             })
 
-            // If login is successful, store session in a cookie
             Cookies.set('session_token', response.data.session_token, {
-                expires: 1, // Cookie expires in 1 day
-                secure: true, // Ensure it's only sent over HTTPS
-                sameSite: 'Strict', // Prevent cross-site attacks
+                expires: 1,
+                secure: true,
+                sameSite: 'Strict',
             })
 
-            // Store user info in localStorage if needed
             localStorage.setItem('user', JSON.stringify(response.data.user))
 
-            // Redirect the user after successful login
             navigate('/dashboard')
         } catch (err) {
             setLoading(false)
