@@ -13,9 +13,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->alias([
-            'verify.session' => VerifySessionToken::class,
-        ]);
+    // $middleware->alias([
+    //     'verify.session' => VerifySessionToken::class,
+    // ]);
+    $middleware->validateCsrfTokens(except: [
+        'api/*',
+    ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

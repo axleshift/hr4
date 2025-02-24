@@ -4,10 +4,12 @@ use App\Http\Controllers\Api\AnnouncementController;
 use App\Http\Controllers\Api\TrainingController;
 use App\Http\Controllers\Api\ModuleController;
 use App\Http\Controllers\Api\FileController;
-use App\Http\Controllers\Api\AuthController;
 use Illuminate\Support\Facades\Route;
 
 // Public Routes (Authentication)
+Route::get('/', function () {
+    return response()->json(['message' => 'Hello, World!']);
+});
 
 // Protected Routes (Require Session Token)
 Route::middleware(['verify.session'])->group(function () {
