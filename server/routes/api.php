@@ -10,11 +10,8 @@ Route::get('/', function () {
     return response()->json(['message' => 'Hello, World!']);
 });
 
-Route::middleware(['verify.session'])->group(function () {
     Route::apiResource('/announcement', AnnouncementController::class);
     Route::apiResource('/training', TrainingController::class);
     Route::apiResource('/modules', ModuleController::class);
     Route::apiResource('/files', FileController::class);
     Route::get('files/count', [FileController::class, 'getFileCount']);
-});
-

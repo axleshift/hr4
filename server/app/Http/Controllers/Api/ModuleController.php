@@ -13,39 +13,32 @@ class ModuleController extends Controller
     // Get all modules
     public function index()
     {
-        $modules = Module::all();
-        return ModuleResource::collection($modules);
+        return ModuleResource::collection(Module::all());
     }
 
     // Store a new module
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'title' => 'required|string|max:255|unique:modules,title',
+            'title'       => 'required|string|max:255|unique:modules,title',
             'description' => 'nullable|string',
-            'image' => 'nullable|file|mimes:jpeg,png,jpg|max:2048',
-            'file' => 'nullable|file|mimes:pdf,doc,docx|max:5120', // Accept documents up to 5MB
+            'file'        => 'nullable|file|mimes:pdf,doc,docx|max:5120',
         ]);
 
-        $imagePath = null;
         $filePath = null;
+        $fileName = null;
 
-        // Store image
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('uploads', 'public');
-        }
-
-        // Store file
         if ($request->hasFile('file')) {
-            $filePath = $request->file('file')->store('uploads', 'public');
+            $file = $request->file('file');
+            $filePath = $file->store('uploads', 'public');
+            $fileName = $file->getClientOriginalName();
         }
 
-        // Create the new module
         $module = Module::create([
-            'title' => $validated['title'],
+            'title'       => $validated['title'],
             'description' => $validated['description'] ?? '',
-            'image_path' => $imagePath,
-            'file_path' => $filePath,
+            'file_path'   => $filePath,
+            'file_name'   => $fileName, // Store the original file name
         ]);
 
         return new ModuleResource($module);
@@ -61,48 +54,51 @@ class ModuleController extends Controller
     public function update(Request $request, Module $module)
     {
         $validated = $request->validate([
-            'title' => 'sometimes|required|string|max:255|unique:modules,title,' . $module->id,
+            'title'       => 'sometimes|required|string|max:255|unique:modules,title,' . $module->id,
             'description' => 'nullable|string',
-            'image' => 'nullable|file|mimes:jpeg,png,jpg|max:2048',
-            'file' => 'nullable|file|mimes:pdf,doc,docx|max:5120',
+            'file'        => 'nullable|file|mimes:pdf,doc,docx|max:5120',
         ]);
-
-        // Handle image upload
-        if ($request->hasFile('image')) {
-            // Delete old image if exists
-            if ($module->image_path) {
-                Storage::disk('public')->delete($module->image_path);
-            }
-            $module->image_path = $request->file('image')->store('uploads', 'public');
-        }
 
         // Handle file upload
         if ($request->hasFile('file')) {
-            // Delete old file if exists
+            // Delete old file if it exists
             if ($module->file_path) {
                 Storage::disk('public')->delete($module->file_path);
             }
-            $module->file_path = $request->file('file')->store('uploads', 'public');
+
+            $file = $request->file('file');
+            $module->file_path = $file->store('uploads', 'public');
+            $module->file_name = $file->getClientOriginalName(); // Update file name
         }
 
-        $module->update($validated);
+        $module->update([
+            'title'       => $validated['title'] ?? $module->title,
+            'description' => $validated['description'] ?? $module->description,
+        ]);
 
         return new ModuleResource($module);
+    }
+
+    // Download a module file
+    public function download(Module $module)
+    {
+        if (!$module->file_path || !Storage::disk('public')->exists($module->file_path)) {
+            return response()->json(['message' => 'File not found'], 404);
+        }
+
+        return response()->download(storage_path("app/public/{$module->file_path}"), $module->file_name);
     }
 
     // Delete a module
     public function destroy(Module $module)
     {
-        // Delete stored files if they exist
-        if ($module->image_path) {
-            Storage::disk('public')->delete($module->image_path);
-        }
-
+        // Delete stored file if exists
         if ($module->file_path) {
             Storage::disk('public')->delete($module->file_path);
         }
 
         $module->delete();
+
         return response()->json(['message' => 'Module deleted successfully']);
     }
 }

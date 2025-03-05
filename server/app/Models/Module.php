@@ -12,7 +12,6 @@ class Module extends Model
     protected $fillable = [
         'title',
         'description',
-        'image_path',
         'file_path',
     ];
 }

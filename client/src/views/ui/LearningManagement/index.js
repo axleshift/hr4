@@ -5,9 +5,6 @@ import {
     CCard,
     CCardBody,
     CCardHeader,
-    CCardImage,
-    CCardText,
-    CCardTitle,
     CCol,
     CForm,
     CFormInput,
@@ -19,9 +16,14 @@ import {
     CModalHeader,
     CModalTitle,
     CRow,
+    CTable,
+    CTableBody,
+    CTableHead,
+    CTableRow,
+    CTableHeaderCell,
+    CTableDataCell,
 } from '@coreui/react'
 import { useNavigate } from 'react-router-dom'
-import ReactImg from 'src/assets/images/react.jpg'
 
 const LMS = () => {
     const navigate = useNavigate()
@@ -30,22 +32,22 @@ const LMS = () => {
     const [newModule, setNewModule] = useState({
         title: '',
         description: '',
-        image: null,
+        file: null,
     })
 
     // Fetch modules on component mount
     useEffect(() => {
-        const fetchModules = async () => {
-            try {
-                const response = await axios.get('http://localhost:8000/api/modules')
-                setModules(response.data.data) // Load modules from backend
-            } catch (error) {
-                console.error('Error fetching modules:', error)
-            }
-        }
-
         fetchModules()
     }, [])
+
+    const fetchModules = async () => {
+        try {
+            const response = await axios.get('http://localhost:8000/api/modules')
+            setModules(response.data.data)
+        } catch (error) {
+            console.error('Error fetching modules:', error)
+        }
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -53,8 +55,8 @@ const LMS = () => {
         const formData = new FormData()
         formData.append('title', newModule.title)
         formData.append('description', newModule.description)
-        if (newModule.image) {
-            formData.append('image', newModule.image) // Attach the image
+        if (newModule.file) {
+            formData.append('file', newModule.file)
         }
 
         try {
@@ -62,13 +64,10 @@ const LMS = () => {
                 headers: { 'Content-Type': 'multipart/form-data' },
             })
 
-            // Add the new module to the state
             setModules([...modules, response.data.data])
-
-            // Reset the form fields
             setVisibleXL(false)
-            setNewModule({ title: '', description: '', image: null })
-            document.getElementById('image').value = null // Clear the file input field
+            setNewModule({ title: '', description: '', file: null })
+            document.getElementById('file').value = null
         } catch (error) {
             console.error('Error adding module:', error)
         }
@@ -82,26 +81,16 @@ const LMS = () => {
         }))
     }
 
-    const handleImageChange = (e) => {
-        const { id, files } = e.target
+    const handleFileChange = (e) => {
         setNewModule((prevModule) => ({
             ...prevModule,
-            [id]: files[0],
+            file: e.target.files[0],
         }))
-    }
-
-    // Fetch module details when clicking on a module title
-    const handleTitleClick = (module) => {
-        // Navigate to the ModuleViewer page, passing both the moduleId and title in the URL state
-        navigate(`/ui/LearningManagement/Modules/${module.id}`, {
-            state: { title: module.title, moduleId: module.id }, // Pass module title and ID
-        })
     }
 
     const handleDelete = async (index) => {
         const moduleToDelete = modules[index]
         try {
-            // Send DELETE request
             await axios.delete(`http://localhost:8000/api/modules/${moduleToDelete.id}`)
             const updatedModules = modules.filter((_, i) => i !== index)
             setModules(updatedModules)
@@ -131,15 +120,13 @@ const LMS = () => {
                                     <CModalTitle>Create Module</CModalTitle>
                                 </CModalHeader>
                                 <CModalBody>
-                                    <CForm validated={true}>
+                                    <CForm>
                                         <div className="mb-3">
-                                            <CFormLabel htmlFor="image">
-                                                Input Image (Optional)
-                                            </CFormLabel>
+                                            <CFormLabel htmlFor="file">Upload File</CFormLabel>
                                             <CFormInput
                                                 type="file"
-                                                id="image"
-                                                onChange={handleImageChange}
+                                                id="file"
+                                                onChange={handleFileChange}
                                             />
                                         </div>
                                         <div className="mb-3">
@@ -178,41 +165,48 @@ const LMS = () => {
                         </div>
                     </CCardHeader>
                     <CCardBody>
-                        <CRow>
-                            {modules.map((module, index) => (
-                                <CCol xs={12} md={4} key={index} className="mb-4">
-                                    <CCard>
-                                        <CCardImage
-                                            orientation="top"
-                                            src={`http://localhost:8000/storage/${module.image_path}`}
-                                            onError={(e) => (e.target.src = ReactImg)}
-                                        />
-
-                                        <CCardBody>
-                                            <CCardTitle
-                                                style={{ cursor: 'pointer' }}
-                                                onClick={() => handleTitleClick(module)}
-                                            >
-                                                {module.title}
-                                            </CCardTitle>
-                                            <CCardText>{module.description}</CCardText>
-                                            <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-                                                <CButton color="primary" className="me-md-2">
-                                                    EDIT
-                                                </CButton>
-                                                <CButton
-                                                    color="danger"
-                                                    className="me-md-2"
-                                                    onClick={() => handleDelete(index)}
+                        <CTable striped hover>
+                            <CTableHead>
+                                <CTableRow>
+                                    <CTableHeaderCell>#</CTableHeaderCell>
+                                    <CTableHeaderCell>Title</CTableHeaderCell>
+                                    <CTableHeaderCell>Description</CTableHeaderCell>
+                                    <CTableHeaderCell>File</CTableHeaderCell>
+                                    <CTableHeaderCell>Actions</CTableHeaderCell>
+                                </CTableRow>
+                            </CTableHead>
+                            <CTableBody>
+                                {modules.map((module, index) => (
+                                    <CTableRow key={index}>
+                                        <CTableHeaderCell>{index + 1}</CTableHeaderCell>
+                                        <CTableDataCell>{module.title}</CTableDataCell>
+                                        <CTableDataCell>{module.description}</CTableDataCell>
+                                        <CTableDataCell>
+                                            {module.file_path ? (
+                                                <a
+                                                    href={`http://localhost:8000/storage/${module.file_path}`}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
                                                 >
-                                                    DELETE
-                                                </CButton>
-                                            </div>
-                                        </CCardBody>
-                                    </CCard>
-                                </CCol>
-                            ))}
-                        </CRow>
+                                                    {module.file_name}
+                                                </a>
+                                            ) : (
+                                                <span>No File</span>
+                                            )}
+                                        </CTableDataCell>
+                                        <CTableDataCell>
+                                            <CButton
+                                                color="danger"
+                                                size="sm"
+                                                onClick={() => handleDelete(index)}
+                                            >
+                                                Delete
+                                            </CButton>
+                                        </CTableDataCell>
+                                    </CTableRow>
+                                ))}
+                            </CTableBody>
+                        </CTable>
                     </CCardBody>
                 </CCard>
             </CCol>
