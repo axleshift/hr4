@@ -182,13 +182,13 @@ const LMS = () => {
                                         <CTableDataCell>{module.title}</CTableDataCell>
                                         <CTableDataCell>{module.description}</CTableDataCell>
                                         <CTableDataCell>
-                                            {module.file_path ? (
+                                            {module.file_url ? (
                                                 <a
-                                                    href={`http://localhost:8000/storage/${module.file_path}`}
+                                                    href={module.file_url}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
                                                 >
-                                                    {module.file_name}
+                                                    {module.file_name || 'Download File'}
                                                 </a>
                                             ) : (
                                                 <span>No File</span>
