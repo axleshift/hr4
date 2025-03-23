@@ -16,21 +16,17 @@ import {
     CFormInput,
     CBadge,
     CButton,
-    CToast,
-    CToastBody,
-    CToastHeader,
+    CProgress,
+    CProgressBar,
+    CWidgetStatsA,
 } from '@coreui/react'
+import { CChartBar, CChartPie } from '@coreui/react-chartjs'
 import axios from 'axios'
 
 const BudgetReports = () => {
     const [trainings, setTrainings] = useState([])
     const [filteredTrainings, setFilteredTrainings] = useState([])
     const [search, setSearch] = useState('')
-    const [toastVisible, setToastVisible] = useState(false)
-    const [selectedTraining, setSelectedTraining] = useState(null)
-
-    const conversionRate = 0.018 // Example conversion rate (₱1 = $0.018)
-    const fixedParticipants = 10 // Fixed number of participants
 
     useEffect(() => {
         fetchTrainings()
@@ -43,13 +39,14 @@ const BudgetReports = () => {
                 .filter(
                     (training) =>
                         new Date() > new Date(`${training.schedule}T${training.end_time}`),
-                ) // Filter for completed trainings
+                )
                 .map((training) => ({
                     ...training,
                     cost_per_session:
-                        training.cost_per_session || Math.floor(Math.random() * 500) + 100, // Random example cost
-                    num_trainees: fixedParticipants, // Fixed number of trainees
-                    training_hours: training.training_hours || 10, // Example number of hours
+                        training.cost_per_session || Math.floor(Math.random() * 500) + 100,
+                    actual_cost: training.actual_cost || Math.floor(Math.random() * 700) + 200,
+                    budget: training.budget || 1000,
+                    roi: ((training.budget - training.actual_cost) / training.budget) * 100,
                 }))
             setTrainings(completedTrainings)
             setFilteredTrainings(completedTrainings)
@@ -70,31 +67,36 @@ const BudgetReports = () => {
         )
     }
 
-    const getRecommendation = (cost) => {
-        if (cost < 200) return { label: 'Low Priority', color: 'success' }
-        if (cost >= 200 && cost <= 400) return { label: 'Review', color: 'warning' }
-        return { label: 'High Spend', color: 'danger' }
-    }
-
-    const handleViewDetails = (training) => {
-        // Compute additional metrics
-        const costPerTrainee = (training.cost_per_session / fixedParticipants).toFixed(2)
-        const trainingHoursPerCost = (training.training_hours / training.cost_per_session).toFixed(
-            2,
-        )
-        const totalTrainingBudget = training.cost_per_session * fixedParticipants
-
-        setSelectedTraining({
-            ...training,
-            costPerTrainee,
-            trainingHoursPerCost,
-            totalTrainingBudget,
-        })
-        setToastVisible(true)
-    }
-
     return (
         <CRow>
+            {/* Dashboard Metrics */}
+            <CCol xs={12} md={6} lg={3}>
+                <CWidgetStatsA
+                    className="mb-4"
+                    color="primary"
+                    value={`₱${trainings.reduce((sum, t) => sum + t.budget, 0).toLocaleString()}`}
+                    title="Total Training Budget"
+                />
+            </CCol>
+            <CCol xs={12} md={6} lg={3}>
+                <CWidgetStatsA
+                    className="mb-4"
+                    color="danger"
+                    value={`₱${trainings.reduce((sum, t) => sum + t.actual_cost, 0).toLocaleString()}`}
+                    title="Total Actual Cost"
+                />
+            </CCol>
+            <CCol xs={12} md={6} lg={3}>
+                <CWidgetStatsA
+                    className="mb-4"
+                    color="success"
+                    value={`${(
+                        trainings.reduce((sum, t) => sum + t.roi, 0) / trainings.length
+                    ).toFixed(2)}%`}
+                    title="Average Training ROI"
+                />
+            </CCol>
+
             <CCol xs={12}>
                 <CCard>
                     <CCardHeader>
@@ -118,86 +120,104 @@ const BudgetReports = () => {
                                     <CTableHeaderCell>#</CTableHeaderCell>
                                     <CTableHeaderCell>Training Class</CTableHeaderCell>
                                     <CTableHeaderCell>Agenda</CTableHeaderCell>
-                                    <CTableHeaderCell>Recommendation</CTableHeaderCell>
-                                    <CTableHeaderCell>Actions</CTableHeaderCell>
+                                    <CTableHeaderCell>Budget</CTableHeaderCell>
+                                    <CTableHeaderCell>Actual Cost</CTableHeaderCell>
+                                    <CTableHeaderCell>Budget Utilization</CTableHeaderCell>
+                                    <CTableHeaderCell>ROI</CTableHeaderCell>
                                 </CTableRow>
                             </CTableHead>
                             <CTableBody>
-                                {filteredTrainings.map((training, index) => {
-                                    return (
-                                        <CTableRow key={training.id}>
-                                            <CTableDataCell>{index + 1}</CTableDataCell>
-                                            <CTableDataCell>
-                                                {training.training_class}
-                                            </CTableDataCell>
-                                            <CTableDataCell>{training.agenda}</CTableDataCell>
-                                            <CTableDataCell>
-                                                <CBadge
-                                                    color={
-                                                        getRecommendation(training.cost_per_session)
-                                                            .color
+                                {filteredTrainings.map((training, index) => (
+                                    <CTableRow key={training.id}>
+                                        <CTableDataCell>{index + 1}</CTableDataCell>
+                                        <CTableDataCell>{training.training_class}</CTableDataCell>
+                                        <CTableDataCell>{training.agenda}</CTableDataCell>
+                                        <CTableDataCell>
+                                            ₱{training.budget.toLocaleString()}
+                                        </CTableDataCell>
+                                        <CTableDataCell>
+                                            ₱{training.actual_cost.toLocaleString()}
+                                        </CTableDataCell>
+                                        <CTableDataCell>
+                                            <CProgress className="mt-2">
+                                                <CProgressBar
+                                                    value={
+                                                        (training.actual_cost / training.budget) *
+                                                        100
                                                     }
-                                                    className="ms-2"
-                                                >
-                                                    {
-                                                        getRecommendation(training.cost_per_session)
-                                                            .label
-                                                    }
-                                                </CBadge>
-                                            </CTableDataCell>
-                                            <CTableDataCell>
-                                                <CButton
                                                     color="info"
-                                                    onClick={() => handleViewDetails(training)}
                                                 >
-                                                    View Details
-                                                </CButton>
-                                            </CTableDataCell>
-                                        </CTableRow>
-                                    )
-                                })}
+                                                    {(
+                                                        (training.actual_cost / training.budget) *
+                                                        100
+                                                    ).toFixed(2)}
+                                                    %
+                                                </CProgressBar>
+                                            </CProgress>
+                                        </CTableDataCell>
+                                        <CTableDataCell>
+                                            <CBadge
+                                                color={training.roi >= 0 ? 'success' : 'danger'}
+                                            >
+                                                {training.roi.toFixed(2)}%
+                                            </CBadge>
+                                        </CTableDataCell>
+                                    </CTableRow>
+                                ))}
                             </CTableBody>
                         </CTable>
 
-                        {/* Toast Component for displaying details */}
-                        {selectedTraining && (
-                            <CToast
-                                visible={toastVisible}
-                                onClose={() => setToastVisible(false)}
-                                autohide={true}
-                                color="light"
-                                style={{
-                                    position: 'absolute',
-                                    top: '50%',
-                                    left: '50%',
-                                    transform: 'translate(-50%, -50%)',
-                                    minWidth: '300px',
-                                    maxWidth: '400px',
-                                }}
-                            >
-                                <CToastHeader>
-                                    <strong className="me-auto">Training Details</strong>
-                                    <small>Just Now</small>
-                                </CToastHeader>
-                                <CToastBody>
-                                    <strong>Training Class:</strong>{' '}
-                                    {selectedTraining.training_class} <br />
-                                    <strong>Agenda:</strong> {selectedTraining.agenda} <br />
-                                    <strong>Cost per Session (₱):</strong>{' '}
-                                    {selectedTraining.cost_per_session} <br />
-                                    <strong>Cost per Trainee (₱):</strong>{' '}
-                                    {selectedTraining.costPerTrainee} <br />
-                                    <strong>Training Hours:</strong>{' '}
-                                    {selectedTraining.training_hours} <br />
-                                    <strong>Training Hours per Cost:</strong>{' '}
-                                    {selectedTraining.trainingHoursPerCost} <br />
-                                    <strong>Total Training Budget (₱):</strong>{' '}
-                                    {selectedTraining.totalTrainingBudget.toLocaleString()} <br />
-                                    <strong>Number of Participants:</strong> {fixedParticipants}{' '}
-                                    <br />
-                                </CToastBody>
-                            </CToast>
-                        )}
+                        {/* Charts */}
+                        <CRow className="mt-4">
+                            <CCol md={6}>
+                                <CCard>
+                                    <CCardHeader>Budget vs Actual Cost</CCardHeader>
+                                    <CCardBody>
+                                        <CChartBar
+                                            data={{
+                                                labels: trainings.map((t) => t.training_class),
+                                                datasets: [
+                                                    {
+                                                        label: 'Budget',
+                                                        backgroundColor: '#007bff',
+                                                        data: trainings.map((t) => t.budget),
+                                                    },
+                                                    {
+                                                        label: 'Actual Cost',
+                                                        backgroundColor: '#dc3545',
+                                                        data: trainings.map((t) => t.actual_cost),
+                                                    },
+                                                ],
+                                            }}
+                                        />
+                                    </CCardBody>
+                                </CCard>
+                            </CCol>
+
+                            <CCol md={6}>
+                                <CCard>
+                                    <CCardHeader>Training ROI by Program</CCardHeader>
+                                    <CCardBody>
+                                        <CChartPie
+                                            data={{
+                                                labels: trainings.map((t) => t.training_class),
+                                                datasets: [
+                                                    {
+                                                        data: trainings.map((t) => Math.abs(t.roi)),
+                                                        backgroundColor: [
+                                                            '#28a745',
+                                                            '#dc3545',
+                                                            '#ffc107',
+                                                            '#17a2b8',
+                                                        ],
+                                                    },
+                                                ],
+                                            }}
+                                        />
+                                    </CCardBody>
+                                </CCard>
+                            </CCol>
+                        </CRow>
                     </CCardBody>
                 </CCard>
             </CCol>

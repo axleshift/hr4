@@ -19,10 +19,29 @@ return new class extends Migration
             $table->string('end_time');
             $table->timestamps();
         });
+
+        Schema::create('programs', function (Blueprint $table) {
+            $table->id();
+            $table->string('title');
+            $table->text('description');
+            $table->timestamps();
+        });
+
+        Schema::create('courses', function (Blueprint $table) {
+            $table->id();
+            $table->string('title');
+            $table->text('description');
+            $table->string('duration');
+            $table->foreignId('program_id')->constrained('programs')->onDelete('cascade'); // Foreign Key
+            $table->timestamps();
+        });
+        
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('training');
+        Schema::dropIfExists('trainings');
+        Schema::dropIfExists('programs');
+        Schema::dropIfExists('courses');
     }
 };

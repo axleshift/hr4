@@ -8,6 +8,7 @@ const ModuleDetails = React.lazy(() => import('./views/ui/LearningManagement/Mod
 const TrainingDashboard = React.lazy(() => import('./views/ui/TrainingManagement/Programs/index'))
 const TrainingShedule = React.lazy(() => import('./views/ui/TrainingManagement/Schedule/index'))
 const TalentManagement = React.lazy(() => import('./views/ui/TalentManagement/index'))
+const EmployeeManagement = React.lazy(() => import('./views/ui/EmployeeManagement/index'))
 const BudgetReports = React.lazy(() => import('./views/ui/BudgetManagement/index'))
 const TrainingEngagement = React.lazy(() => import('./views/ui/TrainingEngagement/index'))
 
@@ -32,6 +33,7 @@ const routes = [
         element: TrainingShedule,
     },
     { path: '/ui/TalentManagement', name: 'TalentManagement', element: TalentManagement },
+    { path: '/ui/EmployeeManagement', name: 'Employee', element: EmployeeManagement },
     { path: '/ui/BudgetManagement', name: 'BudgetReports', element: BudgetReports },
     { path: '/ui/TrainingEngagement', name: 'TrainingEngagement', element: TrainingEngagement },
     { path: '/widgets', name: 'Widgets', element: Widgets },

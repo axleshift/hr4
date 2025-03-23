@@ -15,9 +15,9 @@ class ModuleResource extends JsonResource
             'title'       => $this->title,
             'description' => $this->description,
             'file_name'   => $this->file_name,
-            'file_path'   => $this->file_path, // Debug: Check the stored path
-            'file_url'    => $this->file_path ? asset('storage/' . $this->file_path) : null,
+            'file_url'    => $this->file_path ? asset('storage/' . $this->file_path) : null, // Generates correct public URL
         ];
     }
+
 
 }

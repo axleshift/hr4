@@ -30,15 +30,15 @@ class ModuleController extends Controller
 
         if ($request->hasFile('file')) {
             $file = $request->file('file');
-            $filePath = $file->store('uploads', 'public');
-            $fileName = $file->getClientOriginalName();
+            $filePath = $file->store('uploads', 'public'); // Save in storage/app/public/uploads
+            $fileName = $file->getClientOriginalName(); // Get original name
         }
 
         $module = Module::create([
             'title'       => $validated['title'],
             'description' => $validated['description'] ?? '',
-            'file_path'   => $filePath,
-            'file_name'   => $fileName, // Store the original file name
+            'file_path'   => $filePath, // Store correct file path
+            'file_name'   => $fileName, // Store original file name
         ]);
 
         return new ModuleResource($module);
@@ -101,4 +101,37 @@ class ModuleController extends Controller
 
         return response()->json(['message' => 'Module deleted successfully']);
     }
+
+    public function listFiles()
+    {
+        $files = Storage::files('public/upload'); // Get all files in storage/app/public/upload
+
+        $fileList = array_map(function ($file) {
+            return [
+                'name' => basename($file),
+                'url' => Storage::url($file), // Generates a public URL
+            ];
+        }, $files);
+
+        return response()->json(['data' => $fileList]);
+    }
+
+    public function preview(Module $module)
+{
+    if (!$module->file_path || !Storage::disk('public')->exists($module->file_path)) {
+        return response()->json(['message' => 'File not found'], 404);
+    }
+
+    // Get file path and MIME type
+    $filePath = storage_path("app/public/{$module->file_path}");
+    $mimeType = Storage::mimeType("public/{$module->file_path}");
+
+    // Return file as response with inline display
+    return response()->file($filePath, [
+        'Content-Type' => $mimeType,
+        'Content-Disposition' => 'inline; filename="' . $module->file_name . '"',
+    ]);
+}
+
+
 }

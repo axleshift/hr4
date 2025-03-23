@@ -1,38 +1,52 @@
 <?php
+
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use App\Models\User;
 
 class AuthController extends Controller
 {
     public function login(Request $request)
     {
-        $credentials = $request->only('email', 'password');
- 
+        $credentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            $sessionId = $request->session()->getId();
+            $user = Auth::user();
+
             return response()->json([
-                'message' => 'Login successful',
-                'user' => Auth::user(),
-                'session_id' => $sessionId
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'role' => $user->role->name ?? 'No Role',
+                ],
+                'session_id' => $request->session()->getId(),
             ]);
         }
 
-        return response()->json(['message' => 'Login failed'], 401);
+        return response()->json(['message' => 'Invalid credentials'], 401);
     }
 
     public function verifySession(Request $request)
     {
-        $sessionId = $request->input('session_id');
+        if (Auth::check()) {
+            $user = Auth::user();
 
-        if (Session::getId() === $sessionId && Auth::check()) {
             return response()->json([
                 'message' => 'Session is active',
-                'user' => Auth::user()
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'role' => $user->role->name ?? 'No Role',
+                ],
             ]);
         }
 
@@ -42,7 +56,6 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         Auth::logout();
-
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 

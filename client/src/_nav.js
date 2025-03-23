@@ -75,6 +75,18 @@ const _nav = [
         icon: <CIcon icon={cilMoney} customClassName="nav-icon" />,
     },
     {
+        component: CNavGroup,
+        name: 'Employee Management',
+        icon: <CIcon icon={cilNotes} customClassName="nav-icon" />,
+        items: [
+            {
+                component: CNavItem,
+                name: 'Employee',
+                to: '/ui/EmployeeManagement',
+            },
+        ],
+    },
+    {
         component: CNavItem,
         name: 'Evaluation And Feedback',
         to: '/ui/TrainingEngagement',

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import {
     CButton,
@@ -25,33 +25,49 @@ const Login = () => {
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
 
+    useEffect(() => {
+        const checkSession = async () => {
+            try {
+                const response = await axios.post(
+                    'http://localhost:8000/api/auth/verify-session',
+                    {},
+                    { withCredentials: true } // Ensure session cookies are sent
+                );
+    
+                if (response.data.user) {
+                    navigate('/dashboard');
+                }
+            } catch (err) {
+                console.log('Session invalid or expired');
+            }
+        };
+        checkSession();
+    }, [navigate]);    
+
     const handleSubmit = async (e) => {
         e.preventDefault()
         setError('')
         setLoading(true)
 
         try {
-            const response = await axios.post('http://localhost:8000/api/auth/login', {
-                email,
-                password,
-            })
+            const response = await axios.post(
+                'http://localhost:8000/api/auth/login',
+                { email, password },
+                { withCredentials: true }, // Enables session-based authentication
+            )
 
-            Cookies.set('session_token', response.data.session_token, {
-                expires: 1,
-                secure: true,
-                sameSite: 'Strict',
-            })
+            const { user, session_id } = response.data
+            Cookies.set('session_id', session_id, { expires: 1, secure: true, sameSite: 'Strict' })
+            localStorage.setItem('user', JSON.stringify(user))
 
-            localStorage.setItem('user', JSON.stringify(response.data.user))
-
-            navigate('/dashboard')
+            if (user.role === 'admin') {
+                navigate('/ui/LearningManagement/index')
+            } else {
+                navigate('/dashboard')
+            }
         } catch (err) {
             setLoading(false)
-            const message =
-                err.response?.data?.message ||
-                (err.request ? 'No response from server. Please try again later.' : err.message) ||
-                'Login failed! Please check your credentials.'
-            setError(message)
+            setError(err.response?.data?.message || 'Login failed!')
         }
     }
 

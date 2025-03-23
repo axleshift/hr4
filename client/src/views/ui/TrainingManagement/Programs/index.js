@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
 import {
     CFormTextarea,
     CAccordion,
@@ -16,28 +17,100 @@ import {
     CModalTitle,
     CRow,
     CCol,
-    CTable,
-    CTableBody,
-    CTableHead,
-    CTableHeaderCell,
-    CTableRow,
-    CTableDataCell,
     CForm,
     CFormInput,
     CFormLabel,
+    CTable,
+    CTableBody,
+    CTableHead,
+    CTableRow,
+    CTableHeaderCell,
+    CTableDataCell,
 } from '@coreui/react'
 
 const TrainingDelivery = () => {
     const [visibleProgram, setVisibleProgram] = useState(false)
-    const [visibleTargetAudience, setVisibleTargetAudience] = useState(false)
     const [visibleCourse, setVisibleCourse] = useState(false)
+    const [programs, setPrograms] = useState([])
+    const [courses, setCourses] = useState([])
+    const [selectedProgramId, setSelectedProgramId] = useState(null) // Track selected program for course addition
+    const [programTitle, setProgramTitle] = useState('')
+    const [programDescription, setProgramDescription] = useState('')
+    const [courseTitle, setCourseTitle] = useState('')
+    const [courseDescription, setCourseDescription] = useState('')
+    const [courseDuration, setCourseDuration] = useState('')
+
+    useEffect(() => {
+        const fetchPrograms = async () => {
+            try {
+                const response = await axios.get('http://localhost:8000/api/programs')
+                setPrograms(response.data.data)
+            } catch (error) {
+                console.error('Error fetching programs:', error)
+            }
+        }
+        fetchPrograms()
+    }, [])
+
+    useEffect(() => {
+        const fetchCourses = async () => {
+            try {
+                const response = await axios.get('http://localhost:8000/api/courses')
+                console.log('Courses fetched:', response.data) // Log response to check structure
+                setCourses(response.data.data) // Ensure correct data assignment
+            } catch (error) {
+                console.error('Error fetching courses:', error)
+            }
+        }
+        fetchCourses()
+    }, [])
+
+    const handleSaveProgram = async () => {
+        try {
+            const response = await axios.post('http://localhost:8000/api/programs', {
+                title: programTitle,
+                description: programDescription,
+            })
+
+            // Extract new program data properly
+            const newProgram = response.data.data // Ensure it matches the format in state
+
+            setPrograms((prev) => [...prev, newProgram]) // Update state immediately
+
+            // Clear input fields
+            setProgramTitle('')
+            setProgramDescription('')
+
+            // Close modal
+            setVisibleProgram(false)
+        } catch (error) {
+            console.error('Error adding program:', error)
+        }
+    }
+
+    const handleSaveCourse = async () => {
+        try {
+            const response = await axios.post('http://localhost:8000/api/courses', {
+                title: courseTitle,
+                description: courseDescription,
+                duration: courseDuration,
+                program_id: selectedProgramId, // Associate course with program
+            })
+
+            console.log('Course saved:', response.data)
+            setCourses([...courses, response.data])
+            setVisibleCourse(false)
+        } catch (error) {
+            console.error('Error saving course:', error)
+        }
+    }
 
     return (
         <CRow>
             <CCol xs={12}>
                 <CCard className="mb-4">
                     <CCardHeader>
-                        <strong>List of Program</strong>
+                        <strong>List of Programs</strong>
                         <div className="d-grid gap-2 d-md-flex justify-content-md-end">
                             <CButton color="primary" onClick={() => setVisibleProgram(true)}>
                                 Add Program
@@ -46,196 +119,89 @@ const TrainingDelivery = () => {
                     </CCardHeader>
                     <CCardBody>
                         <CAccordion alwaysOpen>
-                            <CAccordionItem>
-                                <CAccordionHeader>Leadership Development Program</CAccordionHeader>
-                                <CAccordionBody>
-                                    <CRow>
-                                        <CCol xs={12}>
-                                            <CTable bordered>
-                                                <CTableHead>
-                                                    <CTableRow>
-                                                        <CTableHeaderCell>
-                                                            Program Description
-                                                        </CTableHeaderCell>
-                                                    </CTableRow>
-                                                </CTableHead>
-                                                <CTableBody>
-                                                    <CTableRow>
-                                                        <CTableDataCell>
-                                                            A program designed to enhance leadership
-                                                            skills.
-                                                        </CTableDataCell>
-                                                    </CTableRow>
-                                                </CTableBody>
-                                                <CTableHead>
-                                                    <CTableRow>
-                                                        <CTableHeaderCell>
-                                                            Program Objectives
-                                                        </CTableHeaderCell>
-                                                    </CTableRow>
-                                                </CTableHead>
-                                                <CTableBody>
-                                                    <CTableRow>
-                                                        <CTableDataCell>
-                                                            The goals or outcomes expected from the
-                                                            program
-                                                        </CTableDataCell>
-                                                    </CTableRow>
-                                                </CTableBody>
-                                            </CTable>
-                                        </CCol>
-                                    </CRow>
-                                    <CAccordion alwaysOpen className="mt-3">
-                                        <CAccordionItem>
-                                            <CAccordionHeader>Target Audience</CAccordionHeader>
-                                            <CAccordionBody>
-                                                <div className="d-grid gap-2 d-md-flex justify-content-md-end mb-2">
-                                                    <CButton
-                                                        color="primary"
-                                                        size="sm"
-                                                        onClick={() =>
-                                                            setVisibleTargetAudience(true)
-                                                        }
-                                                    >
-                                                        Add Audience
-                                                    </CButton>
-                                                </div>
-                                                <CTable bordered>
-                                                    <CTableHead>
-                                                        <CTableRow>
-                                                            <CTableHeaderCell>
-                                                                Target Audience
-                                                            </CTableHeaderCell>
-                                                        </CTableRow>
-                                                    </CTableHead>
-                                                    <CTableBody>
-                                                        <CTableRow>
+                            {programs.map((program) => (
+                                <CAccordionItem key={program.id}>
+                                    <CAccordionHeader
+                                        onClick={() => {
+                                            setSelectedProgramId(program.id) // Track the opened program
+                                        }}
+                                    >
+                                        {program.title}
+                                    </CAccordionHeader>
+                                    <CAccordionBody>
+                                        <p>
+                                            <strong>Description:</strong> {program.description}
+                                        </p>
+                                        <CButton
+                                            color="primary"
+                                            onClick={() => {
+                                                setSelectedProgramId(program.id)
+                                                setVisibleCourse(true)
+                                            }}
+                                        >
+                                            Add Course
+                                        </CButton>
+
+                                        {/* Table for Courses under the Program */}
+                                        <CTable striped className="mt-3">
+                                            <CTableHead>
+                                                <CTableRow>
+                                                    <CTableHeaderCell>Title</CTableHeaderCell>
+                                                    <CTableHeaderCell>Description</CTableHeaderCell>
+                                                    <CTableHeaderCell>Duration</CTableHeaderCell>
+                                                </CTableRow>
+                                            </CTableHead>
+                                            <CTableBody>
+                                                {courses
+                                                    .filter(
+                                                        (course) =>
+                                                            course.program_id === program.id,
+                                                    )
+                                                    .map((course) => (
+                                                        <CTableRow key={course.id}>
                                                             <CTableDataCell>
-                                                                Mid-level Managers
+                                                                {course.title}
+                                                            </CTableDataCell>
+                                                            <CTableDataCell>
+                                                                {course.description}
+                                                            </CTableDataCell>
+                                                            <CTableDataCell>
+                                                                {course.duration}
                                                             </CTableDataCell>
                                                         </CTableRow>
-                                                    </CTableBody>
-                                                </CTable>
-                                            </CAccordionBody>
-                                        </CAccordionItem>
-                                    </CAccordion>
-                                    <CAccordion alwaysOpen className="mt-3">
-                                        <CAccordionItem>
-                                            <CAccordionHeader>Courses</CAccordionHeader>
-                                            <CAccordionBody>
-                                                <strong>List of Courses</strong>
-                                                <div className="d-grid gap-2 d-md-flex justify-content-md-end mb-2">
-                                                    <CButton
-                                                        color="primary"
-                                                        size="sm"
-                                                        onClick={() => setVisibleCourse(true)}
-                                                    >
-                                                        Add Course
-                                                    </CButton>
-                                                </div>
-                                                <CAccordion alwaysOpen>
-                                                    <CAccordionItem>
-                                                        <CAccordionHeader>
-                                                            Effective Communication Skills
-                                                        </CAccordionHeader>
-                                                        <CAccordionBody>
-                                                            <CTable bordered>
-                                                                <CTableHead>
-                                                                    <CTableRow>
-                                                                        <CTableHeaderCell>
-                                                                            Course Details
-                                                                        </CTableHeaderCell>
-                                                                    </CTableRow>
-                                                                </CTableHead>
-                                                                <CTableBody>
-                                                                    <CTableRow>
-                                                                        <CTableDataCell>
-                                                                            <strong>
-                                                                                Description:
-                                                                            </strong>{' '}
-                                                                            A course to enhance
-                                                                            verbal and written
-                                                                            communication.
-                                                                        </CTableDataCell>
-                                                                    </CTableRow>
-                                                                    <CTableRow>
-                                                                        <CTableDataCell>
-                                                                            <strong>
-                                                                                Objectives:
-                                                                            </strong>{' '}
-                                                                            Improve communication
-                                                                            clarity and
-                                                                            effectiveness.
-                                                                        </CTableDataCell>
-                                                                    </CTableRow>
-                                                                    <CTableRow>
-                                                                        <CTableDataCell>
-                                                                            <strong>
-                                                                                Duration:
-                                                                            </strong>{' '}
-                                                                            3 hours
-                                                                        </CTableDataCell>
-                                                                    </CTableRow>
-                                                                    <CTableRow>
-                                                                        <CTableDataCell>
-                                                                            <strong>
-                                                                                Materials:
-                                                                            </strong>{' '}
-                                                                            Videos, PDFs, slides
-                                                                        </CTableDataCell>
-                                                                    </CTableRow>
-                                                                </CTableBody>
-                                                            </CTable>
-                                                        </CAccordionBody>
-                                                    </CAccordionItem>
-                                                </CAccordion>
-                                            </CAccordionBody>
-                                        </CAccordionItem>
-                                    </CAccordion>
-                                </CAccordionBody>
-                            </CAccordionItem>
+                                                    ))}
+                                            </CTableBody>
+                                        </CTable>
+                                    </CAccordionBody>
+                                </CAccordionItem>
+                            ))}
                         </CAccordion>
                     </CCardBody>
                 </CCard>
             </CCol>
 
-            {/*ADD PROGRAM FORM*/}
-
+            {/* Add Program Modal */}
             <CModal size="xl" visible={visibleProgram} onClose={() => setVisibleProgram(false)}>
-                <CModalHeader onClose={() => setVisibleProgram(false)}>
+                <CModalHeader>
                     <CModalTitle>Add Program</CModalTitle>
                 </CModalHeader>
                 <CModalBody>
                     <CForm>
                         <CRow className="mb-3">
                             <CCol md={12}>
-                                <CFormLabel htmlFor="programTitle">Program Title</CFormLabel>
+                                <CFormLabel>Program Title</CFormLabel>
                                 <CFormInput
-                                    type="text"
-                                    id="programTitle"
-                                    placeholder="Enter program title"
+                                    value={programTitle}
+                                    onChange={(e) => setProgramTitle(e.target.value)}
                                 />
                             </CCol>
                         </CRow>
                         <CRow className="mb-3">
                             <CCol md={12}>
-                                <CFormLabel htmlFor="programDescription">
-                                    Program Description
-                                </CFormLabel>
+                                <CFormLabel>Program Description</CFormLabel>
                                 <CFormTextarea
-                                    id="programDescription"
-                                    rows="3"
-                                    placeholder="Enter program description"
-                                />
-                            </CCol>
-                        </CRow>
-                        <CRow className="mb-3">
-                            <CCol md={12}>
-                                <CFormLabel htmlFor="programGoal">Program Goal</CFormLabel>
-                                <CFormTextarea
-                                    id="programGoal"
-                                    rows="3"
-                                    placeholder="Enter program goal"
+                                    value={programDescription}
+                                    onChange={(e) => setProgramDescription(e.target.value)}
                                 />
                             </CCol>
                         </CRow>
@@ -245,57 +211,43 @@ const TrainingDelivery = () => {
                     <CButton color="secondary" onClick={() => setVisibleProgram(false)}>
                         Close
                     </CButton>
-                    <CButton color="primary">Save Program</CButton>
+                    <CButton color="primary" onClick={handleSaveProgram}>
+                        Save Program
+                    </CButton>
                 </CModalFooter>
             </CModal>
 
-            {/*ADD COURSE FORM*/}
-
+            {/* Add Course Modal */}
             <CModal size="xl" visible={visibleCourse} onClose={() => setVisibleCourse(false)}>
-                <CModalHeader onClose={() => setVisibleCourse(false)}>
+                <CModalHeader>
                     <CModalTitle>Add Course</CModalTitle>
                 </CModalHeader>
                 <CModalBody>
                     <CForm>
                         <CRow className="mb-3">
                             <CCol md={12}>
-                                <CFormLabel htmlFor="programTitle">Course Title</CFormLabel>
+                                <CFormLabel>Course Title</CFormLabel>
                                 <CFormInput
-                                    type="text"
-                                    id="programTitle"
-                                    placeholder="Enter course title"
+                                    value={courseTitle}
+                                    onChange={(e) => setCourseTitle(e.target.value)}
                                 />
                             </CCol>
                         </CRow>
                         <CRow className="mb-3">
                             <CCol md={12}>
-                                <CFormLabel htmlFor="programDescription">
-                                    Course Description
-                                </CFormLabel>
+                                <CFormLabel>Course Description</CFormLabel>
                                 <CFormTextarea
-                                    id="programDescription"
-                                    rows="3"
-                                    placeholder="Enter course description"
+                                    value={courseDescription}
+                                    onChange={(e) => setCourseDescription(e.target.value)}
                                 />
                             </CCol>
                         </CRow>
                         <CRow className="mb-3">
                             <CCol md={12}>
-                                <CFormLabel htmlFor="programGoal">Course Goal</CFormLabel>
-                                <CFormTextarea
-                                    id="programGoal"
-                                    rows="3"
-                                    placeholder="Enter course goal"
-                                />
-                            </CCol>
-                        </CRow>
-                        <CRow className="mb-3">
-                            <CCol md={12}>
-                                <CFormLabel htmlFor="programGoal">Course Goal</CFormLabel>
-                                <CFormTextarea
-                                    id="programGoal"
-                                    rows="3"
-                                    placeholder="Enter course goal"
+                                <CFormLabel>Course Duration</CFormLabel>
+                                <CFormInput
+                                    value={courseDuration}
+                                    onChange={(e) => setCourseDuration(e.target.value)}
                                 />
                             </CCol>
                         </CRow>
@@ -305,7 +257,9 @@ const TrainingDelivery = () => {
                     <CButton color="secondary" onClick={() => setVisibleCourse(false)}>
                         Close
                     </CButton>
-                    <CButton color="primary">Save Program</CButton>
+                    <CButton color="primary" onClick={handleSaveCourse}>
+                        Save Course
+                    </CButton>
                 </CModalFooter>
             </CModal>
         </CRow>

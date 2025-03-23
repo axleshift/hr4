@@ -1,101 +1,155 @@
 import React, { useState, useEffect } from 'react'
+import axios from 'axios'
+import DocViewer, { DocViewerRenderers } from 'react-doc-viewer'
 import {
+    CButton,
     CCard,
     CCardBody,
     CCardHeader,
-    CListGroup,
-    CListGroupItem,
-    CButton,
+    CCol,
+    CRow,
+    CTable,
+    CTableBody,
+    CTableHead,
+    CTableRow,
+    CTableHeaderCell,
+    CTableDataCell,
     CSpinner,
+    CAlert,
 } from '@coreui/react'
-import axios from 'axios'
 
 const ModuleList = () => {
     const [modules, setModules] = useState([])
-    const [loading, setLoading] = useState(true)
-    const [selectedModule, setSelectedModule] = useState(null) // Store selected module
+    const [files, setFiles] = useState([])
+    const [docContent, setDocContent] = useState(null)
 
     useEffect(() => {
         fetchModules()
+        fetchFiles()
     }, [])
 
     const fetchModules = async () => {
         try {
             const response = await axios.get('http://localhost:8000/api/modules')
-            setModules(response.data.data) // Adjust based on API response structure
+            setModules(response.data.data)
         } catch (error) {
             console.error('Error fetching modules:', error)
-        } finally {
-            setLoading(false)
         }
     }
 
-    const viewModule = (module) => {
-        if (selectedModule?.id === module.id) {
-            setSelectedModule(null) // Hide file preview if same module is clicked again
-        } else {
-            setSelectedModule(module)
+    const fetchFiles = async () => {
+        try {
+            const response = await axios.get('http://localhost:8000/api/modules') // Use 'modules' instead of 'files'
+            setFiles(response.data.data) // Ensure this matches the API response structure
+        } catch (error) {
+            console.error(
+                'Error fetching files:',
+                error.response ? error.response.data : error.message,
+            )
         }
+    }
+
+    // Function to display DOCX using React-Doc-Viewer
+    const fetchDocxContent = (fileUrl) => {
+        if (!fileUrl) {
+            console.error('File URL is missing.')
+            return
+        }
+
+        setDocContent([{ uri: `${window.location.origin}${fileUrl}` }])
     }
 
     return (
-        <CCard>
-            <CCardHeader>
-                <h2>Modules List</h2>
-            </CCardHeader>
-            <CCardBody>
-                {loading ? (
-                    <CSpinner color="primary" />
-                ) : (
-                    <CListGroup>
-                        {modules.length > 0 ? (
-                            modules.map((module) => (
-                                <CListGroupItem
-                                    key={module.id}
-                                    className="d-flex justify-content-between align-items-center"
-                                >
-                                    <span>{module.title}</span>
-                                    <CButton color="info" onClick={() => viewModule(module)}>
-                                        {selectedModule?.id === module.id ? 'Hide' : 'View'}
-                                    </CButton>
-                                </CListGroupItem>
-                            ))
-                        ) : (
-                            <CListGroupItem>No modules available</CListGroupItem>
-                        )}
-                    </CListGroup>
-                )}
-            </CCardBody>
+        <CRow>
+            <CCol xs={12}>
+                <CCard className="mb-4">
+                    <CCardHeader>
+                        <strong>MODULES</strong>
+                    </CCardHeader>
+                    <CCardBody>
+                        <CTable striped hover>
+                            <CTableHead>
+                                <CTableRow>
+                                    <CTableHeaderCell>#</CTableHeaderCell>
+                                    <CTableHeaderCell>Title</CTableHeaderCell>
+                                    <CTableHeaderCell>Description</CTableHeaderCell>
+                                    <CTableHeaderCell>Actions</CTableHeaderCell>
+                                </CTableRow>
+                            </CTableHead>
+                            <CTableBody>
+                                {modules.map((module, index) => (
+                                    <CTableRow key={index}>
+                                        <CTableHeaderCell>{index + 1}</CTableHeaderCell>
+                                        <CTableDataCell>{module.title}</CTableDataCell>
+                                        <CTableDataCell>{module.description}</CTableDataCell>
+                                        <CTableDataCell>
+                                            {module.file_url?.endsWith('.docx') && (
+                                                <CButton
+                                                    color="info"
+                                                    onClick={() =>
+                                                        fetchDocxContent(module.file_url)
+                                                    }
+                                                >
+                                                    View
+                                                </CButton>
+                                            )}
+                                        </CTableDataCell>
+                                    </CTableRow>
+                                ))}
+                            </CTableBody>
+                        </CTable>
 
-            {/* File Viewer Below */}
-            {selectedModule && (
-                <CCardBody>
-                    <h4>{selectedModule.title}</h4>
-                    {selectedModule.file_url ? (
-                        <>
-                            {selectedModule.file_url.endsWith('.pdf') ? (
-                                <iframe
-                                    src={selectedModule.file_url}
-                                    width="100%"
-                                    height="500px"
-                                    style={{ border: '1px solid #ddd' }}
-                                />
-                            ) : (
-                                <a
-                                    href={selectedModule.file_url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    Download {selectedModule.file_name}
-                                </a>
-                            )}
-                        </>
-                    ) : (
-                        <p>No file available.</p>
-                    )}
-                </CCardBody>
-            )}
-        </CCard>
+                        {docContent && (
+                            <CCard className="mt-4">
+                                <CCardHeader>
+                                    <h3>Document Preview</h3>
+                                </CCardHeader>
+                                <CCardBody>
+                                    <DocViewer
+                                        documents={docContent}
+                                        pluginRenderers={DocViewerRenderers}
+                                    />
+                                </CCardBody>
+                            </CCard>
+                        )}
+                    </CCardBody>
+                </CCard>
+
+                <CCard className="mt-4">
+                    <CCardHeader>
+                        <strong>STORAGE FILES</strong>
+                    </CCardHeader>
+                    <CCardBody>
+                        <CTable striped hover>
+                            <CTableHead>
+                                <CTableRow>
+                                    <CTableHeaderCell>#</CTableHeaderCell>
+                                    <CTableHeaderCell>File Name</CTableHeaderCell>
+                                    <CTableHeaderCell>Actions</CTableHeaderCell>
+                                </CTableRow>
+                            </CTableHead>
+                            <CTableBody>
+                                {files.map((file, index) => (
+                                    <CTableRow key={index}>
+                                        <CTableHeaderCell>{index + 1}</CTableHeaderCell>
+                                        <CTableDataCell>{file.file_name}</CTableDataCell>
+                                        <CTableDataCell>
+                                            <CButton
+                                                color="primary"
+                                                href={file.file_url}
+                                                target="_blank"
+                                            >
+                                                Download
+                                            </CButton>
+                                        </CTableDataCell>
+                                    </CTableRow>
+                                ))}
+                            </CTableBody>
+                        </CTable>
+                    </CCardBody>
+                </CCard>
+            </CCol>
+        </CRow>
     )
 }
 

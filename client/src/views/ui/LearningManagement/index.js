@@ -23,10 +23,8 @@ import {
     CTableHeaderCell,
     CTableDataCell,
 } from '@coreui/react'
-import { useNavigate } from 'react-router-dom'
 
 const LMS = () => {
-    const navigate = useNavigate()
     const [visibleXL, setVisibleXL] = useState(false)
     const [modules, setModules] = useState([])
     const [newModule, setNewModule] = useState({
@@ -64,10 +62,9 @@ const LMS = () => {
                 headers: { 'Content-Type': 'multipart/form-data' },
             })
 
-            setModules([...modules, response.data.data])
+            setModules((prevModules) => [...prevModules, response.data.data])
             setVisibleXL(false)
             setNewModule({ title: '', description: '', file: null })
-            document.getElementById('file').value = null
         } catch (error) {
             console.error('Error adding module:', error)
         }
@@ -88,12 +85,10 @@ const LMS = () => {
         }))
     }
 
-    const handleDelete = async (index) => {
-        const moduleToDelete = modules[index]
+    const handleDelete = async (id) => {
         try {
-            await axios.delete(`http://localhost:8000/api/modules/${moduleToDelete.id}`)
-            const updatedModules = modules.filter((_, i) => i !== index)
-            setModules(updatedModules)
+            await axios.delete(`http://localhost:8000/api/modules/${id}`)
+            setModules((prevModules) => prevModules.filter((module) => module.id !== id))
         } catch (error) {
             console.error('Error deleting module:', error)
         }
@@ -176,35 +171,43 @@ const LMS = () => {
                                 </CTableRow>
                             </CTableHead>
                             <CTableBody>
-                                {modules.map((module, index) => (
-                                    <CTableRow key={index}>
-                                        <CTableHeaderCell>{index + 1}</CTableHeaderCell>
-                                        <CTableDataCell>{module.title}</CTableDataCell>
-                                        <CTableDataCell>{module.description}</CTableDataCell>
-                                        <CTableDataCell>
-                                            {module.file_url ? (
-                                                <a
-                                                    href={module.file_url}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
+                                {modules.length > 0 ? (
+                                    modules.map((module, index) => (
+                                        <CTableRow key={module.id}>
+                                            <CTableHeaderCell>{index + 1}</CTableHeaderCell>
+                                            <CTableDataCell>{module.title}</CTableDataCell>
+                                            <CTableDataCell>{module.description}</CTableDataCell>
+                                            <CTableDataCell>
+                                                {module.file_url ? (
+                                                    <a
+                                                        href={module.file_url}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                    >
+                                                        {module.file_name || 'Download'}
+                                                    </a>
+                                                ) : (
+                                                    <span>No File</span>
+                                                )}
+                                            </CTableDataCell>
+                                            <CTableDataCell>
+                                                <CButton
+                                                    color="danger"
+                                                    size="sm"
+                                                    onClick={() => handleDelete(module.id)}
                                                 >
-                                                    {module.file_name || 'Download File'}
-                                                </a>
-                                            ) : (
-                                                <span>No File</span>
-                                            )}
-                                        </CTableDataCell>
-                                        <CTableDataCell>
-                                            <CButton
-                                                color="danger"
-                                                size="sm"
-                                                onClick={() => handleDelete(index)}
-                                            >
-                                                Delete
-                                            </CButton>
+                                                    Delete
+                                                </CButton>
+                                            </CTableDataCell>
+                                        </CTableRow>
+                                    ))
+                                ) : (
+                                    <CTableRow>
+                                        <CTableDataCell colSpan={5} className="text-center">
+                                            No modules available.
                                         </CTableDataCell>
                                     </CTableRow>
-                                ))}
+                                )}
                             </CTableBody>
                         </CTable>
                     </CCardBody>
