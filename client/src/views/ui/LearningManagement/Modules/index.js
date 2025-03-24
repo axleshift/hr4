@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
 import {
     CButton,
     CCard,
@@ -16,39 +16,39 @@ import {
     CModal,
     CModalHeader,
     CModalBody,
-    CModalFooter
-} from '@coreui/react';
+    CModalFooter,
+} from '@coreui/react'
 
 const ModuleList = () => {
-    const [modules, setModules] = useState([]);
-    const [base64Doc, setBase64Doc] = useState('');
-    const [mimeType, setMimeType] = useState('');
-    const [modalVisible, setModalVisible] = useState(false);
+    const [modules, setModules] = useState([])
+    const [base64Doc, setBase64Doc] = useState('')
+    const [mimeType, setMimeType] = useState('')
+    const [modalVisible, setModalVisible] = useState(false)
 
     useEffect(() => {
-        fetchModules();
-    }, []);
+        fetchModules()
+    }, [])
 
     const fetchModules = async () => {
         try {
-            const response = await axios.get('http://localhost:8000/api/modules');
-            setModules(response.data.data);
+            const response = await axios.get('http://localhost:8000/api/modules')
+            setModules(response.data.data)
         } catch (error) {
-            console.error('Error fetching modules:', error);
+            console.error('Error fetching modules:', error)
         }
-    };
+    }
 
     // Fetch Base64 preview for PDF & DOCX
     const fetchDocPreview = async (id) => {
         try {
-            const response = await axios.get(`http://localhost:8000/api/modules/${id}/preview`);
-            setBase64Doc(response.data.base64);
-            setMimeType(response.data.mime_type);
-            setModalVisible(true);
+            const response = await axios.get(`http://localhost:8000/api/modules/${id}/preview`)
+            setBase64Doc(response.data.base64)
+            setMimeType(response.data.mime_type)
+            setModalVisible(true)
         } catch (error) {
-            console.error('Error fetching document preview:', error);
+            console.error('Error fetching document preview:', error)
         }
-    };
+    }
 
     return (
         <CRow>
@@ -74,8 +74,12 @@ const ModuleList = () => {
                                         <CTableDataCell>{module.title}</CTableDataCell>
                                         <CTableDataCell>{module.description}</CTableDataCell>
                                         <CTableDataCell>
-                                            {(module.file_name?.endsWith('.docx') || module.file_name?.endsWith('.pdf')) && (
-                                                <CButton color="info" onClick={() => fetchDocPreview(module.id)}>
+                                            {(module.file_name?.endsWith('.docx') ||
+                                                module.file_name?.endsWith('.pdf')) && (
+                                                <CButton
+                                                    color="info"
+                                                    onClick={() => fetchDocPreview(module.id)}
+                                                >
                                                     View
                                                 </CButton>
                                             )}
@@ -115,7 +119,7 @@ const ModuleList = () => {
                 </CModalFooter>
             </CModal>
         </CRow>
-    );
-};
+    )
+}
 
-export default ModuleList;
+export default ModuleList
