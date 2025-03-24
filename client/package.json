@@ -54,6 +54,8 @@
     "simplebar-react": "^3.3.0"
   },
   "devDependencies": {
+    "@babel/eslint-parser": "^7.26.10",
+    "@babel/preset-react": "^7.26.3",
     "@vitejs/plugin-react": "^4.3.4",
     "autoprefixer": "^10.4.21",
     "env-cmd": "^10.1.0",
