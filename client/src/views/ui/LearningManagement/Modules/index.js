@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import axios from 'axios'
-import DocViewer, { DocViewerRenderers } from 'react-doc-viewer'
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import {
     CButton,
     CCard,
@@ -14,50 +13,42 @@ import {
     CTableRow,
     CTableHeaderCell,
     CTableDataCell,
-    CSpinner,
-    CAlert,
-} from '@coreui/react'
+    CModal,
+    CModalHeader,
+    CModalBody,
+    CModalFooter
+} from '@coreui/react';
 
 const ModuleList = () => {
-    const [modules, setModules] = useState([])
-    const [files, setFiles] = useState([])
-    const [docContent, setDocContent] = useState(null)
+    const [modules, setModules] = useState([]);
+    const [base64Doc, setBase64Doc] = useState('');
+    const [mimeType, setMimeType] = useState('');
+    const [modalVisible, setModalVisible] = useState(false);
 
     useEffect(() => {
-        fetchModules()
-        fetchFiles()
-    }, [])
+        fetchModules();
+    }, []);
 
     const fetchModules = async () => {
         try {
-            const response = await axios.get('http://localhost:8000/api/modules')
-            setModules(response.data.data)
+            const response = await axios.get('http://localhost:8000/api/modules');
+            setModules(response.data.data);
         } catch (error) {
-            console.error('Error fetching modules:', error)
+            console.error('Error fetching modules:', error);
         }
-    }
+    };
 
-    const fetchFiles = async () => {
+    // Fetch Base64 preview for PDF & DOCX
+    const fetchDocPreview = async (id) => {
         try {
-            const response = await axios.get('http://localhost:8000/api/modules') // Use 'modules' instead of 'files'
-            setFiles(response.data.data) // Ensure this matches the API response structure
+            const response = await axios.get(`http://localhost:8000/api/modules/${id}/preview`);
+            setBase64Doc(response.data.base64);
+            setMimeType(response.data.mime_type);
+            setModalVisible(true);
         } catch (error) {
-            console.error(
-                'Error fetching files:',
-                error.response ? error.response.data : error.message,
-            )
+            console.error('Error fetching document preview:', error);
         }
-    }
-
-    // Function to display DOCX using React-Doc-Viewer
-    const fetchDocxContent = (fileUrl) => {
-        if (!fileUrl) {
-            console.error('File URL is missing.')
-            return
-        }
-
-        setDocContent([{ uri: `${window.location.origin}${fileUrl}` }])
-    }
+    };
 
     return (
         <CRow>
@@ -83,13 +74,8 @@ const ModuleList = () => {
                                         <CTableDataCell>{module.title}</CTableDataCell>
                                         <CTableDataCell>{module.description}</CTableDataCell>
                                         <CTableDataCell>
-                                            {module.file_url?.endsWith('.docx') && (
-                                                <CButton
-                                                    color="info"
-                                                    onClick={() =>
-                                                        fetchDocxContent(module.file_url)
-                                                    }
-                                                >
+                                            {(module.file_name?.endsWith('.docx') || module.file_name?.endsWith('.pdf')) && (
+                                                <CButton color="info" onClick={() => fetchDocPreview(module.id)}>
                                                     View
                                                 </CButton>
                                             )}
@@ -98,59 +84,38 @@ const ModuleList = () => {
                                 ))}
                             </CTableBody>
                         </CTable>
-
-                        {docContent && (
-                            <CCard className="mt-4">
-                                <CCardHeader>
-                                    <h3>Document Preview</h3>
-                                </CCardHeader>
-                                <CCardBody>
-                                    <DocViewer
-                                        documents={docContent}
-                                        pluginRenderers={DocViewerRenderers}
-                                    />
-                                </CCardBody>
-                            </CCard>
-                        )}
-                    </CCardBody>
-                </CCard>
-
-                <CCard className="mt-4">
-                    <CCardHeader>
-                        <strong>STORAGE FILES</strong>
-                    </CCardHeader>
-                    <CCardBody>
-                        <CTable striped hover>
-                            <CTableHead>
-                                <CTableRow>
-                                    <CTableHeaderCell>#</CTableHeaderCell>
-                                    <CTableHeaderCell>File Name</CTableHeaderCell>
-                                    <CTableHeaderCell>Actions</CTableHeaderCell>
-                                </CTableRow>
-                            </CTableHead>
-                            <CTableBody>
-                                {files.map((file, index) => (
-                                    <CTableRow key={index}>
-                                        <CTableHeaderCell>{index + 1}</CTableHeaderCell>
-                                        <CTableDataCell>{file.file_name}</CTableDataCell>
-                                        <CTableDataCell>
-                                            <CButton
-                                                color="primary"
-                                                href={file.file_url}
-                                                target="_blank"
-                                            >
-                                                Download
-                                            </CButton>
-                                        </CTableDataCell>
-                                    </CTableRow>
-                                ))}
-                            </CTableBody>
-                        </CTable>
                     </CCardBody>
                 </CCard>
             </CCol>
-        </CRow>
-    )
-}
 
-export default ModuleList
+            {/* Modal for Previewing DOCX & PDF Files */}
+            <CModal visible={modalVisible} onClose={() => setModalVisible(false)}>
+                <CModalHeader>Document Preview</CModalHeader>
+                <CModalBody>
+                    {base64Doc ? (
+                        mimeType === 'application/pdf' ? (
+                            <iframe
+                                src={base64Doc}
+                                style={{ width: '100%', height: '500px', border: 'none' }}
+                            ></iframe>
+                        ) : (
+                            <iframe
+                                src={`https://view.officeapps.live.com/op/embed.aspx?src=${base64Doc}`}
+                                style={{ width: '100%', height: '500px', border: 'none' }}
+                            ></iframe>
+                        )
+                    ) : (
+                        <p>No preview available.</p>
+                    )}
+                </CModalBody>
+                <CModalFooter>
+                    <CButton color="secondary" onClick={() => setModalVisible(false)}>
+                        Close
+                    </CButton>
+                </CModalFooter>
+            </CModal>
+        </CRow>
+    );
+};
+
+export default ModuleList;
