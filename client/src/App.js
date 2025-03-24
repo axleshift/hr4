@@ -31,7 +31,7 @@ const App = () => {
         }
 
         setColorMode(storedTheme)
-    }, [])
+    }, [isColorModeSet, setColorMode, storedTheme])
 
     return (
         <HashRouter>

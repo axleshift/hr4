@@ -14,7 +14,7 @@ import {
 import ReactImg from 'src/assets/images/react.jpg'
 import VueImg from 'src/assets/images/vue.jpg'
 
-const crudAnnouncement = () => {
+const CrudAnnouncement = () => {
     const [slides, setSlides] = useState([
         {
             id: 1,
@@ -129,4 +129,4 @@ const crudAnnouncement = () => {
     )
 }
 
-export default crudAnnouncement
+export default CrudAnnouncement

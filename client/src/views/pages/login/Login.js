@@ -31,18 +31,18 @@ const Login = () => {
                 const response = await axios.post(
                     'http://localhost:8000/api/auth/verify-session',
                     {},
-                    { withCredentials: true } // Ensure session cookies are sent
-                );
-    
+                    { withCredentials: true }, // Ensure session cookies are sent
+                )
+
                 if (response.data.user) {
-                    navigate('/dashboard');
+                    navigate('/dashboard')
                 }
             } catch (err) {
-                console.log('Session invalid or expired');
+                console.log('Session invalid or expired')
             }
-        };
-        checkSession();
-    }, [navigate]);    
+        }
+        checkSession()
+    }, [navigate])
 
     const handleSubmit = async (e) => {
         e.preventDefault()
