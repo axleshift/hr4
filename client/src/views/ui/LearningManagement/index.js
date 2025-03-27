@@ -24,6 +24,9 @@ import {
     CTableDataCell,
 } from '@coreui/react'
 
+// Set API Base URL dynamically
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://hr4.axleshift.com/api'
+
 const LMS = () => {
     const [visibleXL, setVisibleXL] = useState(false)
     const [modules, setModules] = useState([])
@@ -40,7 +43,7 @@ const LMS = () => {
 
     const fetchModules = async () => {
         try {
-            const response = await axios.get('http://localhost:8000/api/modules')
+            const response = await axios.get(`${API_BASE_URL}/modules`)
             setModules(response.data.data)
         } catch (error) {
             console.error('Error fetching modules:', error)
@@ -58,7 +61,7 @@ const LMS = () => {
         }
 
         try {
-            const response = await axios.post('http://localhost:8000/api/modules', formData, {
+            const response = await axios.post(`${API_BASE_URL}/modules`, formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
             })
 
@@ -66,7 +69,7 @@ const LMS = () => {
             setVisibleXL(false)
             setNewModule({ title: '', description: '', file: null })
         } catch (error) {
-            console.error('Error adding module:', error)
+            console.error('Error adding module:', error.response?.data || error.message)
         }
     }
 
@@ -87,10 +90,10 @@ const LMS = () => {
 
     const handleDelete = async (id) => {
         try {
-            await axios.delete(`http://localhost:8000/api/modules/${id}`)
+            await axios.delete(`${API_BASE_URL}/modules/${id}`)
             setModules((prevModules) => prevModules.filter((module) => module.id !== id))
         } catch (error) {
-            console.error('Error deleting module:', error)
+            console.error('Error deleting module:', error.response?.data || error.message)
         }
     }
 

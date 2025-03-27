@@ -19,6 +19,9 @@ import {
     CModalFooter,
 } from '@coreui/react'
 
+// Set API Base URL dynamically
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://hr4.axleshift.com/api'
+
 const ModuleList = () => {
     const [modules, setModules] = useState([])
     const [base64Doc, setBase64Doc] = useState('')
@@ -31,7 +34,7 @@ const ModuleList = () => {
 
     const fetchModules = async () => {
         try {
-            const response = await axios.get('https://hr4.axleshift.com/api/modules')
+            const response = await axios.get(`${API_BASE_URL}/modules`)
             setModules(response.data.data)
         } catch (error) {
             console.error('Error fetching modules:', error)
@@ -41,9 +44,7 @@ const ModuleList = () => {
     // Fetch Base64 preview for PDF & DOCX
     const fetchDocPreview = async (id) => {
         try {
-            const response = await axios.get(
-                `https://hr4.axleshift.com:8000/api/modules/${id}/preview`,
-            )
+            const response = await axios.get(`${API_BASE_URL}/modules/${id}/preview`)
             setBase64Doc(response.data.base64)
             setMimeType(response.data.mime_type)
             setModalVisible(true)
@@ -101,12 +102,12 @@ const ModuleList = () => {
                     {base64Doc ? (
                         mimeType === 'application/pdf' ? (
                             <iframe
-                                src={base64Doc}
+                                src={`data:application/pdf;base64,${base64Doc}`}
                                 style={{ width: '100%', height: '500px', border: 'none' }}
                             ></iframe>
                         ) : (
                             <iframe
-                                src={`https://view.officeapps.live.com/op/embed.aspx?src=${base64Doc}`}
+                                src={`https://view.officeapps.live.com/op/embed.aspx?src=data:application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,${base64Doc}`}
                                 style={{ width: '100%', height: '500px', border: 'none' }}
                             ></iframe>
                         )
