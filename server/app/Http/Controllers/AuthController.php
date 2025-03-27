@@ -4,11 +4,27 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 use App\Models\User;
 
 class AuthController extends Controller
 {
+
+    public function index()
+    {
+        $users = User::with('role')->get();
+
+        return response()->json([
+            'data' => $users->map(function ($user) {
+                return [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'role' => $user->role->name ?? 'No Role',
+                ];
+            }),
+        ]);
+    }
+
     public function login(Request $request)
     {
         $credentials = $request->validate([
