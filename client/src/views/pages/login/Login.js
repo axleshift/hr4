@@ -60,8 +60,8 @@ const Login = () => {
             Cookies.set('session_id', session_id, { expires: 1, secure: true, sameSite: 'Strict' })
             localStorage.setItem('user', JSON.stringify(user))
 
-            if (user.role === 'admin') {
-                navigate('/ui/LearningManagement/index')
+            if (user.role === 'superadmin') {
+                navigate('/ui/EmployeeManagement/AccessControl/index')
             } else {
                 navigate('/dashboard')
             }

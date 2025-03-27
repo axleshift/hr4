@@ -86,7 +86,7 @@ const _nav = [
             },
             {
                 component: CNavItem,
-                name: 'Employee',
+                name: 'Access Control',
                 to: '/ui/EmployeeManagemen/AccessControl',
             },
         ],
