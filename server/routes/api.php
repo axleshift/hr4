@@ -30,3 +30,6 @@ Route::get('/', function () {
     Route::get('/modules/{module}/preview', [ModuleController::class, 'preview']);
 //});
 
+use App\Http\Controllers\AuthController;
+
+Route::get('/users', [AuthController::class, 'index']);
