@@ -11,18 +11,37 @@ return new class extends Migration
     {
         Schema::create('trainings', function (Blueprint $table) {
             $table->id();
-            $table->string('training_class');
-            $table->string('agenda');
-            $table->string('location');
+            $table->string('event_title');
+            $table->string('delivery_method');
+            $table->string('event_location');
             $table->time('schedule');
             $table->string('start_time');
             $table->string('end_time');
             $table->timestamps();
         });
+
+        Schema::create('programs', function (Blueprint $table) {
+            $table->id();
+            $table->string('title');
+            $table->text('description');
+            $table->timestamps();
+        });
+
+        Schema::create('courses', function (Blueprint $table) {
+            $table->id();
+            $table->string('title');
+            $table->text('description');
+            $table->string('duration');
+            $table->foreignId('program_id')->constrained('programs')->onDelete('cascade'); // Foreign Key
+            $table->timestamps();
+        });
+        
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('training');
+        Schema::dropIfExists('trainings');
+        Schema::dropIfExists('programs');
+        Schema::dropIfExists('courses');
     }
 };

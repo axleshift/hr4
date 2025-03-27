@@ -12,12 +12,7 @@ class Module extends Model
     protected $fillable = [
         'title',
         'description',
-        'image_path',
+        'file_path',
+        'file_name',
     ];
-
-    // Define the relationship with File
-    public function files()
-    {
-        return $this->hasMany(File::class);
-    }
 }

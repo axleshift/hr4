@@ -10,9 +10,10 @@ return new class extends Migration
     {
         Schema::create('modules', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->text('description');
-            $table->string('image_path')->nullable(); // Store the image path
+            $table->string('title')->unique();
+            $table->text('description')->nullable();
+            $table->string('file_path')->nullable();
+            $table->string('file_name')->nullable();
             $table->timestamps();
         });
     }
@@ -22,4 +23,3 @@ return new class extends Migration
         Schema::dropIfExists('modules');
     }
 };
-
