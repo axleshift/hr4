@@ -26,6 +26,25 @@ const navItems = [
     },
     {
         component: CNavGroup,
+        name: 'Employee Management',
+        icon: <CIcon icon={cilNotes} customClassName="nav-icon" />,
+        items: [
+            {
+                component: CNavItem,
+                name: 'Employee',
+                to: '/ui/EmployeeManagement',
+                permission: ['superadmin'],
+            },
+            {
+                component: CNavItem,
+                name: 'Access Control',
+                to: '/ui/EmployeeManagemen/AccessControl',
+                permission: ['superadmin'],
+            },
+        ],
+    },
+    {
+        component: CNavGroup,
         name: 'Learning Management',
         icon: <CIcon icon={cilBook} customClassName="nav-icon" />,
         permission: ['superadmin', 'admin', 'staff'],
