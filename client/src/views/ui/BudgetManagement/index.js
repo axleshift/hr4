@@ -42,6 +42,14 @@ const BudgetReports = () => {
     const handleNextStep = () => setStep(2)
     const handlePreviousStep = () => setStep(1)
 
+    useEffect(() => {
+        if (programName) {
+            api.get(`/courses?program_id=${programName}`).then((response) =>
+                setCourses(response.data.data),
+            )
+        }
+    }, [programName])
+
     const handleAddBudget = () => {
         if (programName && cost) {
             setBudgets([
@@ -159,8 +167,11 @@ const BudgetReports = () => {
                                     onChange={(e) => setProgramName(e.target.value)}
                                 >
                                     <option value="">Select Program</option>
-                                    <option value="Program 1">Program 1</option>
-                                    <option value="Program 2">Program 2</option>
+                                    {programs.map((program) => (
+                                        <option key={program.id} value={program.id}>
+                                            {program.title}
+                                        </option>
+                                    ))}
                                 </CFormSelect>
 
                                 <CFormLabel>Training Course Name</CFormLabel>
@@ -169,8 +180,11 @@ const BudgetReports = () => {
                                     onChange={(e) => setCourseName(e.target.value)}
                                 >
                                     <option value="">Select Course</option>
-                                    <option value="Course A">Course A</option>
-                                    <option value="Course B">Course B</option>
+                                    {courses.map((course) => (
+                                        <option key={course.id} value={course.id}>
+                                            {course.title}
+                                        </option>
+                                    ))}
                                 </CFormSelect>
 
                                 <CFormLabel>Department</CFormLabel>

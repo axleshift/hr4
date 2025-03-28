@@ -26,10 +26,6 @@ const mockEmployees = [
 const AccessControl = () => {
     const [employees, setEmployees] = useState([])
 
-    useEffect(() => {
-        fetchEmployees()
-    }, [])
-
     const fetchEmployees = async () => {
         try {
             const response = await api.get(`/api/users`)
