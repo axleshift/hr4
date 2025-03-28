@@ -38,6 +38,8 @@ const BudgetReports = () => {
     const [status, setStatus] = useState('Pending')
     const [modalVisible, setModalVisible] = useState(false)
     const [step, setStep] = useState(1)
+    const [programs, setPrograms] = useState([])
+    const [courses, setCourses] = useState([])
 
     const handleNextStep = () => setStep(2)
     const handlePreviousStep = () => setStep(1)
