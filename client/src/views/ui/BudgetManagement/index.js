@@ -56,19 +56,6 @@ const BudgetReports = () => {
         fetchPrograms()
     }, [])
 
-    useEffect(() => {
-        const fetchCourses = async () => {
-            try {
-                const response = await api.get(`/api/courses`)
-                console.log('Courses fetched:', response.data)
-                setCourses(response.data.data)
-            } catch (error) {
-                console.error('Error fetching courses:', error)
-            }
-        }
-        fetchCourses()
-    }, [])
-
     const handleAddBudget = () => {
         if (programName && cost) {
             setBudgets([
@@ -198,19 +185,10 @@ const BudgetReports = () => {
                                 <CFormSelect
                                     value={courseName}
                                     onChange={(e) => setCourseName(e.target.value)}
-                                    disabled={!programName} // Disable if no program is selected
                                 >
                                     <option value="">Select Course</option>
-                                    {courses
-                                        .filter(
-                                            (course) =>
-                                                course.program_id.toString() === programName,
-                                        ) // Filter courses by selected program
-                                        .map((course) => (
-                                            <option key={course.id} value={course.id}>
-                                                {course.title}
-                                            </option>
-                                        ))}
+                                    <option value="Course A">Course A</option>
+                                    <option value="Course B">Course B</option>
                                 </CFormSelect>
 
                                 <CFormLabel>Department</CFormLabel>
