@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import api from '../../util/api'
+import api from '../../../util/api'
 import {
     CButton,
     CCard,
