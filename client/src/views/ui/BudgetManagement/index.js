@@ -180,6 +180,7 @@ const BudgetReports = () => {
                                         <h5 className="fw-bold">TRAINING PROJECT</h5>
                                     </CCol>
                                 </CRow>
+
                                 <CFormLabel>Training Program Name</CFormLabel>
                                 <CFormSelect
                                     value={programName}
@@ -197,13 +198,19 @@ const BudgetReports = () => {
                                 <CFormSelect
                                     value={courseName}
                                     onChange={(e) => setCourseName(e.target.value)}
+                                    disabled={!programName} // Disable if no program is selected
                                 >
                                     <option value="">Select Course</option>
-                                    {courses.map((course) => (
-                                        <option key={course.id} value={course.id}>
-                                            {course.title}
-                                        </option>
-                                    ))}
+                                    {courses
+                                        .filter(
+                                            (course) =>
+                                                course.program_id.toString() === programName,
+                                        ) // Filter courses by selected program
+                                        .map((course) => (
+                                            <option key={course.id} value={course.id}>
+                                                {course.title}
+                                            </option>
+                                        ))}
                                 </CFormSelect>
 
                                 <CFormLabel>Department</CFormLabel>
