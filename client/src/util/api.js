@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 const API = import.meta.env.VITE_APP_API_URL || 'https://hr4.axleshift.com' // Fallback
 
 const api = axios.create({
-    baseURL: `${API}/api`, // Ensure `/api` is included
+    baseURL: `${API}`,
     withCredentials: true,
     headers: {
         Accept: 'application/json',
