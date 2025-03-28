@@ -26,7 +26,7 @@ const AccessControl = () => {
 
     const fetchEmployees = async () => {
         try {
-            const response = await axios.get('http://localhost:8000/api/users')
+            const response = await api.get('/users')
             setEmployees(response.data)
         } catch (error) {
             console.error('Error fetching employees:', error)

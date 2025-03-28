@@ -85,7 +85,7 @@ const EmployeeEngagement = () => {
     const handleSubmitFeedback = async () => {
         if (!enrolledModule) return
         try {
-            await axios.post(`http://localhost:8000/api/modules/${enrolledModule.id}/feedback`, {
+            await api.post(`/modules/${enrolledModule.id}/feedback`, {
                 ...feedback,
                 moduleId: enrolledModule.id,
             })
@@ -110,7 +110,7 @@ const EmployeeEngagement = () => {
     // Handle module request form submission
     const handleSubmitRequest = async () => {
         try {
-            await axios.post('http://localhost:8000/api/modules/request', {
+            await api.post('/modules/request', {
                 ...request,
             })
             alert('Module request submitted successfully!')
