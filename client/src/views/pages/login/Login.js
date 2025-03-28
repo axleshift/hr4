@@ -5,6 +5,7 @@ import {
     CButton,
     CCard,
     CCardBody,
+    CCardGroup,
     CRow,
     CCol,
     CContainer,
@@ -15,14 +16,13 @@ import {
     CFormInput,
     CSpinner,
 } from '@coreui/react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUser, faLock } from '@fortawesome/free-solid-svg-icons'
+import CIcon from '@coreui/icons-react'
+import { cilUser, cilLockLocked } from '@coreui/icons'
 import api from '../../../util/api'
 import Cookies from 'js-cookie'
-import Footer from '../../../components/landing/Footer'
 
 const Login = () => {
-    const [username, setUsername] = useState('')
+    const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [loading, setLoading] = useState(false)
     const [alert, setAlert] = useState({ visible: false, type: '', message: '' })
@@ -32,22 +32,38 @@ const Login = () => {
     const handleLogin = async (e) => {
         e.preventDefault()
         setLoading(true)
+
         try {
-            const response = await api.post('/api/auth/login', { username, password })
-            dispatch({ type: 'SET_USER', payload: response.data.user })
-            dispatch({ type: 'SET_SESSION_ID', payload: response.data.session_id })
-            Cookies.set('dcims', response.data.session_id, {
+            const response = await api.post('/api/auth/login', { email, password })
+            const { user, session_id } = response.data
+
+            dispatch({ type: 'SET_USER', payload: user })
+            dispatch({ type: 'SET_SESSION_ID', payload: session_id })
+
+            Cookies.set('session_id', session_id, {
                 expires: 30,
                 secure: true,
                 sameSite: 'Strict',
             })
 
-            sessionStorage.setItem('session_id', response.data.session_id)
-            sessionStorage.setItem('role', response.data.user.role)
-            sessionStorage.setItem('user_id', response.data.user.id)
-            sessionStorage.setItem('name', response.data.user.name)
+            sessionStorage.setItem('session_id', session_id)
+            sessionStorage.setItem('role', user.role)
+            sessionStorage.setItem('user_id', user.id)
+            sessionStorage.setItem('name', user.name)
+            sessionStorage.setItem('email', user.email)
 
-            navigate('/dashboard')
+            // Redirect based on role
+            switch (user.role) {
+                case 'superadmin':
+                    navigate('/dashboard')
+                    break
+                case 'manager':
+                    navigate('/dashboard')
+                    break
+                default:
+                    navigate('/dashboard')
+                    break
+            }
         } catch (err) {
             const message =
                 err.response?.data?.message || 'Login failed. Please check your credentials.'
@@ -65,80 +81,91 @@ const Login = () => {
     }, [alert])
 
     return (
-        <div className="bg-light min-vh-100 d-flex flex-column">
-            <CContainer className="flex-grow-1 d-flex flex-column justify-content-center">
+        <div className="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center">
+            <CContainer>
                 <CRow className="justify-content-center">
-                    <CCol xs={12} sm={10} md={8} lg={5}>
-                        <CCard className="shadow-sm p-4 border-0 rounded">
-                            <CCardBody>
-                                <CForm onSubmit={handleLogin}>
-                                    <h2 className="text-left fw-bold">Login</h2>
-                                    <p className="text-left text-muted">Sign in to your account</p>
-                                    {alert.visible && (
-                                        <CAlert color={alert.type} className="mb-3">
-                                            {alert.message}
-                                        </CAlert>
-                                    )}
+                    <CCol md={8}>
+                        <CCardGroup>
+                            <CCard className="p-4">
+                                <CCardBody>
+                                    <CForm onSubmit={handleLogin}>
+                                        <h1>Login</h1>
+                                        <p className="text-body-secondary">
+                                            Sign in to your account
+                                        </p>
+                                        {alert.visible && (
+                                            <CAlert color={alert.type} className="mb-3">
+                                                {alert.message}
+                                            </CAlert>
+                                        )}
 
-                                    <CInputGroup className="mb-3">
-                                        <CInputGroupText>
-                                            <FontAwesomeIcon icon={faUser} />
-                                        </CInputGroupText>
-                                        <CFormInput
-                                            type="text"
-                                            placeholder="Username"
-                                            value={username}
-                                            onChange={(e) => setUsername(e.target.value)}
-                                            required
-                                        />
-                                    </CInputGroup>
+                                        <CInputGroup className="mb-3">
+                                            <CInputGroupText>
+                                                <CIcon icon={cilUser} />
+                                            </CInputGroupText>
+                                            <CFormInput
+                                                type="email"
+                                                placeholder="Email"
+                                                value={email}
+                                                onChange={(e) => setEmail(e.target.value)}
+                                                required
+                                            />
+                                        </CInputGroup>
 
-                                    <CInputGroup className="mb-3">
-                                        <CInputGroupText>
-                                            <FontAwesomeIcon icon={faLock} />
-                                        </CInputGroupText>
-                                        <CFormInput
-                                            type="password"
-                                            placeholder="Password"
-                                            value={password}
-                                            onChange={(e) => setPassword(e.target.value)}
-                                            required
-                                        />
-                                    </CInputGroup>
+                                        <CInputGroup className="mb-3">
+                                            <CInputGroupText>
+                                                <CIcon icon={cilLockLocked} />
+                                            </CInputGroupText>
+                                            <CFormInput
+                                                type="password"
+                                                placeholder="Password"
+                                                value={password}
+                                                onChange={(e) => setPassword(e.target.value)}
+                                                required
+                                            />
+                                        </CInputGroup>
 
-                                    <CRow>
-                                        <CCol>
-                                            <CButton
-                                                type="submit"
-                                                color="primary"
-                                                className="w-100"
-                                                disabled={loading}
-                                            >
-                                                {loading ? (
-                                                    <CSpinner
-                                                        component="span"
-                                                        size="sm"
-                                                        aria-hidden="true"
-                                                    />
-                                                ) : (
-                                                    'Login'
-                                                )}
+                                        <CRow>
+                                            <CCol xs={6}>
+                                                <CButton
+                                                    type="submit"
+                                                    color="primary"
+                                                    className="px-4"
+                                                    disabled={loading}
+                                                >
+                                                    {loading ? <CSpinner size="sm" /> : 'Login'}
+                                                </CButton>
+                                            </CCol>
+                                            <CCol xs={6} className="text-right">
+                                                <Link
+                                                    to="/ForgotPassword"
+                                                    className="text-decoration-none"
+                                                >
+                                                    Forgot password?
+                                                </Link>
+                                            </CCol>
+                                        </CRow>
+                                    </CForm>
+                                </CCardBody>
+                            </CCard>
+
+                            <CCard className="text-white bg-primary py-5" style={{ width: '44%' }}>
+                                <CCardBody className="text-center">
+                                    <div>
+                                        <h2>Sign up</h2>
+                                        <p>Create an account to get started</p>
+                                        <Link to="/register">
+                                            <CButton color="light" className="mt-3">
+                                                Register Now!
                                             </CButton>
-                                        </CCol>
-                                    </CRow>
-
-                                    <div className="text-center mt-3">
-                                        <Link to="/ForgotPassword" className="text-decoration-none">
-                                            Forgot password?
                                         </Link>
                                     </div>
-                                </CForm>
-                            </CCardBody>
-                        </CCard>
+                                </CCardBody>
+                            </CCard>
+                        </CCardGroup>
                     </CCol>
                 </CRow>
             </CContainer>
-            <Footer />
         </div>
     )
 }
