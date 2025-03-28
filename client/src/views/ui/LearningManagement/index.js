@@ -40,7 +40,7 @@ const LMS = () => {
 
     const fetchModules = async () => {
         try {
-            const response = await api.get(`/modules`)
+            const response = await api.get(`/api/modules`)
             setModules(response.data.data)
         } catch (error) {
             console.error('Error fetching modules:', error)
@@ -58,7 +58,7 @@ const LMS = () => {
         }
 
         try {
-            const response = await api.post(`/modules`, formData, {
+            const response = await api.post(`/api/modules`, formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
             })
 
@@ -87,7 +87,7 @@ const LMS = () => {
 
     const handleDelete = async (id) => {
         try {
-            await axios.delete(`${API_BASE_URL}/modules/${id}`)
+            await api.delete(`/api/modules/${id}`)
             setModules((prevModules) => prevModules.filter((module) => module.id !== id))
         } catch (error) {
             console.error('Error deleting module:', error.response?.data || error.message)
