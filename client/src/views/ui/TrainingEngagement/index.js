@@ -42,7 +42,7 @@ const EmployeeEngagement = () => {
     useEffect(() => {
         const fetchModules = async () => {
             try {
-                const response = await api.get('/modules')
+                const response = await api.get('/api/modules')
                 setModules(response.data.data)
             } catch (error) {
                 console.error('Error fetching modules:', error)
@@ -51,7 +51,7 @@ const EmployeeEngagement = () => {
 
         const fetchTrainings = async () => {
             try {
-                const response = await api.get('/training')
+                const response = await api.get('api/training')
                 setTrainings(response.data.data)
             } catch (error) {
                 console.error('Error fetching training schedules:', error)

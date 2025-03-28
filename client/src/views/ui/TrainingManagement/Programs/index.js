@@ -90,7 +90,7 @@ const TrainingDelivery = () => {
 
     const handleSaveCourse = async () => {
         try {
-            const response = await api.post('/courses', {
+            const response = await api.post('/api/courses', {
                 title: courseTitle,
                 description: courseDescription,
                 duration: courseDuration,
