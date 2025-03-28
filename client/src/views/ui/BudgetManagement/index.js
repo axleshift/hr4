@@ -44,7 +44,7 @@ const BudgetReports = () => {
 
     useEffect(() => {
         if (programName) {
-            api.get(`/courses?program_id=${programName}`).then((response) =>
+            api.get(`/api/courses?program_id=${programName}`).then((response) =>
                 setCourses(response.data.data),
             )
         }
