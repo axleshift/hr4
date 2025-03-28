@@ -17,9 +17,9 @@ import {
 } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser, faLock } from '@fortawesome/free-solid-svg-icons'
-import api from '../../util/api'
+import api from '../../../util/api'
 import Cookies from 'js-cookie'
-import Footer from '../../components/landing/Footer'
+import Footer from '../../../components/landing/Footer'
 
 const Login = () => {
     const [username, setUsername] = useState('')
