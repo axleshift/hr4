@@ -206,24 +206,14 @@ const BudgetReports = () => {
                                     ))}
                                 </CFormSelect>
 
-                                <CFormLabel>Training Date</CFormLabel>
-                                <CFormInput
-                                    type="date"
-                                    value={trainingDate}
-                                    onChange={(e) => setTrainingDate(e.target.value)}
-                                />
-
                                 <CFormLabel>Department</CFormLabel>
                                 <CFormSelect
                                     value={department}
                                     onChange={(e) => setDepartment(e.target.value)}
                                 >
                                     <option value="">Select Department</option>
-                                    {departments.map((dept, index) => (
-                                        <option key={index} value={dept}>
-                                            {dept}
-                                        </option>
-                                    ))}
+                                    <option value="HR">HR</option>
+                                    <option value="Finance">Finance</option>
                                 </CFormSelect>
 
                                 <CFormLabel>Participant</CFormLabel>
@@ -232,11 +222,8 @@ const BudgetReports = () => {
                                     onChange={(e) => setParticipant(e.target.value)}
                                 >
                                     <option value="">Select Participant</option>
-                                    {participants.map((part, index) => (
-                                        <option key={index} value={part}>
-                                            {part}
-                                        </option>
-                                    ))}
+                                    <option value="Employee 1">Employee 1</option>
+                                    <option value="Employee 2">Employee 2</option>
                                 </CFormSelect>
 
                                 <CButton
