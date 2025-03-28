@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react'
-import api from '../../../../util/api'
+import React from 'react'
 import {
     CCard,
     CCardBody,
@@ -16,12 +15,6 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilUserPlus, cilOptions } from '@coreui/icons'
-
-const mockEmployees = [
-    { id: 1, name: 'John Doe', email: 'john.doe@example.com', role: { name: 'Admin' } },
-    { id: 2, name: 'Jane Smith', email: 'jane.smith@example.com', role: { name: 'Manager' } },
-    { id: 3, name: 'Mike Johnson', email: 'mike.johnson@example.com', role: { name: 'Employee' } },
-]
 
 const AccessControl = () => {
     return (
@@ -53,20 +46,38 @@ const AccessControl = () => {
                                 </CTableRow>
                             </CTableHead>
                             <CTableBody>
-                                {mockEmployees.map((emp) => (
-                                    <CTableRow key={emp.id}>
-                                        <CTableDataCell>{emp.name}</CTableDataCell>
-                                        <CTableDataCell>{emp.email}</CTableDataCell>
-                                        <CTableDataCell className="text-center">
-                                            {emp.role?.name || 'No Role'}
-                                        </CTableDataCell>
-                                        <CTableDataCell className="text-center">
-                                            <CButton color="secondary" size="sm">
-                                                <CIcon icon={cilOptions} /> More
-                                            </CButton>
-                                        </CTableDataCell>
-                                    </CTableRow>
-                                ))}
+                                <CTableRow>
+                                    <CTableDataCell>John Doe</CTableDataCell>
+                                    <CTableDataCell>john.doe@example.com</CTableDataCell>
+                                    <CTableDataCell className="text-center">Admin</CTableDataCell>
+                                    <CTableDataCell className="text-center">
+                                        <CButton color="secondary" size="sm">
+                                            <CIcon icon={cilOptions} /> More
+                                        </CButton>
+                                    </CTableDataCell>
+                                </CTableRow>
+                                <CTableRow>
+                                    <CTableDataCell>Jane Smith</CTableDataCell>
+                                    <CTableDataCell>jane.smith@example.com</CTableDataCell>
+                                    <CTableDataCell className="text-center">Manager</CTableDataCell>
+                                    <CTableDataCell className="text-center">
+                                        <CButton color="secondary" size="sm">
+                                            <CIcon icon={cilOptions} /> More
+                                        </CButton>
+                                    </CTableDataCell>
+                                </CTableRow>
+                                <CTableRow>
+                                    <CTableDataCell>Mike Johnson</CTableDataCell>
+                                    <CTableDataCell>mike.johnson@example.com</CTableDataCell>
+                                    <CTableDataCell className="text-center">
+                                        Employee
+                                    </CTableDataCell>
+                                    <CTableDataCell className="text-center">
+                                        <CButton color="secondary" size="sm">
+                                            <CIcon icon={cilOptions} /> More
+                                        </CButton>
+                                    </CTableDataCell>
+                                </CTableRow>
                             </CTableBody>
                         </CTable>
                     </CCardBody>
