@@ -36,14 +36,7 @@ const AppSidebar = () => {
         >
             <CSidebarHeader className="border-bottom">
                 <CSidebarBrand to="/">
-                    {/* Replace the icon with an image */}
-                    <img
-                        src={logoImage}
-                        alt="Logo"
-                        className="sidebar-brand-full"
-                        height={32} // Adjust height as needed
-                    />
-                    {/* You can also add a different image for the narrow sidebar */}
+                    <img src={logoImage} alt="Logo" className="sidebar-brand-full" height={32} />
                     <img src={logoImage} alt="Logo" className="sidebar-brand-narrow" height={32} />
                 </CSidebarBrand>
                 <CCloseButton

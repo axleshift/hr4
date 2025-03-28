@@ -1,23 +1,34 @@
 <?php
 
 return [
-    'paths' => [
-        'api/*',                // Apply CORS to API routes
-    ],
 
-    'allowed_methods' => ['*'],  // Allow all HTTP methods (GET, POST, etc.)
+    /*
+    |--------------------------------------------------------------------------
+    | Cross-Origin Resource Sharing (CORS) Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Here you may configure your settings for cross-origin resource sharing
+    | or "CORS". This determines what cross-origin operations may execute
+    | in web browsers. You are free to adjust these settings as needed.
+    |
+    | To learn more: https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
+    |
+    */
 
-    'allowed_origins' => [
-        'http://localhost:3000', // Your frontend's URL
-    ],
+    'paths' => ['api/*', '/Login'],
 
-    'allowed_origins_patterns' => [], // Optional regex patterns for allowed origins
+    'allowed_methods' => ['*'],
 
-    'allowed_headers' => ['*'],  // Allow all headers
+    'allowed_origins' => [env('FRONTEND_URL', 'http://localhost:3000')],
 
-    'exposed_headers' => [],  // No headers are explicitly exposed
+    'allowed_origins_patterns' => [],
 
-    'max_age' => 0,  // Disable caching for preflight requests
+    'allowed_headers' => ['*'],
 
-    'supports_credentials' => true, // Required for session-based authentication
+    'exposed_headers' => [],
+
+    'max_age' => 0,
+
+    'supports_credentials' => true,
+
 ];
