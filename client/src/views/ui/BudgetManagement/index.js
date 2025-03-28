@@ -43,12 +43,29 @@ const BudgetReports = () => {
     const handlePreviousStep = () => setStep(1)
 
     useEffect(() => {
-        if (programName) {
-            api.get(`/api/courses?program_id=${programName}`).then((response) =>
-                setCourses(response.data.data),
-            )
+        const fetchPrograms = async () => {
+            try {
+                const response = await api.get(`/api/programs`)
+                setPrograms(response.data.data)
+            } catch (error) {
+                console.error('Error fetching programs:', error)
+            }
         }
-    }, [programName])
+        fetchPrograms()
+    }, [])
+
+    useEffect(() => {
+        const fetchCourses = async () => {
+            try {
+                const response = await api.get(`/api/courses`)
+                console.log('Courses fetched:', response.data)
+                setCourses(response.data.data)
+            } catch (error) {
+                console.error('Error fetching courses:', error)
+            }
+        }
+        fetchCourses()
+    }, [])
 
     const handleAddBudget = () => {
         if (programName && cost) {
@@ -187,14 +204,24 @@ const BudgetReports = () => {
                                     ))}
                                 </CFormSelect>
 
+                                <CFormLabel>Training Date</CFormLabel>
+                                <CFormInput
+                                    type="date"
+                                    value={trainingDate}
+                                    onChange={(e) => setTrainingDate(e.target.value)}
+                                />
+
                                 <CFormLabel>Department</CFormLabel>
                                 <CFormSelect
                                     value={department}
                                     onChange={(e) => setDepartment(e.target.value)}
                                 >
                                     <option value="">Select Department</option>
-                                    <option value="HR">HR</option>
-                                    <option value="Finance">Finance</option>
+                                    {departments.map((dept, index) => (
+                                        <option key={index} value={dept}>
+                                            {dept}
+                                        </option>
+                                    ))}
                                 </CFormSelect>
 
                                 <CFormLabel>Participant</CFormLabel>
@@ -203,11 +230,18 @@ const BudgetReports = () => {
                                     onChange={(e) => setParticipant(e.target.value)}
                                 >
                                     <option value="">Select Participant</option>
-                                    <option value="Employee 1">Employee 1</option>
-                                    <option value="Employee 2">Employee 2</option>
+                                    {participants.map((part, index) => (
+                                        <option key={index} value={part}>
+                                            {part}
+                                        </option>
+                                    ))}
                                 </CFormSelect>
 
-                                <CButton color="primary" onClick={handleNextStep} className="mt-3">
+                                <CButton
+                                    color="primary"
+                                    onClick={() => setStep(2)}
+                                    className="mt-3"
+                                >
                                     Next
                                 </CButton>
                             </>
