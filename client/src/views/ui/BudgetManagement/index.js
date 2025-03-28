@@ -44,6 +44,18 @@ const BudgetReports = () => {
     const handleNextStep = () => setStep(2)
     const handlePreviousStep = () => setStep(1)
 
+    useEffect(() => {
+        const fetchPrograms = async () => {
+            try {
+                const response = await api.get(`/api/programs`)
+                setPrograms(response.data.data)
+            } catch (error) {
+                console.error('Error fetching programs:', error)
+            }
+        }
+        fetchPrograms()
+    }, [])
+
     const handleAddBudget = () => {
         if (programName && cost) {
             setBudgets([
@@ -155,6 +167,7 @@ const BudgetReports = () => {
                                         <h5 className="fw-bold">TRAINING PROJECT</h5>
                                     </CCol>
                                 </CRow>
+
                                 <CFormLabel>Training Program Name</CFormLabel>
                                 <CFormSelect
                                     value={programName}
@@ -195,7 +208,11 @@ const BudgetReports = () => {
                                     <option value="Employee 2">Employee 2</option>
                                 </CFormSelect>
 
-                                <CButton color="primary" onClick={handleNextStep} className="mt-3">
+                                <CButton
+                                    color="primary"
+                                    onClick={() => setStep(2)}
+                                    className="mt-3"
+                                >
                                     Next
                                 </CButton>
                             </>
