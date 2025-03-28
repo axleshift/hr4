@@ -40,7 +40,7 @@ const LMS = () => {
 
     const fetchModules = async () => {
         try {
-            const response = await axios.get(`${API_BASE_URL}/modules`)
+            const response = await api.get(`/modules`)
             setModules(response.data.data)
         } catch (error) {
             console.error('Error fetching modules:', error)
@@ -58,7 +58,7 @@ const LMS = () => {
         }
 
         try {
-            const response = await axios.post(`${API_BASE_URL}/modules`, formData, {
+            const response = await api.post(`/modules`, formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
             })
 
