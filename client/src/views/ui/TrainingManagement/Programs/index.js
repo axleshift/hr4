@@ -43,7 +43,7 @@ const TrainingDelivery = () => {
     useEffect(() => {
         const fetchPrograms = async () => {
             try {
-                const response = await api.get(`/programs`)
+                const response = await api.get(`/api/programs`)
                 setPrograms(response.data.data)
             } catch (error) {
                 console.error('Error fetching programs:', error)
@@ -55,7 +55,7 @@ const TrainingDelivery = () => {
     useEffect(() => {
         const fetchCourses = async () => {
             try {
-                const response = await api.get(`/courses`)
+                const response = await api.get(`/api/courses`)
                 console.log('Courses fetched:', response.data) // Log response to check structure
                 setCourses(response.data.data) // Ensure correct data assignment
             } catch (error) {
@@ -67,7 +67,7 @@ const TrainingDelivery = () => {
 
     const handleSaveProgram = async () => {
         try {
-            const response = await api.get(`/programs`, {
+            const response = await api.get(`/api/programs`, {
                 title: programTitle,
                 description: programDescription,
             })
