@@ -37,6 +37,10 @@ const BudgetReports = () => {
     const [cost, setCost] = useState('')
     const [status, setStatus] = useState('Pending')
     const [modalVisible, setModalVisible] = useState(false)
+    const [step, setStep] = useState(1)
+
+    const handleNextStep = () => setStep(2)
+    const handlePreviousStep = () => setStep(1)
 
     const handleAddBudget = () => {
         if (programName && cost) {
@@ -62,6 +66,7 @@ const BudgetReports = () => {
             setParticipant('')
             setCost('')
             setModalVisible(false)
+            setStep(1)
         }
     }
 
@@ -138,64 +143,95 @@ const BudgetReports = () => {
 
             {/* Add Budget Modal */}
             <CModal visible={modalVisible} onClose={() => setModalVisible(false)}>
-                <CModalHeader>Add Budget</CModalHeader>
+                <CModalHeader>Budger Form</CModalHeader>
                 <CModalBody>
                     <CForm>
-                        <CFormLabel>Training Program Name</CFormLabel>
-                        <CFormInput
-                            value={programName}
-                            onChange={(e) => setProgramName(e.target.value)}
-                        />
+                        {step === 1 && (
+                            <>
+                                {/* Training Project Section */}
+                                <CRow className="mb-3">
+                                    <CCol>
+                                        <h5 className="fw-bold">TRAINING PROJECT</h5>
+                                    </CCol>
+                                </CRow>
+                                <CFormLabel>Training Program Name</CFormLabel>
+                                <CFormInput
+                                    value={programName}
+                                    onChange={(e) => setProgramName(e.target.value)}
+                                />
 
-                        <CFormLabel>Training Course Name</CFormLabel>
-                        <CFormInput
-                            value={courseName}
-                            onChange={(e) => setCourseName(e.target.value)}
-                        />
+                                <CFormLabel>Training Course Name</CFormLabel>
+                                <CFormInput
+                                    value={courseName}
+                                    onChange={(e) => setCourseName(e.target.value)}
+                                />
 
-                        <CFormLabel>Training Date</CFormLabel>
-                        <CFormInput
-                            type="date"
-                            value={trainingDate}
-                            onChange={(e) => setTrainingDate(e.target.value)}
-                        />
+                                <CFormLabel>Training Date</CFormLabel>
+                                <CFormInput
+                                    type="date"
+                                    value={trainingDate}
+                                    onChange={(e) => setTrainingDate(e.target.value)}
+                                />
 
-                        <CFormLabel>Department</CFormLabel>
-                        <CFormInput
-                            value={department}
-                            onChange={(e) => setDepartment(e.target.value)}
-                        />
+                                <CFormLabel>Department</CFormLabel>
+                                <CFormInput
+                                    value={department}
+                                    onChange={(e) => setDepartment(e.target.value)}
+                                />
 
-                        <CFormLabel>Participant</CFormLabel>
-                        <CFormInput
-                            value={participant}
-                            onChange={(e) => setParticipant(e.target.value)}
-                        />
+                                <CFormLabel>Participant</CFormLabel>
+                                <CFormInput
+                                    value={participant}
+                                    onChange={(e) => setParticipant(e.target.value)}
+                                />
 
-                        <CFormLabel>Instructor / Trainer Fees</CFormLabel>
-                        <CFormInput type="number" />
+                                <CButton color="primary" onClick={handleNextStep} className="mt-3">
+                                    Next
+                                </CButton>
+                            </>
+                        )}
 
-                        <CFormLabel>Training Materials</CFormLabel>
-                        <CFormInput type="number" />
+                        {step === 2 && (
+                            <>
+                                {/* Project Budget Section */}
+                                <CRow className="mb-3">
+                                    <CCol>
+                                        <h5 className="fw-bold">PROJECT BUDGET</h5>
+                                    </CCol>
+                                </CRow>
+                                <CFormLabel>Instructor / Trainer Fees</CFormLabel>
+                                <CFormInput type="number" />
 
-                        <CFormLabel>Venue / Facility Costs</CFormLabel>
-                        <CFormInput type="number" />
+                                <CFormLabel>Training Materials</CFormLabel>
+                                <CFormInput type="number" />
 
-                        <CFormLabel>Travel & Accommodation</CFormLabel>
-                        <CFormInput type="number" />
+                                <CFormLabel>Venue / Facility Costs</CFormLabel>
+                                <CFormInput type="number" />
 
-                        <CFormLabel>Contingency Fund</CFormLabel>
-                        <CFormInput type="number" />
+                                <CFormLabel>Travel & Accommodation</CFormLabel>
+                                <CFormInput type="number" />
+
+                                <CFormLabel>Contingency Fund</CFormLabel>
+                                <CFormInput type="number" />
+
+                                <CButton
+                                    color="secondary"
+                                    onClick={handlePreviousStep}
+                                    className="mt-3"
+                                >
+                                    Back
+                                </CButton>
+                                <CButton
+                                    color="primary"
+                                    onClick={handleAddBudget}
+                                    className="mt-3 ms-2"
+                                >
+                                    Save
+                                </CButton>
+                            </>
+                        )}
                     </CForm>
                 </CModalBody>
-                <CModalFooter>
-                    <CButton color="secondary" onClick={() => setModalVisible(false)}>
-                        Cancel
-                    </CButton>
-                    <CButton color="primary" onClick={handleAddBudget}>
-                        Save
-                    </CButton>
-                </CModalFooter>
             </CModal>
         </CRow>
     )
