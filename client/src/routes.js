@@ -36,11 +36,11 @@ const routes = [
     { path: '/ui/TalentManagement', name: 'TalentManagement', element: TalentManagement },
     { path: '/ui/EmployeeManagement', name: 'Employee', element: EmployeeManagement },
     {
-        path: '/ui/EmployeeManagement/AccessControl/index',
+        path: '/ui/EmployeeManagement/AccessControl',
         name: 'Access Control',
         element: AccessControl,
     },
-    { path: '/ui/BudgetManagement/index', name: 'BudgetReports', element: BudgetReports },
+    { path: '/ui/BudgetManagement', name: 'BudgetReports', element: BudgetReports },
     { path: '/ui/TrainingEngagement', name: 'TrainingEngagement', element: TrainingEngagement },
     { path: '/widgets', name: 'Widgets', element: Widgets },
 ]

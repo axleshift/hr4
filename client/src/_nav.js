@@ -28,19 +28,19 @@ const navItems = [
         component: CNavGroup,
         name: 'Employee Management',
         icon: <CIcon icon={cilNotes} customClassName="nav-icon" />,
-        permission: ['superadmin'],
+        permission: ['superadmin', 'admin', 'staff', 'employee'],
         items: [
             {
                 component: CNavItem,
                 name: 'Employee',
                 to: '/ui/EmployeeManagement',
-                permission: ['superadmin'],
+                permission: ['superadmin', 'admin', 'staff', 'employee'],
             },
             {
                 component: CNavItem,
                 name: 'Access Control',
-                to: '/ui/EmployeeManagemen/AccessControl/index',
-                permission: ['superadmin'],
+                to: '/ui/EmployeeManagemen/AccessControl',
+                permission: ['superadmin', 'admin', 'staff', 'employee'],
             },
         ],
     },
