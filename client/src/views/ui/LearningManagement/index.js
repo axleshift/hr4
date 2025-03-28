@@ -24,9 +24,6 @@ import {
     CTableDataCell,
 } from '@coreui/react'
 
-// Set API Base URL dynamically
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://hr4.axleshift.com/api'
-
 const LMS = () => {
     const [visibleXL, setVisibleXL] = useState(false)
     const [modules, setModules] = useState([])

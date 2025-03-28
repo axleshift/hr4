@@ -21,7 +21,6 @@ import {
     CFormInput,
     CFormLabel,
 } from '@coreui/react'
-import axios from 'axios'
 
 const TrainingSchedule = () => {
     const [visibleXL, setVisibleXL] = useState(false)

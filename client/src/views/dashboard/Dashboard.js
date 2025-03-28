@@ -25,7 +25,7 @@ const Dashboard = () => {
 
     const fetchTrainings = async () => {
         try {
-            const response = await axios.get('http://localhost:8000/api/training')
+            const response = await api.get('/training')
             setTrainings(response.data.data)
         } catch (error) {
             console.error('Error fetching trainings:', error)
