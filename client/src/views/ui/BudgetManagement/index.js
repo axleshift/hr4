@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import api from '../../../util/api'
 import {
     CCard,
     CCardBody,
@@ -20,13 +21,18 @@ import {
 
 const BudgetReports = () => {
     const [budgets, setBudgets] = useState([])
+    const [setformId, setFormId] = useState('')
     const [programName, setProgramName] = useState('')
     const [cost, setCost] = useState('')
     const [status, setStatus] = useState('Pending')
 
     const handleAddBudget = () => {
         if (programName && cost) {
-            setBudgets([...budgets, { id: budgets.length + 1, programName, cost, status }])
+            setBudgets([
+                ...budgets,
+                { id: budgets.length + 1, setformId, programName, cost, status },
+            ])
+            setFormId('')
             setProgramName('')
             setCost('')
         }
@@ -71,6 +77,7 @@ const BudgetReports = () => {
                     <CTableHead>
                         <CTableRow>
                             <CTableHeaderCell>ID</CTableHeaderCell>
+                            <CTableHeaderCell>Form ID</CTableHeaderCell>
                             <CTableHeaderCell>Training Program</CTableHeaderCell>
                             <CTableHeaderCell>Status</CTableHeaderCell>
                             <CTableHeaderCell>Action</CTableHeaderCell>
@@ -81,6 +88,7 @@ const BudgetReports = () => {
                             budgets.map((budget) => (
                                 <CTableRow key={budget.id}>
                                     <CTableDataCell>{budget.id}</CTableDataCell>
+                                    <CTableDataCell>{Form.id}</CTableDataCell>
                                     <CTableDataCell>{budget.programName}</CTableDataCell>
                                     <CTableDataCell>{budget.status}</CTableDataCell>
                                     <CTableDataCell>
@@ -92,7 +100,7 @@ const BudgetReports = () => {
                             ))
                         ) : (
                             <CTableRow>
-                                <CTableDataCell colSpan="4" className="text-center">
+                                <CTableDataCell colSpan="5" className="text-center">
                                     No Budget Reports Available
                                 </CTableDataCell>
                             </CTableRow>

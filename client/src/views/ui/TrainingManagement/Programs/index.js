@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+import api from '../../../util/api'
 import {
     CFormTextarea,
     CAccordion,
@@ -43,7 +43,7 @@ const TrainingDelivery = () => {
     useEffect(() => {
         const fetchPrograms = async () => {
             try {
-                const response = await axios.get(`${API_BASE_URL}/programs`)
+                const response = await api.get(`/programs`)
                 setPrograms(response.data.data)
             } catch (error) {
                 console.error('Error fetching programs:', error)
