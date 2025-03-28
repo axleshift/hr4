@@ -52,22 +52,13 @@ const Login = () => {
             sessionStorage.setItem('name', user.name)
             sessionStorage.setItem('email', user.email)
 
-            // Redirect based on role
-            switch (user.role) {
-                case 'superadmin':
-                    navigate('/dashboard')
-                    break
-                case 'manager':
-                    navigate('/dashboard')
-                    break
-                default:
-                    navigate('/dashboard')
-                    break
-            }
+            navigate('/dashboard')
         } catch (err) {
-            const message =
-                err.response?.data?.message || 'Login failed. Please check your credentials.'
-            setAlert({ visible: true, type: 'danger', message })
+            setAlert({
+                visible: true,
+                type: 'danger',
+                message: err.response?.data?.message || 'Login failed. Please try again.',
+            })
         } finally {
             setLoading(false)
         }
@@ -94,9 +85,7 @@ const Login = () => {
                                             Sign in to your account
                                         </p>
                                         {alert.visible && (
-                                            <CAlert color={alert.type} className="mb-3">
-                                                {alert.message}
-                                            </CAlert>
+                                            <CAlert color={alert.type}>{alert.message}</CAlert>
                                         )}
 
                                         <CInputGroup className="mb-3">
@@ -130,36 +119,13 @@ const Login = () => {
                                                 <CButton
                                                     type="submit"
                                                     color="primary"
-                                                    className="px-4"
                                                     disabled={loading}
                                                 >
                                                     {loading ? <CSpinner size="sm" /> : 'Login'}
                                                 </CButton>
                                             </CCol>
-                                            <CCol xs={6} className="text-right">
-                                                <Link
-                                                    to="/ForgotPassword"
-                                                    className="text-decoration-none"
-                                                >
-                                                    Forgot password?
-                                                </Link>
-                                            </CCol>
                                         </CRow>
                                     </CForm>
-                                </CCardBody>
-                            </CCard>
-
-                            <CCard className="text-white bg-primary py-5" style={{ width: '44%' }}>
-                                <CCardBody className="text-center">
-                                    <div>
-                                        <h2>Sign up</h2>
-                                        <p>Create an account to get started</p>
-                                        <Link to="/register">
-                                            <CButton color="light" className="mt-3">
-                                                Register Now!
-                                            </CButton>
-                                        </Link>
-                                    </div>
                                 </CCardBody>
                             </CCard>
                         </CCardGroup>

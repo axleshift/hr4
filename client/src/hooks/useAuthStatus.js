@@ -14,13 +14,13 @@ const useAuthStatus = () => {
             dispatch({ type: 'SET_SESSION_ID', payload: session_id })
             setStatus('authenticated')
         } catch (error) {
-            if (Cookies.get('dcims')) Cookies.remove('dcims')
+            if (Cookies.get('session_id')) Cookies.remove('session_id')
             setStatus('unauthenticated')
         }
     }
 
     useEffect(() => {
-        const sessionId = Cookies.get('dcims')
+        const sessionId = Cookies.get('session_id')
         if (sessionId) {
             checkAuthStatus(sessionId)
         } else {
