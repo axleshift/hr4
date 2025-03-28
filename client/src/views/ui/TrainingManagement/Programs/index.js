@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
 import {
     CFormTextarea,
     CAccordion,
@@ -43,7 +42,7 @@ const TrainingDelivery = () => {
     useEffect(() => {
         const fetchPrograms = async () => {
             try {
-                const response = await axios.get('http://localhost:8000/api/programs')
+                const response = await api.get('/programs')
                 setPrograms(response.data.data)
             } catch (error) {
                 console.error('Error fetching programs:', error)
@@ -55,7 +54,7 @@ const TrainingDelivery = () => {
     useEffect(() => {
         const fetchCourses = async () => {
             try {
-                const response = await axios.get('http://localhost:8000/api/courses')
+                const response = await api.get('/courses')
                 console.log('Courses fetched:', response.data) // Log response to check structure
                 setCourses(response.data.data) // Ensure correct data assignment
             } catch (error) {
@@ -67,7 +66,7 @@ const TrainingDelivery = () => {
 
     const handleSaveProgram = async () => {
         try {
-            const response = await axios.post('http://localhost:8000/api/programs', {
+            const response = await api.post('/programs', {
                 title: programTitle,
                 description: programDescription,
             })
@@ -90,7 +89,7 @@ const TrainingDelivery = () => {
 
     const handleSaveCourse = async () => {
         try {
-            const response = await axios.post('http://localhost:8000/api/courses', {
+            const response = await api.post('/courses', {
                 title: courseTitle,
                 description: courseDescription,
                 duration: courseDuration,
