@@ -12,6 +12,8 @@ import {
 import CIcon from '@coreui/icons-react'
 import { cilUser, cilEnvelopeOpen } from '@coreui/icons'
 import avatar8 from './../../assets/images/avatars/8.jpg'
+import api from '../../util/api'
+import Cookies from 'js-cookie'
 
 const AppHeaderDropdown = () => {
     const navigate = useNavigate()
@@ -23,6 +25,19 @@ const AppHeaderDropdown = () => {
             setUser(JSON.parse(storedUser))
         }
     }, [])
+
+    const handleLogout = async () => {
+        try {
+            await api.post('/api/auth/logout') // Inform backend to destroy session
+        } catch (error) {
+            console.error('Logout failed:', error)
+        } finally {
+            localStorage.removeItem('user')
+            sessionStorage.clear()
+            Cookies.remove('session_id') // Remove auth cookie
+            navigate('/login')
+        }
+    }
 
     return (
         <CDropdown variant="nav-item">
@@ -42,14 +57,7 @@ const AppHeaderDropdown = () => {
                     Messages
                 </CDropdownItem>
                 <CDropdownDivider />
-                <CDropdownItem
-                    onClick={() => {
-                        localStorage.removeItem('user')
-                        navigate('/login')
-                    }}
-                >
-                    Logout
-                </CDropdownItem>
+                <CDropdownItem onClick={handleLogout}>Logout</CDropdownItem>
             </CDropdownMenu>
         </CDropdown>
     )
