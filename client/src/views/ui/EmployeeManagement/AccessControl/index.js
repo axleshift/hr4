@@ -24,18 +24,6 @@ const mockEmployees = [
 ]
 
 const AccessControl = () => {
-    const [employees, setEmployees] = useState([])
-
-    const fetchEmployees = async () => {
-        try {
-            const response = await api.get(`/api/users`)
-            setEmployees(response.data)
-        } catch (error) {
-            console.error('Error fetching employees:', error)
-            setEmployees(mockEmployees) // Use mock data if API call fails
-        }
-    }
-
     return (
         <CRow>
             <CCol xs={12}>
@@ -65,7 +53,7 @@ const AccessControl = () => {
                                 </CTableRow>
                             </CTableHead>
                             <CTableBody>
-                                {employees.map((emp) => (
+                                {mockEmployees.map((emp) => (
                                     <CTableRow key={emp.id}>
                                         <CTableDataCell>{emp.name}</CTableDataCell>
                                         <CTableDataCell>{emp.email}</CTableDataCell>
