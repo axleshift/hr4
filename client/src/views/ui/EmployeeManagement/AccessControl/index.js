@@ -17,6 +17,12 @@ import {
 import CIcon from '@coreui/icons-react'
 import { cilUserPlus, cilOptions } from '@coreui/icons'
 
+const mockEmployees = [
+    { id: 1, name: 'John Doe', email: 'john.doe@example.com', role: { name: 'Admin' } },
+    { id: 2, name: 'Jane Smith', email: 'jane.smith@example.com', role: { name: 'Manager' } },
+    { id: 3, name: 'Mike Johnson', email: 'mike.johnson@example.com', role: { name: 'Employee' } },
+]
+
 const AccessControl = () => {
     const [employees, setEmployees] = useState([])
 
@@ -30,6 +36,7 @@ const AccessControl = () => {
             setEmployees(response.data)
         } catch (error) {
             console.error('Error fetching employees:', error)
+            setEmployees(mockEmployees) // Use mock data if API call fails
         }
     }
 
@@ -62,8 +69,8 @@ const AccessControl = () => {
                                 </CTableRow>
                             </CTableHead>
                             <CTableBody>
-                                {employees.map((emp, index) => (
-                                    <CTableRow key={index}>
+                                {employees.map((emp) => (
+                                    <CTableRow key={emp.id}>
                                         <CTableDataCell>{emp.name}</CTableDataCell>
                                         <CTableDataCell>{emp.email}</CTableDataCell>
                                         <CTableDataCell className="text-center">
