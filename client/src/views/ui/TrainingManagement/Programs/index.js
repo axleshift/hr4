@@ -55,7 +55,7 @@ const TrainingDelivery = () => {
     useEffect(() => {
         const fetchCourses = async () => {
             try {
-                const response = await axios.get(`${API_BASE_URL}/courses`)
+                const response = await api.get(`/courses`)
                 console.log('Courses fetched:', response.data) // Log response to check structure
                 setCourses(response.data.data) // Ensure correct data assignment
             } catch (error) {
@@ -67,7 +67,7 @@ const TrainingDelivery = () => {
 
     const handleSaveProgram = async () => {
         try {
-            const response = await axios.get(`${API_BASE_URL}/programs`, {
+            const response = await api.get(`/programs`, {
                 title: programTitle,
                 description: programDescription,
             })

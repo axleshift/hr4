@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import api from '../../util/api'
 import {
     CButton,
     CCard,
@@ -30,7 +31,7 @@ const ModuleList = () => {
 
     const fetchModules = async () => {
         try {
-            const response = await axios.get(`${API_BASE_URL}/modules`)
+            const response = await api.get(`/modules`)
             setModules(response.data.data)
         } catch (error) {
             console.error('Error fetching modules:', error)
@@ -40,7 +41,7 @@ const ModuleList = () => {
     // Fetch Base64 preview for PDF & DOCX
     const fetchDocPreview = async (id) => {
         try {
-            const response = await axios.get(`${API_BASE_URL}/modules/${id}/preview`)
+            const response = await api.get(`/modules/${id}/preview`)
             setBase64Doc(response.data.base64)
             setMimeType(response.data.mime_type)
             setModalVisible(true)

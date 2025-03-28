@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+import api from '../../util/api'
 import {
     CCard,
     CCardBody,
@@ -26,7 +26,7 @@ const AccessControl = () => {
 
     const fetchEmployees = async () => {
         try {
-            const response = await axios.get(`${API_BASE_URL}/users`)
+            const response = await api.get(`/users`)
             setEmployees(response.data)
         } catch (error) {
             console.error('Error fetching employees:', error)

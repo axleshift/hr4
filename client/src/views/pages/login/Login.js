@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import api from '../../util/api'
 import {
     CButton,
     CCard,
@@ -15,7 +16,6 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
-import axios from 'axios'
 import Cookies from 'js-cookie'
 
 const Login = () => {
@@ -28,8 +28,8 @@ const Login = () => {
     useEffect(() => {
         const checkSession = async () => {
             try {
-                const response = await axios.get(
-                    `${API_BASE_URL}/auth/verify-session`,
+                const response = await api.get(
+                    `/auth/verify-session`,
                     {},
                     { withCredentials: true },
                 )
