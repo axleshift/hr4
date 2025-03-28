@@ -32,7 +32,7 @@ const Login = () => {
 
         try {
             const response = await api.post(
-                '/auth/login',
+                '/api/auth/login',
                 { email, password },
                 { withCredentials: true }, // Enables session-based authentication
             )
@@ -42,7 +42,7 @@ const Login = () => {
             localStorage.setItem('user', JSON.stringify(user))
 
             if (user.role === 'superadmin') {
-                navigate('/ui/EmployeeManagement/AccessControl/index')
+                navigate('/dashboard')
             } else {
                 navigate('/dashboard')
             }
