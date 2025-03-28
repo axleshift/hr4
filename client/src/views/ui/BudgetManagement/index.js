@@ -148,42 +148,50 @@ const BudgetReports = () => {
                     <CForm>
                         {step === 1 && (
                             <>
-                                {/* Training Project Section */}
                                 <CRow className="mb-3">
                                     <CCol>
                                         <h5 className="fw-bold">TRAINING PROJECT</h5>
                                     </CCol>
                                 </CRow>
                                 <CFormLabel>Training Program Name</CFormLabel>
-                                <CFormInput
+                                <CFormSelect
                                     value={programName}
                                     onChange={(e) => setProgramName(e.target.value)}
-                                />
+                                >
+                                    <option value="">Select Program</option>
+                                    <option value="Program 1">Program 1</option>
+                                    <option value="Program 2">Program 2</option>
+                                </CFormSelect>
 
                                 <CFormLabel>Training Course Name</CFormLabel>
-                                <CFormInput
+                                <CFormSelect
                                     value={courseName}
                                     onChange={(e) => setCourseName(e.target.value)}
-                                />
-
-                                <CFormLabel>Training Date</CFormLabel>
-                                <CFormInput
-                                    type="date"
-                                    value={trainingDate}
-                                    onChange={(e) => setTrainingDate(e.target.value)}
-                                />
+                                >
+                                    <option value="">Select Course</option>
+                                    <option value="Course A">Course A</option>
+                                    <option value="Course B">Course B</option>
+                                </CFormSelect>
 
                                 <CFormLabel>Department</CFormLabel>
-                                <CFormInput
+                                <CFormSelect
                                     value={department}
                                     onChange={(e) => setDepartment(e.target.value)}
-                                />
+                                >
+                                    <option value="">Select Department</option>
+                                    <option value="HR">HR</option>
+                                    <option value="Finance">Finance</option>
+                                </CFormSelect>
 
                                 <CFormLabel>Participant</CFormLabel>
-                                <CFormInput
+                                <CFormSelect
                                     value={participant}
                                     onChange={(e) => setParticipant(e.target.value)}
-                                />
+                                >
+                                    <option value="">Select Participant</option>
+                                    <option value="Employee 1">Employee 1</option>
+                                    <option value="Employee 2">Employee 2</option>
+                                </CFormSelect>
 
                                 <CButton color="primary" onClick={handleNextStep} className="mt-3">
                                     Next
