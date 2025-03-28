@@ -1,6 +1,5 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-
 import {
     CCloseButton,
     CSidebar,
@@ -9,19 +8,17 @@ import {
     CSidebarHeader,
     CSidebarToggler,
 } from '@coreui/react'
-
 import { AppSidebarNav } from './AppSidebarNav'
-
-// Import the logo image
 import logoImage from 'src/assets/images/hr4.png'
-
-// sidebar nav config
 import navigation from '../_nav'
 
 const AppSidebar = () => {
     const dispatch = useDispatch()
     const unfoldable = useSelector((state) => state.sidebarUnfoldable)
     const sidebarShow = useSelector((state) => state.sidebarShow)
+
+    // Get the role from sessionStorage
+    const role = sessionStorage.getItem('role') || 'employee'
 
     return (
         <CSidebar
@@ -45,7 +42,7 @@ const AppSidebar = () => {
                     onClick={() => dispatch({ type: 'set', sidebarShow: false })}
                 />
             </CSidebarHeader>
-            <AppSidebarNav items={navigation} />
+            <AppSidebarNav items={navigation(role)} />
             <CSidebarFooter className="border-top d-none d-lg-flex">
                 <CSidebarToggler
                     onClick={() => dispatch({ type: 'set', sidebarUnfoldable: !unfoldable })}

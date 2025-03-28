@@ -10,7 +10,7 @@ const useAuthStatus = () => {
     const checkAuthStatus = useCallback(
         async (session_id) => {
             try {
-                const response = await api.post('/auth/verify-session', { session_id })
+                const response = await api.post('/api/auth/verify-session', { session_id })
 
                 if (response.data.user) {
                     dispatch({ type: 'SET_USER', payload: response.data.user })
