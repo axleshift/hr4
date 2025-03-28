@@ -25,25 +25,6 @@ const Login = () => {
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
 
-    useEffect(() => {
-        const checkSession = async () => {
-            try {
-                const response = await api.get(
-                    `/auth/verify-session`,
-                    {},
-                    { withCredentials: true },
-                )
-
-                if (response.data.user) {
-                    navigate('/dashboard')
-                }
-            } catch (err) {
-                console.log('Session invalid or expired')
-            }
-        }
-        checkSession()
-    }, [navigate])
-
     const handleSubmit = async (e) => {
         e.preventDefault()
         setError('')

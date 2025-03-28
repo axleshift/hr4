@@ -1,6 +1,7 @@
 import React, { Suspense, useEffect } from 'react'
-import { HashRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter as Router, HashRouter, Routes, Route } from 'react-router-dom'
 import { useSelector } from 'react-redux'
+import ProtectedRoute from './util/ProtectedRoute'
 
 import { CSpinner, useColorModes } from '@coreui/react'
 import './scss/style.scss'
@@ -34,7 +35,7 @@ const App = () => {
     }, [isColorModeSet, setColorMode, storedTheme])
 
     return (
-        <HashRouter>
+        <Router>
             <Suspense
                 fallback={
                     <div className="pt-3 text-center">
@@ -43,7 +44,9 @@ const App = () => {
                 }
             >
                 <Routes>
-                    <Route exact path="/" name="Dashboard" element={<DefaultLayout />} />
+                    <Route element={<ProtectedRoute />}>
+                        <Route path="*" element={<DefaultLayout />} />
+                    </Route>
                     <Route exact path="/login" name="Login Page" element={<Login />} />
                     <Route exact path="/register" name="Register Page" element={<Register />} />
                     <Route exact path="/database" name="Database" element={<Database />} />
@@ -52,7 +55,7 @@ const App = () => {
                     <Route path="*" name="Home" element={<DefaultLayout />} />
                 </Routes>
             </Suspense>
-        </HashRouter>
+        </Router>
     )
 }
 
