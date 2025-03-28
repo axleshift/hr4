@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import axios from 'axios'
 import {
     CBadge,
     CButton,
@@ -41,7 +42,7 @@ const TrainingSchedule = () => {
 
     const fetchTrainings = async () => {
         try {
-            const response = await api.get('/training')
+            const response = await axios.get(`${API_BASE_URL}/training`)
             setTrainings(response.data.data)
         } catch (error) {
             console.error('Error fetching trainings:', error)
@@ -56,7 +57,7 @@ const TrainingSchedule = () => {
     const handleSubmit = async (e) => {
         e.preventDefault()
         try {
-            await api.post('/training', formData)
+            await axios.post(`${API_BASE_URL}/training`, formData)
             setVisibleXL(false)
             fetchTrainings()
             setFormData({

@@ -28,10 +28,10 @@ const Login = () => {
     useEffect(() => {
         const checkSession = async () => {
             try {
-                const response = await axios.post(
-                    'http://localhost:8000/api/auth/verify-session',
+                const response = await axios.get(
+                    `${API_BASE_URL}/auth/verify-session`,
                     {},
-                    { withCredentials: true }, // Ensure session cookies are sent
+                    { withCredentials: true },
                 )
 
                 if (response.data.user) {
