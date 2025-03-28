@@ -39,7 +39,7 @@ const navItems = [
             {
                 component: CNavItem,
                 name: 'Access Control',
-                to: '/ui/EmployeeManagemen/AccessControl',
+                to: '/ui/EmployeeManagemen/AccessControl/index',
                 permission: ['superadmin'],
             },
         ],

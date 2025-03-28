@@ -44,18 +44,6 @@ const BudgetReports = () => {
     const handleNextStep = () => setStep(2)
     const handlePreviousStep = () => setStep(1)
 
-    useEffect(() => {
-        const fetchPrograms = async () => {
-            try {
-                const response = await api.get(`/api/programs`)
-                setPrograms(response.data.data)
-            } catch (error) {
-                console.error('Error fetching programs:', error)
-            }
-        }
-        fetchPrograms()
-    }, [])
-
     const handleAddBudget = () => {
         if (programName && cost) {
             setBudgets([
@@ -174,11 +162,8 @@ const BudgetReports = () => {
                                     onChange={(e) => setProgramName(e.target.value)}
                                 >
                                     <option value="">Select Program</option>
-                                    {programs.map((program) => (
-                                        <option key={program.id} value={program.id}>
-                                            {program.title}
-                                        </option>
-                                    ))}
+                                    <option value="Program 1">Program 1</option>
+                                    <option value="Program 2">Program 2</option>
                                 </CFormSelect>
 
                                 <CFormLabel>Training Course Name</CFormLabel>
