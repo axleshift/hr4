@@ -47,12 +47,13 @@ const BudgetReports = () => {
     useEffect(() => {
         const fetchPrograms = async () => {
             try {
-                const response = await api.get(`/api/programs`)
+                const response = await api.get('/api/programs') // Make sure your backend route is correct
                 setPrograms(response.data.data)
             } catch (error) {
                 console.error('Error fetching programs:', error)
             }
         }
+
         fetchPrograms()
     }, [])
 
@@ -167,15 +168,17 @@ const BudgetReports = () => {
                                         <h5 className="fw-bold">TRAINING PROJECT</h5>
                                     </CCol>
                                 </CRow>
-
                                 <CFormLabel>Training Program Name</CFormLabel>
                                 <CFormSelect
                                     value={programName}
                                     onChange={(e) => setProgramName(e.target.value)}
                                 >
                                     <option value="">Select Program</option>
-                                    <option value="Program 1">Program 1</option>
-                                    <option value="Program 2">Program 2</option>
+                                    {programs.map((program) => (
+                                        <option key={program.id} value={program.title}>
+                                            {program.title}
+                                        </option>
+                                    ))}
                                 </CFormSelect>
 
                                 <CFormLabel>Training Course Name</CFormLabel>
@@ -208,11 +211,7 @@ const BudgetReports = () => {
                                     <option value="Employee 2">Employee 2</option>
                                 </CFormSelect>
 
-                                <CButton
-                                    color="primary"
-                                    onClick={() => setStep(2)}
-                                    className="mt-3"
-                                >
+                                <CButton color="primary" onClick={handleNextStep} className="mt-3">
                                     Next
                                 </CButton>
                             </>
