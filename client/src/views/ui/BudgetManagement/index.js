@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import api from '../../../util/api'
 import {
     CCard,
@@ -56,6 +56,22 @@ const BudgetReports = () => {
 
         fetchPrograms()
     }, [])
+
+    const handleProgramChange = async (e) => {
+        const programId = e.target.value
+        setProgramName(programId)
+
+        if (programId) {
+            try {
+                const response = await api.get(`/api/courses?program_id=${programId}`)
+                setCourses(response.data.data)
+            } catch (error) {
+                console.error('Error fetching courses:', error)
+            }
+        } else {
+            setCourses([])
+        }
+    }
 
     const handleAddBudget = () => {
         if (programName && cost) {
@@ -169,13 +185,13 @@ const BudgetReports = () => {
                                     </CCol>
                                 </CRow>
                                 <CFormLabel>Training Program Name</CFormLabel>
-                                <CFormSelect
-                                    value={courseName}
-                                    onChange={(e) => setProgramName(e.target.value)}
-                                >
+                                <CFormSelect value={programName} onChange={handleProgramChange}>
                                     <option value="">Select Program</option>
-                                    <option value="Course A">Program A</option>
-                                    <option value="Course B">Program B</option>
+                                    {programs.map((program) => (
+                                        <option key={program.id} value={program.id}>
+                                            {program.title}
+                                        </option>
+                                    ))}
                                 </CFormSelect>
 
                                 <CFormLabel>Training Course Name</CFormLabel>
@@ -184,8 +200,11 @@ const BudgetReports = () => {
                                     onChange={(e) => setCourseName(e.target.value)}
                                 >
                                     <option value="">Select Course</option>
-                                    <option value="Course A">Course A</option>
-                                    <option value="Course B">Course B</option>
+                                    {courses.map((course) => (
+                                        <option key={course.id} value={course.title}>
+                                            {course.title}
+                                        </option>
+                                    ))}
                                 </CFormSelect>
 
                                 <CTable striped>
