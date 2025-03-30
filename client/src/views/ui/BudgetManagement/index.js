@@ -47,7 +47,7 @@ const BudgetReports = () => {
     useEffect(() => {
         const fetchPrograms = async () => {
             try {
-                const response = await api.get('/api/programs') // Make sure your backend route is correct
+                const response = await api.get('/api/programs')
                 setPrograms(response.data.data)
             } catch (error) {
                 console.error('Error fetching programs:', error)
@@ -170,15 +170,12 @@ const BudgetReports = () => {
                                 </CRow>
                                 <CFormLabel>Training Program Name</CFormLabel>
                                 <CFormSelect
-                                    value={programName}
+                                    value={courseName}
                                     onChange={(e) => setProgramName(e.target.value)}
                                 >
                                     <option value="">Select Program</option>
-                                    {programs.map((program) => (
-                                        <option key={program.id} value={program.title}>
-                                            {program.title}
-                                        </option>
-                                    ))}
+                                    <option value="Course A">Program A</option>
+                                    <option value="Course B">Program B</option>
                                 </CFormSelect>
 
                                 <CFormLabel>Training Course Name</CFormLabel>
@@ -191,25 +188,38 @@ const BudgetReports = () => {
                                     <option value="Course B">Course B</option>
                                 </CFormSelect>
 
-                                <CFormLabel>Department</CFormLabel>
-                                <CFormSelect
-                                    value={department}
-                                    onChange={(e) => setDepartment(e.target.value)}
-                                >
-                                    <option value="">Select Department</option>
-                                    <option value="HR">HR</option>
-                                    <option value="Finance">Finance</option>
-                                </CFormSelect>
-
-                                <CFormLabel>Participant</CFormLabel>
-                                <CFormSelect
-                                    value={participant}
-                                    onChange={(e) => setParticipant(e.target.value)}
-                                >
-                                    <option value="">Select Participant</option>
-                                    <option value="Employee 1">Employee 1</option>
-                                    <option value="Employee 2">Employee 2</option>
-                                </CFormSelect>
+                                <CTable striped>
+                                    <CTableHead>
+                                        <CTableRow>
+                                            <CTableHeaderCell>Department</CTableHeaderCell>
+                                            <CTableHeaderCell>Participant</CTableHeaderCell>
+                                        </CTableRow>
+                                    </CTableHead>
+                                    <CTableBody>
+                                        <CTableRow>
+                                            <CTableDataCell>
+                                                <CFormSelect
+                                                    value={department}
+                                                    onChange={(e) => setDepartment(e.target.value)}
+                                                >
+                                                    <option value="">Select Department</option>
+                                                    <option value="HR">HR</option>
+                                                    <option value="Finance">Finance</option>
+                                                </CFormSelect>
+                                            </CTableDataCell>
+                                            <CTableDataCell>
+                                                <CFormSelect
+                                                    value={participant}
+                                                    onChange={(e) => setParticipant(e.target.value)}
+                                                >
+                                                    <option value="">Select Participant</option>
+                                                    <option value="Employee 1">Employee 1</option>
+                                                    <option value="Employee 2">Employee 2</option>
+                                                </CFormSelect>
+                                            </CTableDataCell>
+                                        </CTableRow>
+                                    </CTableBody>
+                                </CTable>
 
                                 <CButton color="primary" onClick={handleNextStep} className="mt-3">
                                     Next
