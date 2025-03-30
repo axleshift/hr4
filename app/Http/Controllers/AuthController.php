@@ -9,6 +9,23 @@ use App\Models\User;
 
 class AuthController extends Controller
 {
+
+    public function index()
+    {
+        $users = User::with('role')->get();
+
+        return response()->json([
+            'data' => $users->map(function ($user) {
+                return [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'role' => $user->role->name ?? 'No Role',
+                ];
+            }),
+        ]);
+    }
+
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -18,6 +35,7 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
+            $sessionId = $request->session()->getId();
             $user = Auth::user();
 
             return response()->json([
@@ -27,7 +45,7 @@ class AuthController extends Controller
                     'email' => $user->email,
                     'role' => $user->role->name ?? 'No Role',
                 ],
-                'session_id' => $request->session()->getId(),
+                'session_id' => $sessionId,
             ]);
         }
 
@@ -36,7 +54,9 @@ class AuthController extends Controller
 
     public function verifySession(Request $request)
     {
-        if (Auth::check()) {
+        $sessionId = $request->input('session_id');
+
+        if (Session::getId() === $sessionId && Auth::check()) {
             $user = Auth::user();
 
             return response()->json([
