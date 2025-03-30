@@ -1,158 +1,112 @@
 import React from 'react'
 import CIcon from '@coreui/icons-react'
-import {
-    cilBell,
-    cilCalculator,
-    cilChartPie,
-    cilPeople,
-    cilHome,
-    cilBook,
-    cilNotes,
-    cilCommentBubble,
-    cilMoney,
-    cilSpeedometer,
-    cilStar,
-} from '@coreui/icons'
+import { cilHome, cilNotes, cilBook, cilCommentBubble, cilMoney, cilStar } from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 
-// Define all navigation items with permissions
+// Define navigation items with permissions
 const navItems = [
     {
-        component: CNavItem,
         name: 'Dashboard',
         to: '/dashboard',
-        icon: <CIcon icon={cilHome} customClassName="nav-icon" />,
-        permission: ['superadmin', 'admin', 'staff', 'employee'],
+        icon: cilHome,
+        roles: ['superadmin', 'admin', 'staff', 'employee'],
     },
     {
-        component: CNavGroup,
         name: 'Employee Management',
-        icon: <CIcon icon={cilNotes} customClassName="nav-icon" />,
-        permission: ['superadmin', 'admin', 'staff', 'employee'],
+        icon: cilNotes,
+        roles: ['superadmin', 'admin', 'staff', 'employee'],
         items: [
             {
-                component: CNavItem,
                 name: 'Employee',
                 to: '/ui/EmployeeManagement',
-                permission: ['superadmin', 'admin', 'staff', 'employee'],
+                roles: ['superadmin', 'admin', 'staff', 'employee'],
             },
             {
-                component: CNavItem,
                 name: 'Access Control',
                 to: '/ui/EmployeeManagemen/AccessControl',
-                permission: ['superadmin', 'admin', 'staff', 'employee'],
+                roles: ['superadmin', 'admin', 'staff', 'employee'],
             },
         ],
     },
     {
-        component: CNavGroup,
         name: 'Learning Management',
-        icon: <CIcon icon={cilBook} customClassName="nav-icon" />,
-        permission: ['superadmin', 'admin', 'staff'],
+        icon: cilBook,
+        roles: ['superadmin', 'admin', 'staff'],
         items: [
+            { name: 'LMS', to: '/ui/LearningManagement/index', roles: ['superadmin', 'admin'] },
             {
-                component: CNavItem,
-                name: 'LMS',
-                to: '/ui/LearningManagement/index',
-                permission: ['superadmin', 'admin'],
-            },
-            {
-                component: CNavItem,
                 name: 'Module',
                 to: '/ui/LearningManagement/Modules/index',
-                permission: ['superadmin', 'admin', 'staff'],
+                roles: ['superadmin', 'admin', 'staff'],
             },
         ],
     },
     {
-        component: CNavGroup,
         name: 'Training Management',
-        icon: <CIcon icon={cilNotes} customClassName="nav-icon" />,
-        permission: ['superadmin', 'admin', 'staff'],
+        icon: cilNotes,
+        roles: ['superadmin', 'admin', 'staff'],
         items: [
             {
-                component: CNavItem,
                 name: 'Programs',
                 to: '/ui/TrainingManagement/Programs',
-                permission: ['superadmin', 'admin'],
+                roles: ['superadmin', 'admin'],
             },
             {
-                component: CNavItem,
                 name: 'Schedule',
                 to: '/ui/TrainingManagement/Schedule',
-                permission: ['superadmin', 'admin', 'staff'],
+                roles: ['superadmin', 'admin', 'staff'],
             },
         ],
     },
     {
-        component: CNavItem,
         name: 'Budget Management',
         to: '/ui/BudgetManagement',
-        icon: <CIcon icon={cilMoney} customClassName="nav-icon" />,
-        permission: ['superadmin', 'admin'],
+        icon: cilMoney,
+        roles: ['superadmin', 'admin'],
     },
     {
-        component: CNavItem,
         name: 'Evaluation And Feedback',
         to: '/ui/TrainingEngagement',
-        icon: <CIcon icon={cilCommentBubble} customClassName="nav-icon" />,
-        permission: ['superadmin', 'admin', 'staff', 'employee'],
+        icon: cilCommentBubble,
+        roles: ['superadmin', 'admin', 'staff', 'employee'],
     },
+    { name: 'Extras', type: 'title', roles: ['superadmin', 'admin'] },
     {
-        component: CNavTitle,
-        name: 'Extras',
-        permission: ['superadmin', 'admin'],
-    },
-    {
-        component: CNavGroup,
         name: 'Pages',
-        icon: <CIcon icon={cilStar} customClassName="nav-icon" />,
-        permission: ['superadmin', 'admin'],
+        icon: cilStar,
+        roles: ['superadmin', 'admin'],
         items: [
-            {
-                component: CNavItem,
-                name: 'Login',
-                to: '/login',
-                permission: ['superadmin', 'admin', 'staff', 'employee'],
-            },
-            {
-                component: CNavItem,
-                name: 'Database',
-                to: '/database',
-                permission: ['superadmin'],
-            },
-            {
-                component: CNavItem,
-                name: 'Register',
-                to: '/register',
-                permission: ['superadmin'],
-            },
-            {
-                component: CNavItem,
-                name: 'Error 404',
-                to: '/404',
-                permission: ['superadmin', 'admin', 'staff', 'employee'],
-            },
-            {
-                component: CNavItem,
-                name: 'Error 500',
-                to: '/500',
-                permission: ['superadmin', 'admin', 'staff', 'employee'],
-            },
+            { name: 'Login', to: '/login', roles: ['superadmin', 'admin', 'staff', 'employee'] },
+            { name: 'Database', to: '/database', roles: ['superadmin'] },
+            { name: 'Register', to: '/register', roles: ['superadmin'] },
+            { name: 'Error 404', to: '/404', roles: ['superadmin', 'admin', 'staff', 'employee'] },
+            { name: 'Error 500', to: '/500', roles: ['superadmin', 'admin', 'staff', 'employee'] },
         ],
     },
 ]
 
-// Function to filter nav items based on user role
-const _nav = (role) => {
-    return navItems
-        .filter((item) => item.permission.includes(role))
-        .map((item) => ({
-            ...item,
-            items: item.items
-                ? item.items.filter((subItem) => subItem.permission.includes(role))
-                : undefined,
-        }))
+// Helper function to create navigation components
+const createNavItem = (item) => {
+    if (item.type === 'title') {
+        return { component: CNavTitle, name: item.name }
+    }
+    if (item.items) {
+        return {
+            component: CNavGroup,
+            name: item.name,
+            icon: <CIcon icon={item.icon} customClassName="nav-icon" />,
+            items: item.items.map(createNavItem),
+        }
+    }
+    return {
+        component: CNavItem,
+        name: item.name,
+        to: item.to,
+        icon: item.icon ? <CIcon icon={item.icon} customClassName="nav-icon" /> : null,
+    }
 }
+
+// Filter navigation items based on user role
+const _nav = (role) => navItems.filter((item) => item.roles.includes(role)).map(createNavItem)
 
 export default _nav
