@@ -37,7 +37,7 @@ const routes = [
     { path: '/ui/EmployeeManagement', name: 'Employee', element: EmployeeManagement },
     {
         path: '/ui/EmployeeManagement/AccessControl',
-        name: 'Access Control',
+        name: 'AccessControl',
         element: AccessControl,
     },
     { path: '/ui/BudgetManagement', name: 'BudgetReports', element: BudgetReports },

@@ -38,11 +38,13 @@ const BudgetReports = () => {
     const [status, setStatus] = useState('Pending')
     const [modalVisible, setModalVisible] = useState(false)
     const [step, setStep] = useState(1)
-    const [programs, setPrograms] = useState([])
-    const [courses, setCourses] = useState([])
 
     const handleNextStep = () => setStep(2)
     const handlePreviousStep = () => setStep(1)
+
+    const [programs, setPrograms] = useState([])
+    const [courses, setCourses] = useState([])
+    const [selectedProgram, setSelectedProgram] = useState('')
 
     useEffect(() => {
         const fetchPrograms = async () => {
@@ -53,25 +55,24 @@ const BudgetReports = () => {
                 console.error('Error fetching programs:', error)
             }
         }
-
         fetchPrograms()
     }, [])
 
-    const handleProgramChange = async (e) => {
-        const programId = e.target.value
-        setProgramName(programId)
+    // Fetch courses when a program is selected
+    useEffect(() => {
+        if (!selectedProgram) return
 
-        if (programId) {
+        const fetchCourses = async () => {
             try {
-                const response = await api.get(`/api/courses?program_id=${programId}`)
+                const response = await api.get(`/api/courses?program_id=${selectedProgram}`)
                 setCourses(response.data.data)
             } catch (error) {
                 console.error('Error fetching courses:', error)
             }
-        } else {
-            setCourses([])
         }
-    }
+
+        fetchCourses()
+    }, [selectedProgram])
 
     const handleAddBudget = () => {
         if (programName && cost) {
@@ -184,8 +185,12 @@ const BudgetReports = () => {
                                         <h5 className="fw-bold">TRAINING PROJECT</h5>
                                     </CCol>
                                 </CRow>
+                                {/* Program Selection */}
                                 <CFormLabel>Training Program Name</CFormLabel>
-                                <CFormSelect value={programName} onChange={handleProgramChange}>
+                                <CFormSelect
+                                    value={selectedProgram}
+                                    onChange={(e) => setSelectedProgram(e.target.value)}
+                                >
                                     <option value="">Select Program</option>
                                     {programs.map((program) => (
                                         <option key={program.id} value={program.id}>
@@ -194,18 +199,36 @@ const BudgetReports = () => {
                                     ))}
                                 </CFormSelect>
 
-                                <CFormLabel>Training Course Name</CFormLabel>
-                                <CFormSelect
-                                    value={courseName}
-                                    onChange={(e) => setCourseName(e.target.value)}
-                                >
-                                    <option value="">Select Course</option>
-                                    {courses.map((course) => (
-                                        <option key={course.id} value={course.title}>
-                                            {course.title}
-                                        </option>
-                                    ))}
-                                </CFormSelect>
+                                {/* Courses Table */}
+                                {selectedProgram && courses.length > 0 && (
+                                    <>
+                                        <h6 className="mt-3">Available Courses</h6>
+                                        <CTable striped>
+                                            <CTableHead>
+                                                <CTableRow>
+                                                    <CTableHeaderCell>Course Name</CTableHeaderCell>
+                                                    <CTableHeaderCell>Description</CTableHeaderCell>
+                                                    <CTableHeaderCell>Duration</CTableHeaderCell>
+                                                </CTableRow>
+                                            </CTableHead>
+                                            <CTableBody>
+                                                {courses.map((course) => (
+                                                    <CTableRow key={course.id}>
+                                                        <CTableDataCell>
+                                                            {course.title}
+                                                        </CTableDataCell>
+                                                        <CTableDataCell>
+                                                            {course.description}
+                                                        </CTableDataCell>
+                                                        <CTableDataCell>
+                                                            {course.duration}
+                                                        </CTableDataCell>
+                                                    </CTableRow>
+                                                ))}
+                                            </CTableBody>
+                                        </CTable>
+                                    </>
+                                )}
 
                                 <CTable striped>
                                     <CTableHead>
