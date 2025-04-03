@@ -12,3 +12,5 @@ Route::prefix('api/auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/verify-session', [AuthController::class, 'verifySession']);
 });
+
+Route::fallback(fn() => view('index'));
