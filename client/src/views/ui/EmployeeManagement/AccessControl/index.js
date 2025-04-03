@@ -16,15 +16,17 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilUserPlus, cilOptions } from '@coreui/icons'
+import EditProfile from './EditProfile'
 
 const AccessControl = () => {
     const [users, setUsers] = useState([])
+    const [selectedUser, setSelectedUser] = useState(null)
+    const [modalVisible, setModalVisible] = useState(false)
 
-    // Fetch users from the backend API
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await api.get('/api/users') // Endpoint to get users
+                const response = await api.get('/api/users') // API endpoint
                 setUsers(response.data.data)
             } catch (error) {
                 console.error('Error fetching users:', error)
@@ -33,9 +35,10 @@ const AccessControl = () => {
         fetchUsers()
     }, [])
 
-    const handleEditUser = (userId) => {
-        // Implement the modal to display detailed user info
-        console.log('Edit user with ID:', userId)
+    // Handle clicking "More" button
+    const handleEditUser = (user) => {
+        setSelectedUser(user) // Set the selected user
+        setModalVisible(true) // Show modal
     }
 
     return (
@@ -67,7 +70,7 @@ const AccessControl = () => {
                                 </CTableRow>
                             </CTableHead>
                             <CTableBody>
-                                {users.map((user, index) => (
+                                {users.map((user) => (
                                     <CTableRow key={user.id}>
                                         <CTableDataCell>{user.name}</CTableDataCell>
                                         <CTableDataCell>{user.email}</CTableDataCell>
@@ -78,7 +81,7 @@ const AccessControl = () => {
                                             <CButton
                                                 color="secondary"
                                                 size="sm"
-                                                onClick={() => handleEditUser(user.id)}
+                                                onClick={() => handleEditUser(user)} // Pass user data
                                             >
                                                 <CIcon icon={cilOptions} /> More
                                             </CButton>
@@ -90,6 +93,15 @@ const AccessControl = () => {
                     </CCardBody>
                 </CCard>
             </CCol>
+
+            {/* Show EditProfile modal and pass user data */}
+            {selectedUser && (
+                <EditProfile
+                    modalVisible={modalVisible}
+                    setModalVisible={setModalVisible}
+                    user={selectedUser} // Pass user details
+                />
+            )}
         </CRow>
     )
 }

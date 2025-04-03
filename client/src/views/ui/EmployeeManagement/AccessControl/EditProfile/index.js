@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import {
     CModal,
     CModalBody,
@@ -11,10 +12,8 @@ import {
     CFormInput,
 } from '@coreui/react'
 
-const EditProfile = () => {
-    const [modalVisible, setModalVisible] = useState(true) // Local state for modal visibility
-
-    // Close modal
+const EditProfile = ({ modalVisible, setModalVisible, user }) => {
+    // Close modal function
     const closeModal = () => {
         setModalVisible(false)
     }
@@ -27,29 +26,16 @@ const EditProfile = () => {
             <CModalBody>
                 <CForm>
                     <CFormLabel htmlFor="fullName">Full Name</CFormLabel>
-                    <CFormInput
-                        id="fullName"
-                        value="John Doe" // Hardcoded value
-                        readOnly
-                    />
+                    <CFormInput id="fullName" value={user.name} readOnly />
+
                     <CFormLabel htmlFor="email">Email</CFormLabel>
-                    <CFormInput
-                        id="email"
-                        value="johndoe@example.com" // Hardcoded value
-                        readOnly
-                    />
+                    <CFormInput id="email" value={user.email} readOnly />
+
                     <CFormLabel htmlFor="role">Role</CFormLabel>
-                    <CFormInput
-                        id="role"
-                        value="Software Engineer" // Hardcoded value
-                        readOnly
-                    />
+                    <CFormInput id="role" value={user.role} readOnly />
+
                     <CFormLabel htmlFor="department">Department</CFormLabel>
-                    <CFormInput
-                        id="department"
-                        value="Engineering" // Hardcoded value
-                        readOnly
-                    />
+                    <CFormInput id="department" value={user.department || 'N/A'} readOnly />
                 </CForm>
             </CModalBody>
             <CModalFooter>
@@ -59,6 +45,13 @@ const EditProfile = () => {
             </CModalFooter>
         </CModal>
     )
+}
+
+// Prop validation
+EditProfile.propTypes = {
+    modalVisible: PropTypes.bool.isRequired,
+    setModalVisible: PropTypes.func.isRequired,
+    user: PropTypes.object.isRequired,
 }
 
 export default EditProfile
