@@ -24,21 +24,27 @@ const AccessControl = () => {
     const [modalVisible, setModalVisible] = useState(false)
 
     useEffect(() => {
-        const fetchUsers = async () => {
-            try {
-                const response = await api.get('/api/users') // API endpoint
-                setUsers(response.data.data)
-            } catch (error) {
-                console.error('Error fetching users:', error)
-            }
-        }
         fetchUsers()
     }, [])
 
-    // Handle clicking "More" button
-    const handleEditUser = (user) => {
-        setSelectedUser(user) // Set the selected user
-        setModalVisible(true) // Show modal
+    const fetchUsers = async () => {
+        try {
+            const response = await api.get('/api/users') // Fetch all users
+            setUsers(response.data.data)
+        } catch (error) {
+            console.error('Error fetching users:', error)
+        }
+    }
+
+    // Fetch user details before opening modal
+    const handleEditUser = async (userId) => {
+        try {
+            const response = await api.get(`/api/users/${userId}`)
+            setSelectedUser(response.data.data) // Set fetched user data
+            setModalVisible(true) // Show modal
+        } catch (error) {
+            console.error('Error fetching user profile:', error)
+        }
     }
 
     return (
@@ -81,7 +87,7 @@ const AccessControl = () => {
                                             <CButton
                                                 color="secondary"
                                                 size="sm"
-                                                onClick={() => handleEditUser(user)} // Pass user data
+                                                onClick={() => handleEditUser(user.id)} // Fetch user before opening modal
                                             >
                                                 <CIcon icon={cilOptions} /> More
                                             </CButton>
@@ -94,12 +100,13 @@ const AccessControl = () => {
                 </CCard>
             </CCol>
 
-            {/* Show EditProfile modal and pass user data */}
+            {/* Show EditProfile modal */}
             {selectedUser && (
                 <EditProfile
                     modalVisible={modalVisible}
                     setModalVisible={setModalVisible}
-                    user={selectedUser} // Pass user details
+                    user={selectedUser}
+                    fetchUsers={fetchUsers} // Refetch users after update
                 />
             )}
         </CRow>
