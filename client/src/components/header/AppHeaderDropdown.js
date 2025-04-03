@@ -16,17 +16,7 @@ import ProfileModal from '../../views/ui/EmployeeManagement/Profile' // Import P
 
 const AppHeaderDropdown = () => {
     const navigate = useNavigate()
-    const [modalVisible, setModalVisible] = useState(false) // Local state to control modal visibility
-
-    // Handle profile click to toggle modal visibility
-    const handleProfileClick = () => {
-        setModalVisible(true)
-    }
-
-    // Close the modal
-    const handleModalClose = () => {
-        setModalVisible(false)
-    }
+    const [modalVisible, setModalVisible] = useState(false) // Control modal visibility
 
     return (
         <div>
@@ -38,9 +28,9 @@ const AppHeaderDropdown = () => {
                     <CDropdownHeader className="bg-body-secondary fw-semibold mb-2">
                         Guest
                     </CDropdownHeader>
-                    <CDropdownItem onClick={handleProfileClick}>
+                    <CDropdownItem onClick={() => setModalVisible(true)}>
                         {' '}
-                        {/* Open modal on click */}
+                        {/* Toggle modal */}
                         <CIcon icon={cilUser} className="me-2" />
                         Profile
                     </CDropdownItem>
@@ -53,8 +43,8 @@ const AppHeaderDropdown = () => {
                 </CDropdownMenu>
             </CDropdown>
 
-            {/* Render the ProfileModal if modalVisible is true */}
-            {modalVisible && <ProfileModal />}
+            {/* Pass modalVisible and setModalVisible as props */}
+            <ProfileModal modalVisible={modalVisible} setModalVisible={setModalVisible} />
         </div>
     )
 }
