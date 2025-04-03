@@ -14,6 +14,7 @@ import {
 } from '@coreui/react'
 
 const EditProfile = ({ modalVisible, setModalVisible, user, fetchUsers }) => {
+    // Helper function to return 'NULL' if data is missing, else return the data
     const defaultValue = (value) => (value ? value : 'NULL')
 
     const [formData, setFormData] = useState({
@@ -52,7 +53,7 @@ const EditProfile = ({ modalVisible, setModalVisible, user, fetchUsers }) => {
         const { name, value } = e.target
         setFormData((prevState) => ({
             ...prevState,
-            [name]: value || 'NULL',
+            [name]: value || 'NULL', // If empty, set to 'NULL'
         }))
     }
 
