@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+import api from '../../../../util/api'
 import {
     CCard,
     CCardBody,
@@ -17,6 +18,26 @@ import CIcon from '@coreui/icons-react'
 import { cilUserPlus, cilOptions } from '@coreui/icons'
 
 const AccessControl = () => {
+    const [users, setUsers] = useState([])
+
+    // Fetch users from the backend API
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const response = await api.get('/api/users') // Endpoint to get users
+                setUsers(response.data.data)
+            } catch (error) {
+                console.error('Error fetching users:', error)
+            }
+        }
+        fetchUsers()
+    }, [])
+
+    const handleEditUser = (userId) => {
+        // You can implement the edit functionality here, e.g., opening a modal
+        console.log('Edit user with ID:', userId)
+    }
+
     return (
         <CRow>
             <CCol xs={12}>
@@ -46,38 +67,26 @@ const AccessControl = () => {
                                 </CTableRow>
                             </CTableHead>
                             <CTableBody>
-                                <CTableRow>
-                                    <CTableDataCell>test</CTableDataCell>
-                                    <CTableDataCell>test@example.com</CTableDataCell>
-                                    <CTableDataCell className="text-center">Admin</CTableDataCell>
-                                    <CTableDataCell className="text-center">
-                                        <CButton color="secondary" size="sm">
-                                            <CIcon icon={cilOptions} /> More
-                                        </CButton>
-                                    </CTableDataCell>
-                                </CTableRow>
-                                <CTableRow>
-                                    <CTableDataCell>test</CTableDataCell>
-                                    <CTableDataCell>test@example.com</CTableDataCell>
-                                    <CTableDataCell className="text-center">Manager</CTableDataCell>
-                                    <CTableDataCell className="text-center">
-                                        <CButton color="secondary" size="sm">
-                                            <CIcon icon={cilOptions} /> More
-                                        </CButton>
-                                    </CTableDataCell>
-                                </CTableRow>
-                                <CTableRow>
-                                    <CTableDataCell>test</CTableDataCell>
-                                    <CTableDataCell>test@example.com</CTableDataCell>
-                                    <CTableDataCell className="text-center">
-                                        Employee
-                                    </CTableDataCell>
-                                    <CTableDataCell className="text-center">
-                                        <CButton color="secondary" size="sm">
-                                            <CIcon icon={cilOptions} /> More
-                                        </CButton>
-                                    </CTableDataCell>
-                                </CTableRow>
+                                {users.map((user, index) => (
+                                    <CTableRow key={user.id}>
+                                        <CTableDataCell>
+                                            {`User${index + 1}`} {/* Example: User1, User2, etc. */}
+                                        </CTableDataCell>
+                                        <CTableDataCell>{user.email}</CTableDataCell>
+                                        <CTableDataCell className="text-center">
+                                            {user.role}
+                                        </CTableDataCell>
+                                        <CTableDataCell className="text-center">
+                                            <CButton
+                                                color="secondary"
+                                                size="sm"
+                                                onClick={() => handleEditUser(user.id)}
+                                            >
+                                                <CIcon icon={cilOptions} /> More
+                                            </CButton>
+                                        </CTableDataCell>
+                                    </CTableRow>
+                                ))}
                             </CTableBody>
                         </CTable>
                     </CCardBody>

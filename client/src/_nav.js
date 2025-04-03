@@ -23,7 +23,7 @@ const navItems = [
             },
             {
                 name: 'Access Control',
-                to: '/ui/EmployeeManagemen/AccessControl',
+                to: '/ui/EmployeeManagement/AccessControl',
                 roles: ['superadmin', 'admin', 'staff', 'employee'],
             },
         ],
