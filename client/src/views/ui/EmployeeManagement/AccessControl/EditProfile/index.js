@@ -14,33 +14,35 @@ import {
 } from '@coreui/react'
 
 const EditProfile = ({ modalVisible, setModalVisible, user, fetchUsers }) => {
+    const defaultValue = (value) => (value ? value : 'NULL')
+
     const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        role: '',
-        department: '',
-        employee_type: '',
-        employment_status: '',
-        date_of_hire: '',
-        gender: '',
-        phone_number: '',
-        address: '',
+        name: 'NULL',
+        email: 'NULL',
+        role: 'NULL',
+        department: 'NULL',
+        employee_type: 'NULL',
+        employment_status: 'NULL',
+        date_of_hire: 'NULL',
+        gender: 'NULL',
+        phone_number: 'NULL',
+        address: 'NULL',
     })
 
     // Populate form data when the modal opens
     useEffect(() => {
         if (user) {
             setFormData({
-                name: user.name || '',
-                email: user.email || '',
-                role: user.role || '',
-                department: user.department || '',
-                employee_type: user.employee_type || '',
-                employment_status: user.employment_status || '',
-                date_of_hire: user.date_of_hire || '',
-                gender: user.gender || '',
-                phone_number: user.phone_number || '',
-                address: user.address || '',
+                name: defaultValue(user.name),
+                email: defaultValue(user.email),
+                role: defaultValue(user.role),
+                department: defaultValue(user.department),
+                employee_type: defaultValue(user.employee_type),
+                employment_status: defaultValue(user.employment_status),
+                date_of_hire: defaultValue(user.date_of_hire),
+                gender: defaultValue(user.gender),
+                phone_number: defaultValue(user.phone_number),
+                address: defaultValue(user.address),
             })
         }
     }, [user])
@@ -50,7 +52,7 @@ const EditProfile = ({ modalVisible, setModalVisible, user, fetchUsers }) => {
         const { name, value } = e.target
         setFormData((prevState) => ({
             ...prevState,
-            [name]: value,
+            [name]: value || 'NULL',
         }))
     }
 
@@ -169,14 +171,13 @@ const EditProfile = ({ modalVisible, setModalVisible, user, fetchUsers }) => {
 
 // ✅ Add PropTypes validation before export
 EditProfile.propTypes = {
-    modalVisible: PropTypes.bool.isRequired, // Validate modal visibility
-    setModalVisible: PropTypes.func.isRequired, // Validate function to toggle modal
+    modalVisible: PropTypes.bool.isRequired,
+    setModalVisible: PropTypes.func.isRequired,
     user: PropTypes.shape({
-        // Validate user object structure
         id: PropTypes.number.isRequired,
-        name: PropTypes.string.isRequired,
-        email: PropTypes.string.isRequired,
-        role: PropTypes.string.isRequired,
+        name: PropTypes.string,
+        email: PropTypes.string,
+        role: PropTypes.string,
         department: PropTypes.string,
         employee_type: PropTypes.string,
         employment_status: PropTypes.string,
@@ -185,7 +186,7 @@ EditProfile.propTypes = {
         phone_number: PropTypes.string,
         address: PropTypes.string,
     }).isRequired,
-    fetchUsers: PropTypes.func.isRequired, // Validate function for refreshing users
+    fetchUsers: PropTypes.func.isRequired,
 }
 
 export default EditProfile
