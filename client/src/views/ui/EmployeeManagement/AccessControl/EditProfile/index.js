@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import api from '../../../../util/api'
+import api from '../../../../../util/api'
 import {
     CModal,
     CModalBody,
