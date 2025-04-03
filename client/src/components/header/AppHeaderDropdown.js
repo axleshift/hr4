@@ -13,7 +13,7 @@ import {
 import CIcon from '@coreui/icons-react'
 import { cilUser, cilEnvelopeOpen } from '@coreui/icons'
 import avatar8 from './../../assets/images/avatars/8.jpg'
-import ProfileModal from './ProfileModal' // Import ProfileModal
+import ProfileModal from '../../views/ui/EmployeeManagement/Profile' // Import ProfileModal
 
 const AppHeaderDropdown = () => {
     const navigate = useNavigate()
