@@ -30,6 +30,13 @@ Route::get('/', function () {
     Route::get('/modules/{module}/preview', [ModuleController::class, 'preview']);
 //});
 
+
+//ACCESS CONTROL
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Api\UserProfileController;
 
 Route::get('/users', [AuthController::class, 'index']);
+
+Route::get('/users', [UserProfileController::class, 'index']);
+Route::get('/users/{id}', [UserProfileController::class, 'show']);
+Route::put('/users/{id}', [UserProfileController::class, 'update']);
