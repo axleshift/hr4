@@ -34,7 +34,7 @@ const AccessControl = () => {
     }, [])
 
     const handleEditUser = (userId) => {
-        // You can implement the edit functionality here, e.g., opening a modal
+        // Implement the modal to display detailed user info
         console.log('Edit user with ID:', userId)
     }
 
@@ -69,9 +69,7 @@ const AccessControl = () => {
                             <CTableBody>
                                 {users.map((user, index) => (
                                     <CTableRow key={user.id}>
-                                        <CTableDataCell>
-                                            {`User${index + 1}`} {/* Example: User1, User2, etc. */}
-                                        </CTableDataCell>
+                                        <CTableDataCell>{user.name}</CTableDataCell>
                                         <CTableDataCell>{user.email}</CTableDataCell>
                                         <CTableDataCell className="text-center">
                                             {user.role}
