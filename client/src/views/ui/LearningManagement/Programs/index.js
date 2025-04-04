@@ -96,6 +96,15 @@ const Programs = () => {
         }
     }
 
+    const handleDeleteCourse = async (courseId) => {
+        try {
+            await api.delete(`/api/courses/${courseId}`)
+            setCourses((prevCourses) => prevCourses.filter((course) => course.id !== courseId))
+        } catch (error) {
+            console.error('Error deleting course:', error)
+        }
+    }
+
     return (
         <CRow>
             <CCol xs={12}>
@@ -174,7 +183,16 @@ const Programs = () => {
                                                                 )}
                                                             </CTableDataCell>
                                                             <CTableDataCell>
-                                                                {/* Actions for course */}
+                                                                <CButton
+                                                                    color="danger"
+                                                                    onClick={() =>
+                                                                        handleDeleteCourse(
+                                                                            course.id,
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    Delete
+                                                                </CButton>
                                                             </CTableDataCell>
                                                         </CTableRow>
                                                     ))}
