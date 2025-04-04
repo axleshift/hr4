@@ -11,10 +11,10 @@ import {
     CForm,
     CFormLabel,
     CFormInput,
+    CFormSelect, // Import CFormSelect for dropdown
 } from '@coreui/react'
 
 const EditProfile = ({ modalVisible, setModalVisible, user, fetchUsers }) => {
-    // Helper function to return 'NULL' if data is missing, else return the data
     const defaultValue = (value) => (value ? value : 'NULL')
 
     const [formData, setFormData] = useState({
@@ -30,7 +30,18 @@ const EditProfile = ({ modalVisible, setModalVisible, user, fetchUsers }) => {
         address: 'NULL',
     })
 
-    // Populate form data when the modal opens
+    // List of departments (you can add more as per your needs)
+    const departments = [
+        'HR',
+        'Finance',
+        'Sales',
+        'IT',
+        'Marketing',
+        'Customer Service',
+        'Operations',
+        'Training',
+    ]
+
     useEffect(() => {
         if (user) {
             setFormData({
@@ -48,27 +59,24 @@ const EditProfile = ({ modalVisible, setModalVisible, user, fetchUsers }) => {
         }
     }, [user])
 
-    // Handle form input changes
     const handleChange = (e) => {
         const { name, value } = e.target
         setFormData((prevState) => ({
             ...prevState,
-            [name]: value || 'NULL', // If empty, set to 'NULL'
+            [name]: value || 'NULL',
         }))
     }
 
-    // Close modal function
     const closeModal = () => {
         setModalVisible(false)
     }
 
-    // Submit updated user data
     const handleSubmit = async (e) => {
         e.preventDefault()
         try {
-            await api.put(`/api/users/${user.id}`, formData) // Update backend
-            fetchUsers() // Refresh user list
-            closeModal() // Close modal
+            await api.put(`/api/users/${user.id}`, formData)
+            fetchUsers()
+            closeModal()
         } catch (error) {
             console.error('Error updating user profile:', error)
         }
@@ -101,12 +109,19 @@ const EditProfile = ({ modalVisible, setModalVisible, user, fetchUsers }) => {
                     />
 
                     <CFormLabel htmlFor="department">Department</CFormLabel>
-                    <CFormInput
+                    <CFormSelect
                         id="department"
                         name="department"
                         value={formData.department}
                         onChange={handleChange}
-                    />
+                    >
+                        <option value="NULL">Select Department</option>
+                        {departments.map((dept) => (
+                            <option key={dept} value={dept}>
+                                {dept}
+                            </option>
+                        ))}
+                    </CFormSelect>
 
                     <CFormLabel htmlFor="employee_type">Employee Type</CFormLabel>
                     <CFormInput
@@ -170,7 +185,6 @@ const EditProfile = ({ modalVisible, setModalVisible, user, fetchUsers }) => {
     )
 }
 
-// ✅ Add PropTypes validation before export
 EditProfile.propTypes = {
     modalVisible: PropTypes.bool.isRequired,
     setModalVisible: PropTypes.func.isRequired,
