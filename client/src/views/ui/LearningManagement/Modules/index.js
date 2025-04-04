@@ -23,6 +23,7 @@ const ModuleList = () => {
     const [modules, setModules] = useState([])
     const [base64Doc, setBase64Doc] = useState('')
     const [mimeType, setMimeType] = useState('')
+    const [fileName, setFileName] = useState('')
     const [modalVisible, setModalVisible] = useState(false)
 
     useEffect(() => {
@@ -44,6 +45,7 @@ const ModuleList = () => {
             const response = await api.get(`/api/modules/${id}/preview`)
             setBase64Doc(response.data.base64)
             setMimeType(response.data.mime_type)
+            setFileName(response.data.file_name)
             setModalVisible(true)
         } catch (error) {
             console.error('Error fetching document preview:', error)
@@ -99,12 +101,12 @@ const ModuleList = () => {
                     {base64Doc ? (
                         mimeType === 'application/pdf' ? (
                             <iframe
-                                src={`data:application/pdf;base64,${base64Doc}`}
+                                src={`${base64Doc}`}
                                 style={{ width: '100%', height: '500px', border: 'none' }}
                             ></iframe>
                         ) : (
                             <iframe
-                                src={`https://view.officeapps.live.com/op/embed.aspx?src=data:application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,${base64Doc}`}
+                                src={`https://view.officeapps.live.com/op/embed.aspx?src=https://hr4.axleshift.com/uploads/${fileName}`}
                                 style={{ width: '100%', height: '500px', border: 'none' }}
                             ></iframe>
                         )
