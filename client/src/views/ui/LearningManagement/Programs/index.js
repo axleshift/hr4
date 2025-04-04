@@ -41,6 +41,7 @@ const Programs = () => {
     const [visibleProgram, setVisibleProgram] = useState(false)
     const [visibleCourse, setVisibleCourse] = useState(false)
     const [visibleModule, setVisibleModule] = useState(false)
+    const [modules, setModules] = useState([])
 
     useEffect(() => {
         const fetchPrograms = async () => {
@@ -65,6 +66,20 @@ const Programs = () => {
         }
         fetchCourses()
     }, [])
+
+    useEffect(() => {
+        const fetchModules = async () => {
+            if (selectedCourseId) {
+                try {
+                    const response = await api.get(`/api/modules?course_id=${selectedCourseId}`)
+                    setModules(response.data.data) // Make sure you define `setModules` and `modules`
+                } catch (error) {
+                    console.error('Error fetching modules:', error)
+                }
+            }
+        }
+        fetchModules()
+    }, [selectedCourseId])
 
     const handleSaveProgram = async () => {
         try {
@@ -305,7 +320,11 @@ const Programs = () => {
                     <CButton color="secondary" onClick={() => setVisibleCourse(false)}>
                         Close
                     </CButton>
-                    <CButton color="primary" onClick={handleSaveCourse}>
+                    <CButton
+                        color="primary"
+                        onClick={handleSaveCourse}
+                        disabled={!courseTitle || !courseDescription}
+                    >
                         Save Course
                     </CButton>
                 </CModalFooter>
