@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 class CourseController extends Controller
 {
     public function index(Request $request) {
-        $query = Course::with('module');
+        $query = Course::query();
     
         if ($request->has('program_id')) {
             $query->where('program_id', $request->program_id);
