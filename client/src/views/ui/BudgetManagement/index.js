@@ -116,17 +116,17 @@ const BudgetReports = () => {
             <CCol xs={12} md={6} lg={3}>
                 <CWidgetStatsA
                     className="mb-4"
-                    color="danger"
+                    color="warning"
                     value="₱0"
-                    title="Total Actual Cost"
+                    title="Total Training Pending"
                 />
             </CCol>
             <CCol xs={12} md={6} lg={3}>
                 <CWidgetStatsA
                     className="mb-4"
-                    color="success"
+                    color="danger"
                     value="0%"
-                    title="Average Training ROI"
+                    title="Total Training Rejected"
                 />
             </CCol>
 
