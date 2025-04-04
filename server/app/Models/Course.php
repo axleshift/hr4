@@ -15,5 +15,10 @@ class Course extends Model
     {
         return $this->belongsTo(Program::class);
     }
+    public function modules()
+    {
+        return $this->hasMany(Module::class);
+    }
+
 }
 

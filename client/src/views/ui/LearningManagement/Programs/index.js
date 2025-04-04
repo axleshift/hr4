@@ -194,38 +194,42 @@ const Programs = () => {
                                                                 {course.description}
                                                             </CTableDataCell>
                                                             <CTableDataCell>
-                                                                {course.module &&
-                                                                course.module.file_url ? (
-                                                                    <a
-                                                                        href={
-                                                                            course.module.file_url
-                                                                        }
-                                                                        target="_blank"
-                                                                        rel="noopener noreferrer"
-                                                                    >
-                                                                        {course.module.file_name ||
-                                                                            'Download'}
-                                                                    </a>
+                                                                {course.modules &&
+                                                                course.modules.length > 0 ? (
+                                                                    course.modules.map(
+                                                                        (mod, idx) => (
+                                                                            <div key={idx}>
+                                                                                {mod.file_url ? (
+                                                                                    <a
+                                                                                        href={
+                                                                                            mod.file_url
+                                                                                        }
+                                                                                        target="_blank"
+                                                                                        rel="noopener noreferrer"
+                                                                                    >
+                                                                                        {mod.file_name ||
+                                                                                            'Download'}
+                                                                                    </a>
+                                                                                ) : (
+                                                                                    <span>
+                                                                                        No File
+                                                                                    </span>
+                                                                                )}
+                                                                            </div>
+                                                                        ),
+                                                                    )
                                                                 ) : (
-                                                                    <span>No Module</span>
+                                                                    <span>—</span>
                                                                 )}
                                                             </CTableDataCell>
 
                                                             <CTableDataCell>
                                                                 <CButton
+                                                                    color="primary"
                                                                     size="sm"
-                                                                    color={
-                                                                        course.modules &&
-                                                                        course.modules.length > 0
-                                                                            ? 'warning'
-                                                                            : 'success'
+                                                                    onClick={() =>
+                                                                        handleOpenModal(course)
                                                                     }
-                                                                    onClick={() => {
-                                                                        setSelectedCourseId(
-                                                                            course.id,
-                                                                        )
-                                                                        setVisibleModule(true)
-                                                                    }}
                                                                 >
                                                                     {course.modules &&
                                                                     course.modules.length > 0
