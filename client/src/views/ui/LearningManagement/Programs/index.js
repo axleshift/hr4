@@ -70,14 +70,16 @@ const Programs = () => {
     useEffect(() => {
         const fetchModules = async () => {
             try {
-                const response = await api.get('/api/modules')
+                const response = await api.get('/api/modules') // Ensure modules are fetched properly
                 setModules(response.data.data)
             } catch (error) {
                 console.error('Error fetching modules:', error)
             }
         }
-        fetchModules()
-    }, [])
+        if (selectedCourseId) {
+            fetchModules()
+        }
+    }, [selectedCourseId]) // Fetch modules when a course is selected
 
     const handleSaveProgram = async () => {
         try {
@@ -132,14 +134,14 @@ const Programs = () => {
             formData.append('file', module.file)
         }
 
-        // Log to verify the data being sent
-        console.log('FormData:', formData)
-
         try {
-            // Ensure headers are set correctly
-            await api.post('/api/modules', formData, {
+            // Send the request to the backend
+            const response = await api.post('/api/modules', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
             })
+
+            // Update modules list after successful upload
+            setModules((prev) => [...prev, response.data.data])
 
             // Reset the form
             setModule({ title: '', description: '', file: null })
@@ -362,52 +364,8 @@ const Programs = () => {
                     </CButton>
                 </CModalFooter>
             </CModal>
-
-            {/* Add Module Modal */}
-            <CModal size="xl" visible={visibleModule} onClose={() => setVisibleModule(false)}>
-                <CModalHeader>
-                    <CModalTitle>Add Module</CModalTitle>
-                </CModalHeader>
-                <CModalBody>
-                    <CForm>
-                        <CRow className="mb-3">
-                            <CCol md={12}>
-                                <CFormLabel>Module Title</CFormLabel>
-                                <CFormInput
-                                    id="title"
-                                    value={module.title}
-                                    onChange={handleModuleInputChange}
-                                />
-                            </CCol>
-                        </CRow>
-                        <CRow className="mb-3">
-                            <CCol md={12}>
-                                <CFormLabel>Module Description</CFormLabel>
-                                <CFormTextarea
-                                    id="description"
-                                    value={module.description}
-                                    onChange={handleModuleInputChange}
-                                />
-                            </CCol>
-                        </CRow>
-                        <CRow className="mb-3">
-                            <CCol md={12}>
-                                <CFormLabel>Upload File</CFormLabel>
-                                <CFormInput type="file" onChange={handleModuleFileChange} />
-                            </CCol>
-                        </CRow>
-                    </CForm>
-                </CModalBody>
-                <CModalFooter>
-                    <CButton color="secondary" onClick={() => setVisibleModule(false)}>
-                        Close
-                    </CButton>
-                    <CButton color="primary" onClick={handleAddModule}>
-                        Save Module
-                    </CButton>
-                </CModalFooter>
-            </CModal>
         </CRow>
     )
 }
+
 export default Programs
