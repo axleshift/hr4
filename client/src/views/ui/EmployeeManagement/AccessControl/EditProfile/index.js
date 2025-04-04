@@ -15,6 +15,21 @@ import {
 } from '@coreui/react'
 
 const EditProfile = ({ modalVisible, setModalVisible, user, fetchUsers }) => {
+    const [roles, setRoles] = useState([])
+
+    useEffect(() => {
+        const fetchRoles = async () => {
+            try {
+                const response = await api.get('/api/roles') // Create this endpoint on the backend
+                setRoles(response.data)
+            } catch (error) {
+                console.error('Error fetching roles:', error)
+            }
+        }
+
+        fetchRoles()
+    }, [])
+
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -94,12 +109,19 @@ const EditProfile = ({ modalVisible, setModalVisible, user, fetchUsers }) => {
                     <CFormInput id="email" name="email" value={formData.email} readOnly />
 
                     <CFormLabel htmlFor="role">Role</CFormLabel>
-                    <CFormInput
+                    <CFormSelect
                         id="role"
                         name="role"
                         value={formData.role}
                         onChange={handleChange}
-                    />
+                    >
+                        <option value="">Select Role</option>
+                        {roles.map((role) => (
+                            <option key={role.id} value={role.id}>
+                                {role.name}
+                            </option>
+                        ))}
+                    </CFormSelect>
 
                     <CFormLabel htmlFor="department">Department</CFormLabel>
                     <CFormSelect
