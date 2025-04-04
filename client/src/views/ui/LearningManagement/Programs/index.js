@@ -41,6 +41,7 @@ const Programs = () => {
     const [courseDescription, setCourseDescription] = useState('')
     const [moduleTitle, setModuleTitle] = useState('')
     const [moduleDescription, setModuleDescription] = useState('')
+    const [visibleXL, setVisibleXL] = useState(false)
 
     const [visibleModule, setVisibleModule] = useState(false)
     const [selectedCourse, setSelectedCourse] = useState(null)
