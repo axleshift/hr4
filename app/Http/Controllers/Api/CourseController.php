@@ -30,17 +30,27 @@ class CourseController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'required',
-            'description' => 'required',
-            'duration' => 'required',
-            'program_id' => 'required|exists:programs,id',
+            'title' => 'required|string',
+            'description' => 'nullable|string',
+            'file' => 'nullable|file|mimes:pdf,docx,pptx', // adjust MIME types
         ]);
 
-        $course = Course::create($request->all());
+        $course = new Course;
+        $course->title = $request->title;
+        $course->description = $request->description;
+        $course->duration = $request->duration;
+        $course->program_id = $request->program_id;
 
+        // Handle file upload
+        if ($request->hasFile('file')) {
+            $filePath = $request->file('file')->store('courses'); // adjust storage location
+            $course->file_path = $filePath;
+            $course->file_name = $request->file('file')->getClientOriginalName();
+        }
+
+        $course->save();
         return response()->json($course, 201);
     }
-
 
     public function update(Request $request, $id)
     {
