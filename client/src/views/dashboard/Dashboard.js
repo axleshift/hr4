@@ -14,7 +14,6 @@ import {
     CBadge,
     CButton,
 } from '@coreui/react'
-import axios from 'axios'
 
 const Dashboard = () => {
     const [trainings, setTrainings] = useState([])
@@ -27,9 +26,10 @@ const Dashboard = () => {
     const fetchTrainings = async () => {
         try {
             const response = await api.get('/training')
-            setTrainings(response.data.data)
+            setTrainings(response.data.data || []) // Ensure the data is an array
         } catch (error) {
             console.error('Error fetching trainings:', error)
+            setTrainings([]) // Fallback to an empty array if there's an error
         }
     }
 
@@ -46,11 +46,13 @@ const Dashboard = () => {
     }
 
     // Filter out trainings that are pending
-    const pendingTrainings = trainings.filter(
-        (training) =>
-            getTrainingStatus(training.schedule, training.start_time, training.end_time) ===
-            'Pending',
-    )
+    const pendingTrainings = Array.isArray(trainings)
+        ? trainings.filter(
+              (training) =>
+                  getTrainingStatus(training.schedule, training.start_time, training.end_time) ===
+                  'Pending',
+          )
+        : []
 
     return (
         <CRow>

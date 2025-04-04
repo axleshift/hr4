@@ -43,7 +43,7 @@ const Programs = () => {
     const [moduleDescription, setModuleDescription] = useState('')
 
     const [visibleModule, setVisibleModule] = useState(false)
-    const [selectedCourseId, setSelectedCourseId] = useState(null)
+    const [selectedCourse, setSelectedCourse] = useState(null)
     const [module, setModule] = useState({ title: '', description: '', file: null })
 
     useEffect(() => {
