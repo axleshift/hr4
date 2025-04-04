@@ -22,8 +22,6 @@ Route::get('/', function () {
     Route::resource('courses', CourseController::class);
 
     Route::apiResource('/modules', ModuleController::class);
-    Route::apiResource('/files', FileController::class);
-    Route::get('files/count', [FileController::class, 'getFileCount']);
 
     // Module File Management
     Route::get('/modules/download/{module}', [ModuleController::class, 'download']);
