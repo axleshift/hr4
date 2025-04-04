@@ -31,7 +31,6 @@ import {
 const Programs = () => {
     const [visibleProgram, setVisibleProgram] = useState(false)
     const [visibleCourse, setVisibleCourse] = useState(false)
-    const [visibleModule, setVisibleModule] = useState(false)
     const [programs, setPrograms] = useState([])
     const [courses, setCourses] = useState([])
     const [modules, setModules] = useState([])
@@ -42,7 +41,10 @@ const Programs = () => {
     const [courseDescription, setCourseDescription] = useState('')
     const [moduleTitle, setModuleTitle] = useState('')
     const [moduleDescription, setModuleDescription] = useState('')
+
+    const [visibleModule, setVisibleModule] = useState(false)
     const [selectedCourseId, setSelectedCourseId] = useState(null)
+    const [module, setModule] = useState({ title: '', description: '', file: null })
 
     useEffect(() => {
         const fetchPrograms = async () => {
@@ -102,18 +104,31 @@ const Programs = () => {
         }
     }
 
-    const handleSaveModule = async () => {
+    const handleModuleInputChange = (e) => {
+        const { id, value } = e.target
+        setModule((prev) => ({ ...prev, [id]: value }))
+    }
+
+    const handleModuleFileChange = (e) => {
+        setModule((prev) => ({ ...prev, file: e.target.files[0] }))
+    }
+
+    const handleAddModule = async () => {
+        const formData = new FormData()
+        formData.append('title', module.title)
+        formData.append('description', module.description)
+        formData.append('course_id', selectedCourseId)
+        if (module.file) formData.append('file', module.file)
+
         try {
-            const response = await api.post('/api/modules', {
-                title: moduleTitle,
-                description: moduleDescription,
-                course_id: selectedCourseId,
+            await api.post('/api/modules', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
             })
-            console.log('Module saved:', response.data)
-            setModules([...modules, response.data])
+
+            setModule({ title: '', description: '', file: null })
             setVisibleModule(false)
         } catch (error) {
-            console.error('Error saving module:', error)
+            console.error('Error uploading module:', error.response?.data || error.message)
         }
     }
 
@@ -160,6 +175,7 @@ const Programs = () => {
                                                 <CTableRow>
                                                     <CTableHeaderCell>Title</CTableHeaderCell>
                                                     <CTableHeaderCell>Description</CTableHeaderCell>
+                                                    <CTableHeaderCell>Module</CTableHeaderCell>
                                                     <CTableHeaderCell>Actions</CTableHeaderCell>
                                                 </CTableRow>
                                             </CTableHead>
@@ -177,8 +193,11 @@ const Programs = () => {
                                                             <CTableDataCell>
                                                                 {course.description}
                                                             </CTableDataCell>
+                                                            <CTableDataCell>—</CTableDataCell>{' '}
+                                                            {/* You can replace this with module count later */}
                                                             <CTableDataCell>
                                                                 <CButton
+                                                                    size="sm"
                                                                     color="success"
                                                                     onClick={() => {
                                                                         setSelectedCourseId(
@@ -279,36 +298,32 @@ const Programs = () => {
             {/* Add Module Modal */}
             <CModal size="xl" visible={visibleModule} onClose={() => setVisibleModule(false)}>
                 <CModalHeader>
-                    <CModalTitle>Add Module to Course</CModalTitle>
+                    <CModalTitle>Add Module</CModalTitle>
                 </CModalHeader>
                 <CModalBody>
                     <CForm>
-                        <CRow className="mb-3">
-                            <CCol md={12}>
-                                <CFormLabel>Module Title</CFormLabel>
-                                <CFormInput
-                                    value={moduleTitle}
-                                    onChange={(e) => setModuleTitle(e.target.value)}
-                                />
-                            </CCol>
-                        </CRow>
-                        <CRow className="mb-3">
-                            <CCol md={12}>
-                                <CFormLabel>Module Description</CFormLabel>
-                                <CFormTextarea
-                                    value={moduleDescription}
-                                    onChange={(e) => setModuleDescription(e.target.value)}
-                                />
-                            </CCol>
-                        </CRow>
+                        <CFormLabel>Module Title</CFormLabel>
+                        <CFormInput
+                            id="title"
+                            value={module.title}
+                            onChange={handleModuleInputChange}
+                        />
+                        <CFormLabel className="mt-3">Module Description</CFormLabel>
+                        <CFormTextarea
+                            id="description"
+                            value={module.description}
+                            onChange={handleModuleInputChange}
+                        />
+                        <CFormLabel className="mt-3">Upload File</CFormLabel>
+                        <CFormInput type="file" onChange={handleModuleFileChange} />
                     </CForm>
                 </CModalBody>
                 <CModalFooter>
                     <CButton color="secondary" onClick={() => setVisibleModule(false)}>
-                        Close
+                        Cancel
                     </CButton>
-                    <CButton color="primary" onClick={handleSaveModule}>
-                        Save Module
+                    <CButton color="primary" onClick={handleAddModule}>
+                        Upload Module
                     </CButton>
                 </CModalFooter>
             </CModal>
