@@ -1,11 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import api from '../../../../util/api'
 import {
-    CFormTextarea,
-    CAccordion,
-    CAccordionItem,
-    CAccordionHeader,
-    CAccordionBody,
     CButton,
     CCard,
     CCardBody,
@@ -20,6 +15,11 @@ import {
     CForm,
     CFormInput,
     CFormLabel,
+    CFormTextarea,
+    CAccordion,
+    CAccordionItem,
+    CAccordionHeader,
+    CAccordionBody,
     CTable,
     CTableBody,
     CTableHead,
@@ -29,23 +29,18 @@ import {
 } from '@coreui/react'
 
 const Programs = () => {
-    const [visibleProgram, setVisibleProgram] = useState(false)
-    const [visibleCourse, setVisibleCourse] = useState(false)
     const [programs, setPrograms] = useState([])
     const [courses, setCourses] = useState([])
-    const [modules, setModules] = useState([])
-    const [selectedProgramId, setSelectedProgramId] = useState(null)
     const [programTitle, setProgramTitle] = useState('')
     const [programDescription, setProgramDescription] = useState('')
     const [courseTitle, setCourseTitle] = useState('')
     const [courseDescription, setCourseDescription] = useState('')
-    const [moduleTitle, setModuleTitle] = useState('')
-    const [moduleDescription, setModuleDescription] = useState('')
-    const [visibleXL, setVisibleXL] = useState(false)
-
-    const [visibleModule, setVisibleModule] = useState(false)
-    const [selectedCourse, setSelectedCourse] = useState(null)
     const [module, setModule] = useState({ title: '', description: '', file: null })
+    const [selectedCourseId, setSelectedCourseId] = useState(null)
+
+    const [visibleProgram, setVisibleProgram] = useState(false)
+    const [visibleCourse, setVisibleCourse] = useState(false)
+    const [visibleModule, setVisibleModule] = useState(false)
 
     useEffect(() => {
         const fetchPrograms = async () => {
@@ -78,9 +73,7 @@ const Programs = () => {
                 description: programDescription,
             })
 
-            const newProgram = response.data.data
-            setPrograms((prev) => [...prev, newProgram])
-
+            setPrograms((prev) => [...prev, response.data.data])
             setProgramTitle('')
             setProgramDescription('')
             setVisibleProgram(false)
@@ -94,10 +87,9 @@ const Programs = () => {
             const response = await api.post('/api/courses', {
                 title: courseTitle,
                 description: courseDescription,
-                program_id: selectedProgramId,
+                program_id: selectedCourseId,
             })
 
-            console.log('Course saved:', response.data)
             setCourses([...courses, response.data])
             setVisibleCourse(false)
         } catch (error) {
@@ -108,12 +100,6 @@ const Programs = () => {
     const handleModuleInputChange = (e) => {
         const { id, value } = e.target
         setModule((prev) => ({ ...prev, [id]: value }))
-    }
-
-    const handleOpenModal = (courseId) => {
-        console.log(`Opening modal for course ID: ${courseId}`)
-        setSelectedCourse(courseId)
-        setVisibleXL(true)
     }
 
     const handleModuleFileChange = (e) => {
@@ -139,6 +125,11 @@ const Programs = () => {
         }
     }
 
+    const handleOpenModuleModal = (courseId) => {
+        setSelectedCourseId(courseId)
+        setVisibleModule(true)
+    }
+
     return (
         <CRow>
             <CCol xs={12}>
@@ -157,7 +148,7 @@ const Programs = () => {
                                 <CAccordionItem key={program.id}>
                                     <CAccordionHeader
                                         onClick={() => {
-                                            setSelectedProgramId(program.id) // Track the opened program
+                                            setSelectedCourseId(program.id)
                                         }}
                                     >
                                         {program.title}
@@ -169,7 +160,7 @@ const Programs = () => {
                                         <CButton
                                             color="primary"
                                             onClick={() => {
-                                                setSelectedProgramId(program.id)
+                                                setSelectedCourseId(program.id)
                                                 setVisibleCourse(true)
                                             }}
                                         >
@@ -229,12 +220,13 @@ const Programs = () => {
                                                                     <span>—</span>
                                                                 )}
                                                             </CTableDataCell>
-
                                                             <CTableDataCell>
                                                                 <CButton
                                                                     color="primary"
                                                                     onClick={() =>
-                                                                        handleOpenModal(course.id)
+                                                                        handleOpenModuleModal(
+                                                                            course.id,
+                                                                        )
                                                                     }
                                                                 >
                                                                     {course.modules &&
@@ -336,33 +328,44 @@ const Programs = () => {
                 </CModalHeader>
                 <CModalBody>
                     <CForm>
-                        <CFormLabel>Module Title</CFormLabel>
-                        <CFormInput
-                            id="title"
-                            value={module.title}
-                            onChange={handleModuleInputChange}
-                        />
-                        <CFormLabel className="mt-3">Module Description</CFormLabel>
-                        <CFormTextarea
-                            id="description"
-                            value={module.description}
-                            onChange={handleModuleInputChange}
-                        />
-                        <CFormLabel className="mt-3">Upload File</CFormLabel>
-                        <CFormInput type="file" onChange={handleModuleFileChange} />
+                        <CRow className="mb-3">
+                            <CCol md={12}>
+                                <CFormLabel>Module Title</CFormLabel>
+                                <CFormInput
+                                    id="title"
+                                    value={module.title}
+                                    onChange={handleModuleInputChange}
+                                />
+                            </CCol>
+                        </CRow>
+                        <CRow className="mb-3">
+                            <CCol md={12}>
+                                <CFormLabel>Module Description</CFormLabel>
+                                <CFormTextarea
+                                    id="description"
+                                    value={module.description}
+                                    onChange={handleModuleInputChange}
+                                />
+                            </CCol>
+                        </CRow>
+                        <CRow className="mb-3">
+                            <CCol md={12}>
+                                <CFormLabel>Upload File</CFormLabel>
+                                <CFormInput type="file" onChange={handleModuleFileChange} />
+                            </CCol>
+                        </CRow>
                     </CForm>
                 </CModalBody>
                 <CModalFooter>
                     <CButton color="secondary" onClick={() => setVisibleModule(false)}>
-                        Cancel
+                        Close
                     </CButton>
                     <CButton color="primary" onClick={handleAddModule}>
-                        Upload Module
+                        Save Module
                     </CButton>
                 </CModalFooter>
             </CModal>
         </CRow>
     )
 }
-
 export default Programs
