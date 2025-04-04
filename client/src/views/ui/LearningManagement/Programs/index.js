@@ -121,16 +121,27 @@ const Programs = () => {
 
     const handleAddModule = async () => {
         const formData = new FormData()
+
+        // Append data to FormData
         formData.append('title', module.title)
         formData.append('description', module.description)
         formData.append('course_id', selectedCourseId)
-        if (module.file) formData.append('file', module.file)
+
+        // Only append the file if it exists
+        if (module.file) {
+            formData.append('file', module.file)
+        }
+
+        // Log to verify the data being sent
+        console.log('FormData:', formData)
 
         try {
+            // Ensure headers are set correctly
             await api.post('/api/modules', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
             })
 
+            // Reset the form
             setModule({ title: '', description: '', file: null })
             setVisibleModule(false)
         } catch (error) {
