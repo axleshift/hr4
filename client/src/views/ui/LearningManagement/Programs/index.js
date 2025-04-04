@@ -31,14 +31,18 @@ import {
 const Programs = () => {
     const [visibleProgram, setVisibleProgram] = useState(false)
     const [visibleCourse, setVisibleCourse] = useState(false)
+    const [visibleModule, setVisibleModule] = useState(false)
     const [programs, setPrograms] = useState([])
     const [courses, setCourses] = useState([])
+    const [modules, setModules] = useState([])
     const [selectedProgramId, setSelectedProgramId] = useState(null)
     const [programTitle, setProgramTitle] = useState('')
     const [programDescription, setProgramDescription] = useState('')
     const [courseTitle, setCourseTitle] = useState('')
     const [courseDescription, setCourseDescription] = useState('')
-    const [courseDuration, setCourseDuration] = useState('')
+    const [moduleTitle, setModuleTitle] = useState('')
+    const [moduleDescription, setModuleDescription] = useState('')
+    const [selectedCourseId, setSelectedCourseId] = useState(null)
 
     useEffect(() => {
         const fetchPrograms = async () => {
@@ -56,7 +60,6 @@ const Programs = () => {
         const fetchCourses = async () => {
             try {
                 const response = await api.get(`/api/courses`)
-                console.log('Courses fetched:', response.data)
                 setCourses(response.data.data)
             } catch (error) {
                 console.error('Error fetching courses:', error)
@@ -73,12 +76,10 @@ const Programs = () => {
             })
 
             const newProgram = response.data.data
-
             setPrograms((prev) => [...prev, newProgram])
 
             setProgramTitle('')
             setProgramDescription('')
-
             setVisibleProgram(false)
         } catch (error) {
             console.error('Error adding program:', error)
@@ -90,7 +91,6 @@ const Programs = () => {
             const response = await api.post('/api/courses', {
                 title: courseTitle,
                 description: courseDescription,
-                duration: courseDuration,
                 program_id: selectedProgramId,
             })
 
@@ -99,6 +99,21 @@ const Programs = () => {
             setVisibleCourse(false)
         } catch (error) {
             console.error('Error saving course:', error)
+        }
+    }
+
+    const handleSaveModule = async () => {
+        try {
+            const response = await api.post('/api/modules', {
+                title: moduleTitle,
+                description: moduleDescription,
+                course_id: selectedCourseId,
+            })
+            console.log('Module saved:', response.data)
+            setModules([...modules, response.data])
+            setVisibleModule(false)
+        } catch (error) {
+            console.error('Error saving module:', error)
         }
     }
 
@@ -145,7 +160,7 @@ const Programs = () => {
                                                 <CTableRow>
                                                     <CTableHeaderCell>Title</CTableHeaderCell>
                                                     <CTableHeaderCell>Description</CTableHeaderCell>
-                                                    <CTableHeaderCell>Duration</CTableHeaderCell>
+                                                    <CTableHeaderCell>Actions</CTableHeaderCell>
                                                 </CTableRow>
                                             </CTableHead>
                                             <CTableBody>
@@ -163,7 +178,17 @@ const Programs = () => {
                                                                 {course.description}
                                                             </CTableDataCell>
                                                             <CTableDataCell>
-                                                                {course.duration}
+                                                                <CButton
+                                                                    color="success"
+                                                                    onClick={() => {
+                                                                        setSelectedCourseId(
+                                                                            course.id,
+                                                                        )
+                                                                        setVisibleModule(true)
+                                                                    }}
+                                                                >
+                                                                    Add Module
+                                                                </CButton>
                                                             </CTableDataCell>
                                                         </CTableRow>
                                                     ))}
@@ -239,15 +264,6 @@ const Programs = () => {
                                 />
                             </CCol>
                         </CRow>
-                        <CRow className="mb-3">
-                            <CCol md={12}>
-                                <CFormLabel>Course Duration</CFormLabel>
-                                <CFormInput
-                                    value={courseDuration}
-                                    onChange={(e) => setCourseDuration(e.target.value)}
-                                />
-                            </CCol>
-                        </CRow>
                     </CForm>
                 </CModalBody>
                 <CModalFooter>
@@ -256,6 +272,43 @@ const Programs = () => {
                     </CButton>
                     <CButton color="primary" onClick={handleSaveCourse}>
                         Save Course
+                    </CButton>
+                </CModalFooter>
+            </CModal>
+
+            {/* Add Module Modal */}
+            <CModal size="xl" visible={visibleModule} onClose={() => setVisibleModule(false)}>
+                <CModalHeader>
+                    <CModalTitle>Add Module to Course</CModalTitle>
+                </CModalHeader>
+                <CModalBody>
+                    <CForm>
+                        <CRow className="mb-3">
+                            <CCol md={12}>
+                                <CFormLabel>Module Title</CFormLabel>
+                                <CFormInput
+                                    value={moduleTitle}
+                                    onChange={(e) => setModuleTitle(e.target.value)}
+                                />
+                            </CCol>
+                        </CRow>
+                        <CRow className="mb-3">
+                            <CCol md={12}>
+                                <CFormLabel>Module Description</CFormLabel>
+                                <CFormTextarea
+                                    value={moduleDescription}
+                                    onChange={(e) => setModuleDescription(e.target.value)}
+                                />
+                            </CCol>
+                        </CRow>
+                    </CForm>
+                </CModalBody>
+                <CModalFooter>
+                    <CButton color="secondary" onClick={() => setVisibleModule(false)}>
+                        Close
+                    </CButton>
+                    <CButton color="primary" onClick={handleSaveModule}>
+                        Save Module
                     </CButton>
                 </CModalFooter>
             </CModal>
