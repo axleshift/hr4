@@ -69,17 +69,15 @@ const Programs = () => {
 
     useEffect(() => {
         const fetchModules = async () => {
-            if (selectedCourseId) {
-                try {
-                    const response = await api.get(`/api/modules?course_id=${selectedCourseId}`)
-                    setModules(response.data.data) // Make sure you define `setModules` and `modules`
-                } catch (error) {
-                    console.error('Error fetching modules:', error)
-                }
+            try {
+                const response = await api.get('/api/modules')
+                setModules(response.data.data)
+            } catch (error) {
+                console.error('Error fetching modules:', error)
             }
         }
         fetchModules()
-    }, [selectedCourseId])
+    }, [])
 
     const handleSaveProgram = async () => {
         try {
@@ -186,62 +184,86 @@ const Programs = () => {
                                         <CTable striped className="mt-3">
                                             <CTableHead>
                                                 <CTableRow>
-                                                    <CTableHeaderCell>Title</CTableHeaderCell>
+                                                    <CTableHeaderCell>
+                                                        Course Title
+                                                    </CTableHeaderCell>
                                                     <CTableHeaderCell>Description</CTableHeaderCell>
-                                                    <CTableHeaderCell>Module</CTableHeaderCell>
+                                                    <CTableHeaderCell>Modules</CTableHeaderCell>
                                                     <CTableHeaderCell>Actions</CTableHeaderCell>
                                                 </CTableRow>
                                             </CTableHead>
                                             <CTableBody>
-                                                {modules.length > 0 ? (
-                                                    modules.map((module, index) => (
-                                                        <CTableRow key={module.id}>
-                                                            <CTableHeaderCell>
-                                                                {index + 1}
-                                                            </CTableHeaderCell>
+                                                {courses
+                                                    .filter(
+                                                        (course) =>
+                                                            course.program_id === program.id,
+                                                    )
+                                                    .map((course) => (
+                                                        <CTableRow key={course.id}>
                                                             <CTableDataCell>
-                                                                {module.title}
+                                                                {course.title}
                                                             </CTableDataCell>
                                                             <CTableDataCell>
-                                                                {module.description}
+                                                                {course.description}
                                                             </CTableDataCell>
                                                             <CTableDataCell>
-                                                                {module.file_url ? (
-                                                                    <a
-                                                                        href={module.file_url}
-                                                                        target="_blank"
-                                                                        rel="noopener noreferrer"
-                                                                    >
-                                                                        {module.file_name ||
-                                                                            'Download'}
-                                                                    </a>
-                                                                ) : (
-                                                                    <span>No File</span>
-                                                                )}
+                                                                <ul className="mb-0">
+                                                                    {modules
+                                                                        .filter(
+                                                                            (m) =>
+                                                                                m.course_id ===
+                                                                                course.id,
+                                                                        )
+                                                                        .map((mod) => (
+                                                                            <li key={mod.id}>
+                                                                                <strong>
+                                                                                    {mod.title}
+                                                                                </strong>{' '}
+                                                                                - {mod.description}{' '}
+                                                                                {mod.file_url && (
+                                                                                    <>
+                                                                                        [
+                                                                                        <a
+                                                                                            href={
+                                                                                                mod.file_url
+                                                                                            }
+                                                                                            target="_blank"
+                                                                                            rel="noopener noreferrer"
+                                                                                        >
+                                                                                            {mod.file_name ||
+                                                                                                'Download'}
+                                                                                        </a>
+                                                                                        ]
+                                                                                    </>
+                                                                                )}
+                                                                            </li>
+                                                                        ))}
+                                                                    {modules.filter(
+                                                                        (m) =>
+                                                                            m.course_id ===
+                                                                            course.id,
+                                                                    ).length === 0 && (
+                                                                        <li>
+                                                                            No modules available
+                                                                        </li>
+                                                                    )}
+                                                                </ul>
                                                             </CTableDataCell>
                                                             <CTableDataCell>
                                                                 <CButton
-                                                                    color="danger"
+                                                                    color="success"
                                                                     size="sm"
                                                                     onClick={() =>
-                                                                        handleDelete(module.id)
+                                                                        handleOpenModuleModal(
+                                                                            course.id,
+                                                                        )
                                                                     }
                                                                 >
-                                                                    Delete
+                                                                    Add Module
                                                                 </CButton>
                                                             </CTableDataCell>
                                                         </CTableRow>
-                                                    ))
-                                                ) : (
-                                                    <CTableRow>
-                                                        <CTableDataCell
-                                                            colSpan={5}
-                                                            className="text-center"
-                                                        >
-                                                            No modules available.
-                                                        </CTableDataCell>
-                                                    </CTableRow>
-                                                )}
+                                                    ))}
                                             </CTableBody>
                                         </CTable>
                                     </CAccordionBody>
