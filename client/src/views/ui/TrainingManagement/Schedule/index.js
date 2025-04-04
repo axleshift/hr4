@@ -25,7 +25,7 @@ import {
 
 const TrainingSchedule = () => {
     const [visibleXL, setVisibleXL] = useState(false)
-    const [trainings, setTrainings] = useState([])
+    const [trainings, setTrainings] = useState([]) // Ensure trainings is an empty array initially
     const [formData, setFormData] = useState({
         event_title: '',
         delivery_method: '',
@@ -43,7 +43,7 @@ const TrainingSchedule = () => {
     const fetchTrainings = async () => {
         try {
             const response = await api.get(`/training`)
-            setTrainings(response.data.data)
+            setTrainings(response.data.data || []) // Fallback to empty array if data is undefined
         } catch (error) {
             console.error('Error fetching trainings:', error)
         }
@@ -72,16 +72,18 @@ const TrainingSchedule = () => {
             console.error('Error adding training:', error)
         }
     }
-    // FILTER
-    const uniqueTrainingClasses = trainings.filter(
+
+    // Ensure uniqueTrainingClasses and uniqueDelivery_method work even if trainings is empty
+    const uniqueTrainingClasses = (trainings || []).filter(
         (training, index, self) =>
             index === self.findIndex((t) => t.event_title === training.event_title),
     )
 
-    const uniqueDelivery_method = trainings.filter(
+    const uniqueDelivery_method = (trainings || []).filter(
         (delivery_method, index, self) =>
             index === self.findIndex((a) => a.delivery_method === delivery_method.delivery_method),
     )
+
     // DATE TIME
     const getTrainingStatus = (scheduleDate, startTime, endTime) => {
         const now = new Date()
