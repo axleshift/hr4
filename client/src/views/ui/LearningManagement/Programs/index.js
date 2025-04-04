@@ -67,7 +67,7 @@ const Programs = () => {
 
     const handleSaveProgram = async () => {
         try {
-            const response = await api.get(`/api/programs`, {
+            const response = await api.post(`/api/programs`, {
                 title: programTitle,
                 description: programDescription,
             })
@@ -91,7 +91,7 @@ const Programs = () => {
                 title: courseTitle,
                 description: courseDescription,
                 duration: courseDuration,
-                program_id: selectedProgramId, // Associate course with program
+                program_id: selectedProgramId,
             })
 
             console.log('Course saved:', response.data)

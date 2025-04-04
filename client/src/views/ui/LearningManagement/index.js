@@ -33,7 +33,6 @@ const LMS = () => {
         file: null,
     })
 
-    // Fetch modules on component mount
     useEffect(() => {
         fetchModules()
     }, [])
