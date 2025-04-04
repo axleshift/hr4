@@ -5,27 +5,27 @@ import {
     CCard,
     CCardBody,
     CCardHeader,
-    CModal,
-    CModalBody,
-    CModalFooter,
-    CModalHeader,
-    CModalTitle,
     CRow,
     CCol,
     CForm,
     CFormInput,
     CFormLabel,
     CFormTextarea,
-    CAccordion,
-    CAccordionItem,
-    CAccordionHeader,
-    CAccordionBody,
+    CModal,
+    CModalBody,
+    CModalFooter,
+    CModalHeader,
+    CModalTitle,
     CTable,
     CTableBody,
     CTableHead,
     CTableRow,
     CTableHeaderCell,
     CTableDataCell,
+    CAccordion,
+    CAccordionItem,
+    CAccordionHeader,
+    CAccordionBody,
 } from '@coreui/react'
 
 const Programs = () => {
@@ -35,13 +35,11 @@ const Programs = () => {
     const [programDescription, setProgramDescription] = useState('')
     const [courseTitle, setCourseTitle] = useState('')
     const [courseDescription, setCourseDescription] = useState('')
-    const [module, setModule] = useState({ title: '', description: '', file: null })
-    const [selectedCourseId, setSelectedCourseId] = useState(null)
+    const [courseFile, setCourseFile] = useState(null)
+    const [selectedProgramId, setSelectedProgramId] = useState(null)
 
     const [visibleProgram, setVisibleProgram] = useState(false)
     const [visibleCourse, setVisibleCourse] = useState(false)
-    const [visibleModule, setVisibleModule] = useState(false)
-    const [modules, setModules] = useState([])
 
     useEffect(() => {
         const fetchPrograms = async () => {
@@ -64,15 +62,6 @@ const Programs = () => {
         }
     }
 
-    const fetchModules = async (courseId) => {
-        try {
-            const response = await api.get(`/api/modules?course_id=${courseId}`)
-            setModules(response.data.data)
-        } catch (error) {
-            console.error('Error fetching modules:', error)
-        }
-    }
-
     const handleSaveProgram = async () => {
         try {
             const response = await api.post(`/api/programs`, {
@@ -89,58 +78,30 @@ const Programs = () => {
         }
     }
 
-    const handleSaveCourse = async () => {
+    const handleSaveCourse = async (e) => {
+        e.preventDefault()
+
+        const formData = new FormData()
+        formData.append('title', courseTitle)
+        formData.append('description', courseDescription)
+        formData.append('program_id', selectedProgramId)
+        if (courseFile) {
+            formData.append('file', courseFile)
+        }
+
         try {
-            const response = await api.post('/api/courses', {
-                title: courseTitle,
-                description: courseDescription,
-                program_id: selectedCourseId,
+            const response = await api.post('/api/courses', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
             })
 
             setCourses((prevCourses) => [...prevCourses, response.data])
             setVisibleCourse(false)
+            setCourseTitle('')
+            setCourseDescription('')
+            setCourseFile(null)
         } catch (error) {
             console.error('Error saving course:', error)
         }
-    }
-
-    const handleModuleInputChange = (e) => {
-        const { id, value } = e.target
-        setModule((prev) => ({ ...prev, [id]: value }))
-    }
-
-    const handleModuleFileChange = (e) => {
-        setModule((prev) => ({ ...prev, file: e.target.files[0] }))
-    }
-
-    const handleAddModule = async () => {
-        const formData = new FormData()
-
-        formData.append('title', module.title)
-        formData.append('description', module.description)
-        formData.append('course_id', selectedCourseId)
-
-        if (module.file) {
-            formData.append('file', module.file)
-        }
-
-        try {
-            const response = await api.post('/api/modules', formData, {
-                headers: { 'Content-Type': 'multipart/form-data' },
-            })
-
-            setModules((prevModules) => [...prevModules, response.data.data])
-            setModule({ title: '', description: '', file: null })
-            setVisibleModule(false)
-        } catch (error) {
-            console.error('Error uploading module:', error)
-        }
-    }
-
-    const handleOpenModuleModal = (courseId) => {
-        setSelectedCourseId(courseId)
-        setVisibleModule(true)
-        fetchModules(courseId) // Fetch modules for the selected course
     }
 
     return (
@@ -161,7 +122,7 @@ const Programs = () => {
                                 <CAccordionItem key={program.id}>
                                     <CAccordionHeader
                                         onClick={() => {
-                                            fetchCourses(program.id) // Fetch courses when a program is clicked
+                                            fetchCourses(program.id)
                                         }}
                                     >
                                         {program.title}
@@ -173,7 +134,7 @@ const Programs = () => {
                                         <CButton
                                             color="primary"
                                             onClick={() => {
-                                                setSelectedCourseId(program.id)
+                                                setSelectedProgramId(program.id)
                                                 setVisibleCourse(true)
                                             }}
                                         >
@@ -188,7 +149,7 @@ const Programs = () => {
                                                         Course Title
                                                     </CTableHeaderCell>
                                                     <CTableHeaderCell>Description</CTableHeaderCell>
-                                                    <CTableHeaderCell>Modules</CTableHeaderCell>
+                                                    <CTableHeaderCell>File</CTableHeaderCell>
                                                     <CTableHeaderCell>Actions</CTableHeaderCell>
                                                 </CTableRow>
                                             </CTableHead>
@@ -207,60 +168,21 @@ const Programs = () => {
                                                                 {course.description}
                                                             </CTableDataCell>
                                                             <CTableDataCell>
-                                                                <ul className="mb-0">
-                                                                    {modules
-                                                                        .filter(
-                                                                            (m) =>
-                                                                                m.course_id ===
-                                                                                course.id,
-                                                                        )
-                                                                        .map((mod) => (
-                                                                            <li key={mod.id}>
-                                                                                <strong>
-                                                                                    {mod.title}
-                                                                                </strong>{' '}
-                                                                                - {mod.description}{' '}
-                                                                                {mod.file_url && (
-                                                                                    <>
-                                                                                        [
-                                                                                        <a
-                                                                                            href={
-                                                                                                mod.file_url
-                                                                                            }
-                                                                                            target="_blank"
-                                                                                            rel="noopener noreferrer"
-                                                                                        >
-                                                                                            {mod.file_name ||
-                                                                                                'Download'}
-                                                                                        </a>
-                                                                                        ]
-                                                                                    </>
-                                                                                )}
-                                                                            </li>
-                                                                        ))}
-                                                                    {modules.filter(
-                                                                        (m) =>
-                                                                            m.course_id ===
-                                                                            course.id,
-                                                                    ).length === 0 && (
-                                                                        <li>
-                                                                            No modules available
-                                                                        </li>
-                                                                    )}
-                                                                </ul>
+                                                                {course.file_path ? (
+                                                                    <a
+                                                                        href={course.file_path}
+                                                                        target="_blank"
+                                                                        rel="noopener noreferrer"
+                                                                    >
+                                                                        {course.file_name ||
+                                                                            'Download'}
+                                                                    </a>
+                                                                ) : (
+                                                                    <span>No File</span>
+                                                                )}
                                                             </CTableDataCell>
                                                             <CTableDataCell>
-                                                                <CButton
-                                                                    color="success"
-                                                                    size="sm"
-                                                                    onClick={() =>
-                                                                        handleOpenModuleModal(
-                                                                            course.id,
-                                                                        )
-                                                                    }
-                                                                >
-                                                                    Add Module
-                                                                </CButton>
+                                                                {/* Actions for course */}
                                                             </CTableDataCell>
                                                         </CTableRow>
                                                     ))}
@@ -275,7 +197,7 @@ const Programs = () => {
             </CCol>
 
             {/* Add Program Modal */}
-            <CModal size="xl" visible={visibleProgram} onClose={() => setVisibleProgram(false)}>
+            <CModal size="lg" visible={visibleProgram} onClose={() => setVisibleProgram(false)}>
                 <CModalHeader>
                     <CModalTitle>Add Program</CModalTitle>
                 </CModalHeader>
@@ -312,7 +234,7 @@ const Programs = () => {
             </CModal>
 
             {/* Add Course Modal */}
-            <CModal size="xl" visible={visibleCourse} onClose={() => setVisibleCourse(false)}>
+            <CModal size="lg" visible={visibleCourse} onClose={() => setVisibleCourse(false)}>
                 <CModalHeader>
                     <CModalTitle>Add Course</CModalTitle>
                 </CModalHeader>
@@ -336,17 +258,22 @@ const Programs = () => {
                                 />
                             </CCol>
                         </CRow>
+                        <CRow className="mb-3">
+                            <CCol md={12}>
+                                <CFormLabel>Upload File</CFormLabel>
+                                <CFormInput
+                                    type="file"
+                                    onChange={(e) => setCourseFile(e.target.files[0])}
+                                />
+                            </CCol>
+                        </CRow>
                     </CForm>
                 </CModalBody>
                 <CModalFooter>
                     <CButton color="secondary" onClick={() => setVisibleCourse(false)}>
                         Close
                     </CButton>
-                    <CButton
-                        color="primary"
-                        onClick={handleSaveCourse}
-                        disabled={!courseTitle || !courseDescription}
-                    >
+                    <CButton color="primary" onClick={handleSaveCourse}>
                         Save Course
                     </CButton>
                 </CModalFooter>
