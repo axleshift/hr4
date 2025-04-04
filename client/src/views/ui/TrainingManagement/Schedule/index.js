@@ -21,23 +21,31 @@ import {
     CForm,
     CFormInput,
     CFormLabel,
+    CFormSelect,
 } from '@coreui/react'
 
 const TrainingSchedule = () => {
     const [visibleXL, setVisibleXL] = useState(false)
     const [trainings, setTrainings] = useState([]) // Ensure trainings is an empty array initially
     const [formData, setFormData] = useState({
-        event_title: '',
-        delivery_method: '',
+        program_name: '',
+        course_name: '',
+        department: '',
+        participant: '',
         event_location: '',
         schedule: '',
         start_time: '',
         end_time: '',
     })
 
+    const [programs, setPrograms] = useState([])
+    const [courses, setCourses] = useState([])
+    const [selectedProgram, setSelectedProgram] = useState('')
+
     // CRUD
     useEffect(() => {
         fetchTrainings()
+        fetchPrograms()
     }, [])
 
     const fetchTrainings = async () => {
@@ -48,6 +56,29 @@ const TrainingSchedule = () => {
             console.error('Error fetching trainings:', error)
         }
     }
+
+    const fetchPrograms = async () => {
+        try {
+            const response = await api.get('/api/programs')
+            setPrograms(response.data.data)
+        } catch (error) {
+            console.error('Error fetching programs:', error)
+        }
+    }
+
+    const fetchCourses = async () => {
+        if (!selectedProgram) return
+        try {
+            const response = await api.get(`/api/courses?program_id=${selectedProgram}`)
+            setCourses(response.data.data)
+        } catch (error) {
+            console.error('Error fetching courses:', error)
+        }
+    }
+
+    useEffect(() => {
+        fetchCourses()
+    }, [selectedProgram])
 
     const handleInputChange = (e) => {
         const { name, value } = e.target
@@ -61,8 +92,10 @@ const TrainingSchedule = () => {
             setVisibleXL(false)
             fetchTrainings()
             setFormData({
-                event_title: '',
-                delivery_method: '',
+                program_name: '',
+                course_name: '',
+                department: '',
+                participant: '',
                 event_location: '',
                 schedule: '',
                 start_time: '',
@@ -73,27 +106,15 @@ const TrainingSchedule = () => {
         }
     }
 
-    // Ensure uniqueTrainingClasses and uniqueDelivery_method work even if trainings is empty
-    const uniqueTrainingClasses = (trainings || []).filter(
-        (training, index, self) =>
-            index === self.findIndex((t) => t.event_title === training.event_title),
-    )
-
-    const uniqueDelivery_method = (trainings || []).filter(
-        (delivery_method, index, self) =>
-            index === self.findIndex((a) => a.delivery_method === delivery_method.delivery_method),
-    )
-
     // DATE TIME
     const getTrainingStatus = (scheduleDate, startTime, endTime) => {
         const now = new Date()
         const start = new Date(`${scheduleDate}T${startTime}`)
         const end = new Date(`${scheduleDate}T${endTime}`)
 
-        // Determine the status based on the time comparison
-        if (now < start) return 'Pending' // Training hasn't started yet
-        if (now <= end) return 'Ongoing' // Training is ongoing
-        return 'Complete' // Training is complete
+        if (now < start) return 'Pending'
+        if (now <= end) return 'Ongoing'
+        return 'Complete'
     }
 
     const formatTime = (time) => {
@@ -103,15 +124,6 @@ const TrainingSchedule = () => {
         const hours12 = hours24 % 12 || 12
         return `${hours12}:${minutes} ${suffix}`
     }
-
-    const [currentTime, setCurrentTime] = useState(new Date())
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setCurrentTime(new Date()) // Updates the state every second
-        }, 1000)
-
-        return () => clearInterval(interval) // Clean up interval on component unmount
-    }, [])
 
     return (
         <CRow>
@@ -135,67 +147,72 @@ const TrainingSchedule = () => {
                                 </CModalHeader>
                                 <CModalBody>
                                     <CForm onSubmit={handleSubmit}>
-                                        <CFormLabel htmlFor="event_title">
-                                            Training Class
+                                        <CFormLabel htmlFor="program_name">
+                                            Training Program Name
                                         </CFormLabel>
-                                        <CFormInput
-                                            type="text"
-                                            id="event_title"
-                                            name="event_title"
-                                            value={formData.event_title}
+                                        <CFormSelect
+                                            id="program_name"
+                                            name="program_name"
+                                            value={formData.program_name}
                                             onChange={handleInputChange}
                                             required
-                                        />
-                                        <div>
-                                            {uniqueTrainingClasses.map((training) => (
-                                                <CButton
-                                                    key={training.id}
-                                                    color="secondary"
-                                                    variant="outline"
-                                                    className="me-2"
-                                                    onClick={() =>
-                                                        setFormData({
-                                                            ...formData,
-                                                            event_title: training.event_title,
-                                                        })
-                                                    }
-                                                >
-                                                    {training.event_title}
-                                                </CButton>
+                                        >
+                                            <option value="">Select Program</option>
+                                            {programs.map((program) => (
+                                                <option key={program.id} value={program.title}>
+                                                    {program.title}
+                                                </option>
                                             ))}
-                                        </div>
-                                        <CFormLabel htmlFor="delivery_method">
-                                            Type of Delivery Method
-                                        </CFormLabel>
-                                        <CFormInput
-                                            type="text"
-                                            id="delivery_method"
-                                            name="delivery_method"
-                                            value={formData.delivery_method}
+                                        </CFormSelect>
+
+                                        <CFormLabel htmlFor="course_name">Course Name</CFormLabel>
+                                        <CFormSelect
+                                            id="course_name"
+                                            name="course_name"
+                                            value={formData.course_name}
                                             onChange={handleInputChange}
                                             required
-                                        />
-                                        <div>
-                                            {uniqueDelivery_method.map((delivery_method) => (
-                                                <CButton
-                                                    key={delivery_method.id}
-                                                    color="secondary"
-                                                    variant="outline"
-                                                    className="me-2"
-                                                    onClick={() =>
-                                                        setFormData({
-                                                            ...formData,
-                                                            delivery_method:
-                                                                delivery_method.delivery_method,
-                                                        })
-                                                    }
-                                                >
-                                                    {delivery_method.delivery_method}
-                                                </CButton>
+                                        >
+                                            <option value="">Select Course</option>
+                                            {courses.map((course) => (
+                                                <option key={course.id} value={course.title}>
+                                                    {course.title}
+                                                </option>
                                             ))}
-                                        </div>
+                                        </CFormSelect>
+
+                                        <CFormLabel htmlFor="department">
+                                            Select Department
+                                        </CFormLabel>
+                                        <CFormSelect
+                                            id="department"
+                                            name="department"
+                                            value={formData.department}
+                                            onChange={handleInputChange}
+                                            required
+                                        >
+                                            <option value="">Select Department</option>
+                                            <option value="HR">HR</option>
+                                            <option value="Finance">Finance</option>
+                                        </CFormSelect>
+
+                                        <CFormLabel htmlFor="participant">
+                                            Select Participant
+                                        </CFormLabel>
+                                        <CFormSelect
+                                            id="participant"
+                                            name="participant"
+                                            value={formData.participant}
+                                            onChange={handleInputChange}
+                                            required
+                                        >
+                                            <option value="">Select Participant</option>
+                                            <option value="Employee 1">Employee 1</option>
+                                            <option value="Employee 2">Employee 2</option>
+                                        </CFormSelect>
+
                                         <CFormLabel htmlFor="event_location">
-                                            event_location / Mode
+                                            Event Location / Mode
                                         </CFormLabel>
                                         <CFormInput
                                             type="text"
@@ -205,6 +222,7 @@ const TrainingSchedule = () => {
                                             onChange={handleInputChange}
                                             required
                                         />
+
                                         <CFormLabel htmlFor="schedule">Schedule</CFormLabel>
                                         <CFormInput
                                             type="date"
@@ -214,6 +232,7 @@ const TrainingSchedule = () => {
                                             onChange={handleInputChange}
                                             required
                                         />
+
                                         <CFormLabel htmlFor="start_time">Start Time</CFormLabel>
                                         <CFormInput
                                             type="time"
@@ -223,6 +242,7 @@ const TrainingSchedule = () => {
                                             onChange={handleInputChange}
                                             required
                                         />
+
                                         <CFormLabel htmlFor="end_time">End Time</CFormLabel>
                                         <CFormInput
                                             type="time"
@@ -232,6 +252,7 @@ const TrainingSchedule = () => {
                                             onChange={handleInputChange}
                                             required
                                         />
+
                                         <CModalFooter>
                                             <CButton
                                                 color="secondary"
@@ -240,7 +261,7 @@ const TrainingSchedule = () => {
                                                 Cancel
                                             </CButton>
                                             <CButton color="primary" type="submit">
-                                                Add Module
+                                                Add Training
                                             </CButton>
                                         </CModalFooter>
                                     </CForm>
@@ -252,24 +273,24 @@ const TrainingSchedule = () => {
                         <CTable>
                             <CTableHead>
                                 <CTableRow>
-                                    <CTableHeaderCell>Training Class</CTableHeaderCell>
-                                    <CTableHeaderCell>Delivery Method</CTableHeaderCell>
+                                    <CTableHeaderCell>Training Program Name</CTableHeaderCell>
+                                    <CTableHeaderCell>Course Name</CTableHeaderCell>
+                                    <CTableHeaderCell>Department</CTableHeaderCell>
+                                    <CTableHeaderCell>Participant</CTableHeaderCell>
                                     <CTableHeaderCell>Event Location</CTableHeaderCell>
                                     <CTableHeaderCell>Schedule</CTableHeaderCell>
                                     <CTableHeaderCell>Start Time</CTableHeaderCell>
                                     <CTableHeaderCell>End Time</CTableHeaderCell>
                                     <CTableHeaderCell>Status</CTableHeaderCell>
-                                    <CTableHeaderCell>Participants</CTableHeaderCell>
-                                    {/* New Column */}
                                 </CTableRow>
                             </CTableHead>
                             <CTableBody>
                                 {trainings.map((training) => (
                                     <CTableRow key={training.id}>
-                                        <CTableHeaderCell>{training.event_title}</CTableHeaderCell>
-                                        <CTableHeaderCell>
-                                            {training.delivery_method}
-                                        </CTableHeaderCell>
+                                        <CTableHeaderCell>{training.program_name}</CTableHeaderCell>
+                                        <CTableHeaderCell>{training.course_name}</CTableHeaderCell>
+                                        <CTableHeaderCell>{training.department}</CTableHeaderCell>
+                                        <CTableHeaderCell>{training.participant}</CTableHeaderCell>
                                         <CTableHeaderCell>
                                             {training.event_location}
                                         </CTableHeaderCell>
@@ -305,12 +326,6 @@ const TrainingSchedule = () => {
                                                     training.end_time,
                                                 )}
                                             </CBadge>
-                                        </CTableHeaderCell>
-                                        <CTableHeaderCell>
-                                            {/* Button to view participants */}
-                                            <CButton color="primary" variant="outline">
-                                                View Participants
-                                            </CButton>
                                         </CTableHeaderCell>
                                     </CTableRow>
                                 ))}
