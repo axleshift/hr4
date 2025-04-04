@@ -41,6 +41,7 @@ class UserProfileController extends Controller
             'gender' => 'nullable|string',
             'phone_number' => 'nullable|string',
             'address' => 'nullable|string',
+            'department' => 'nullable|string', // Added validation for department
         ]);
 
         // Fetch user and update their profile
@@ -52,4 +53,5 @@ class UserProfileController extends Controller
             'data' => $user
         ]);
     }
+
 }

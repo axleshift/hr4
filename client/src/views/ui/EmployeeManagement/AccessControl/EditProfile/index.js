@@ -11,26 +11,23 @@ import {
     CForm,
     CFormLabel,
     CFormInput,
-    CFormSelect, // Import CFormSelect for dropdown
+    CFormSelect,
 } from '@coreui/react'
 
 const EditProfile = ({ modalVisible, setModalVisible, user, fetchUsers }) => {
-    const defaultValue = (value) => (value ? value : 'NULL')
-
     const [formData, setFormData] = useState({
-        name: 'NULL',
-        email: 'NULL',
-        role: 'NULL',
-        department: 'NULL',
-        employee_type: 'NULL',
-        employment_status: 'NULL',
-        date_of_hire: 'NULL',
-        gender: 'NULL',
-        phone_number: 'NULL',
-        address: 'NULL',
+        name: '',
+        email: '',
+        role: '',
+        department: '',
+        employee_type: '',
+        employment_status: '',
+        date_of_hire: '',
+        gender: '',
+        phone_number: '',
+        address: '',
     })
 
-    // List of departments (you can add more as per your needs)
     const departments = [
         'HR',
         'Finance',
@@ -45,16 +42,16 @@ const EditProfile = ({ modalVisible, setModalVisible, user, fetchUsers }) => {
     useEffect(() => {
         if (user) {
             setFormData({
-                name: defaultValue(user.name),
-                email: defaultValue(user.email),
-                role: defaultValue(user.role),
-                department: defaultValue(user.department),
-                employee_type: defaultValue(user.employee_type),
-                employment_status: defaultValue(user.employment_status),
-                date_of_hire: defaultValue(user.date_of_hire),
-                gender: defaultValue(user.gender),
-                phone_number: defaultValue(user.phone_number),
-                address: defaultValue(user.address),
+                name: user.name || '',
+                email: user.email || '',
+                role: user.role || '',
+                department: user.department || '',
+                employee_type: user.employee_type || '',
+                employment_status: user.employment_status || '',
+                date_of_hire: user.date_of_hire || '',
+                gender: user.gender || '',
+                phone_number: user.phone_number || '',
+                address: user.address || '',
             })
         }
     }, [user])
@@ -63,12 +60,8 @@ const EditProfile = ({ modalVisible, setModalVisible, user, fetchUsers }) => {
         const { name, value } = e.target
         setFormData((prevState) => ({
             ...prevState,
-            [name]: value || 'NULL',
+            [name]: value,
         }))
-    }
-
-    const closeModal = () => {
-        setModalVisible(false)
     }
 
     const handleSubmit = async (e) => {
@@ -76,14 +69,14 @@ const EditProfile = ({ modalVisible, setModalVisible, user, fetchUsers }) => {
         try {
             await api.put(`/api/users/${user.id}`, formData)
             fetchUsers()
-            closeModal()
+            setModalVisible(false)
         } catch (error) {
             console.error('Error updating user profile:', error)
         }
     }
 
     return (
-        <CModal visible={modalVisible} onClose={closeModal}>
+        <CModal visible={modalVisible} onClose={() => setModalVisible(false)} size="lg">
             <CModalHeader>
                 <CModalTitle>Edit Profile</CModalTitle>
             </CModalHeader>
@@ -115,7 +108,7 @@ const EditProfile = ({ modalVisible, setModalVisible, user, fetchUsers }) => {
                         value={formData.department}
                         onChange={handleChange}
                     >
-                        <option value="NULL">Select Department</option>
+                        <option value="">Select Department</option>
                         {departments.map((dept) => (
                             <option key={dept} value={dept}>
                                 {dept}
@@ -174,7 +167,7 @@ const EditProfile = ({ modalVisible, setModalVisible, user, fetchUsers }) => {
                 </CForm>
             </CModalBody>
             <CModalFooter>
-                <CButton color="secondary" onClick={closeModal}>
+                <CButton color="secondary" onClick={() => setModalVisible(false)}>
                     Close
                 </CButton>
                 <CButton color="primary" onClick={handleSubmit}>

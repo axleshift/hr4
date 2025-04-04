@@ -29,19 +29,18 @@ const AccessControl = () => {
 
     const fetchUsers = async () => {
         try {
-            const response = await api.get('/api/users') // Fetch all users
+            const response = await api.get('/api/users')
             setUsers(response.data.data)
         } catch (error) {
             console.error('Error fetching users:', error)
         }
     }
 
-    // Fetch user details before opening modal
     const handleEditUser = async (userId) => {
         try {
             const response = await api.get(`/api/users/${userId}`)
-            setSelectedUser(response.data.data) // Set fetched user data
-            setModalVisible(true) // Show modal
+            setSelectedUser(response.data.data)
+            setModalVisible(true)
         } catch (error) {
             console.error('Error fetching user profile:', error)
         }
@@ -54,24 +53,21 @@ const AccessControl = () => {
                     <CCardHeader className="d-flex justify-content-between align-items-center">
                         <strong>Access Control</strong>
                         <CButton color="primary">
-                            <CIcon icon={cilUserPlus} className="me-2" /> Add User
+                            <CIcon icon={cilUserPlus} className="me-2" />
+                            Add User
                         </CButton>
                     </CCardHeader>
                     <CCardBody>
                         <CTable align="middle" className="mb-0 border" hover responsive>
                             <CTableHead>
                                 <CTableRow>
-                                    <CTableHeaderCell className="bg-body-tertiary">
-                                        Name
-                                    </CTableHeaderCell>
-                                    <CTableHeaderCell className="bg-body-tertiary">
-                                        Email
-                                    </CTableHeaderCell>
-                                    <CTableHeaderCell className="bg-body-tertiary text-center">
+                                    <CTableHeaderCell>Name</CTableHeaderCell>
+                                    <CTableHeaderCell>Email</CTableHeaderCell>
+                                    <CTableHeaderCell className="text-center">
                                         Role
                                     </CTableHeaderCell>
-                                    <CTableHeaderCell className="bg-body-tertiary text-center">
-                                        More
+                                    <CTableHeaderCell className="text-center">
+                                        Actions
                                     </CTableHeaderCell>
                                 </CTableRow>
                             </CTableHead>
@@ -87,9 +83,10 @@ const AccessControl = () => {
                                             <CButton
                                                 color="secondary"
                                                 size="sm"
-                                                onClick={() => handleEditUser(user.id)} // Fetch user before opening modal
+                                                onClick={() => handleEditUser(user.id)}
                                             >
-                                                <CIcon icon={cilOptions} /> More
+                                                <CIcon icon={cilOptions} className="me-1" />
+                                                More
                                             </CButton>
                                         </CTableDataCell>
                                     </CTableRow>
@@ -100,13 +97,12 @@ const AccessControl = () => {
                 </CCard>
             </CCol>
 
-            {/* Show EditProfile modal */}
             {selectedUser && (
                 <EditProfile
                     modalVisible={modalVisible}
                     setModalVisible={setModalVisible}
                     user={selectedUser}
-                    fetchUsers={fetchUsers} // Refetch users after update
+                    fetchUsers={fetchUsers}
                 />
             )}
         </CRow>
