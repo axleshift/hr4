@@ -214,7 +214,12 @@ const Programs = () => {
                                                             <CTableDataCell>
                                                                 <CButton
                                                                     size="sm"
-                                                                    color="success"
+                                                                    color={
+                                                                        course.modules &&
+                                                                        course.modules.length > 0
+                                                                            ? 'warning'
+                                                                            : 'success'
+                                                                    }
                                                                     onClick={() => {
                                                                         setSelectedCourseId(
                                                                             course.id,
@@ -222,7 +227,10 @@ const Programs = () => {
                                                                         setVisibleModule(true)
                                                                     }}
                                                                 >
-                                                                    Add Module
+                                                                    {course.modules &&
+                                                                    course.modules.length > 0
+                                                                        ? 'Edit Module'
+                                                                        : 'Add Module'}
                                                                 </CButton>
                                                             </CTableDataCell>
                                                         </CTableRow>
