@@ -109,6 +109,12 @@ const Programs = () => {
         setModule((prev) => ({ ...prev, [id]: value }))
     }
 
+    const handleOpenModal = (courseId) => {
+        console.log(`Opening modal for course ID: ${courseId}`)
+        setSelectedCourse(courseId)
+        setVisibleXL(true)
+    }
+
     const handleModuleFileChange = (e) => {
         setModule((prev) => ({ ...prev, file: e.target.files[0] }))
     }
@@ -226,9 +232,8 @@ const Programs = () => {
                                                             <CTableDataCell>
                                                                 <CButton
                                                                     color="primary"
-                                                                    size="sm"
                                                                     onClick={() =>
-                                                                        handleOpenModal(course)
+                                                                        handleOpenModal(course.id)
                                                                     }
                                                                 >
                                                                     {course.modules &&
