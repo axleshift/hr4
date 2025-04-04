@@ -13,8 +13,18 @@ class ModuleController extends Controller
     // Get all modules
     public function index()
     {
-        return ModuleResource::collection(Module::all());
+        $modules = Module::all();
+
+        // Loop through modules to ensure the correct file URL is returned
+        foreach ($modules as $module) {
+            if ($module->file_path) {
+                $module->file_url = asset($module->file_path);
+            }
+        }
+
+        return ModuleResource::collection($modules);
     }
+
 
     // Store a new module
     public function store(Request $request)

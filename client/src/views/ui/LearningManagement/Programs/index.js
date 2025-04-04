@@ -178,65 +178,55 @@ const Programs = () => {
                                                 </CTableRow>
                                             </CTableHead>
                                             <CTableBody>
-                                                {courses
-                                                    .filter(
-                                                        (course) =>
-                                                            course.program_id === program.id,
-                                                    )
-                                                    .map((course) => (
-                                                        <CTableRow key={course.id}>
+                                                {modules.length > 0 ? (
+                                                    modules.map((module, index) => (
+                                                        <CTableRow key={module.id}>
+                                                            <CTableHeaderCell>
+                                                                {index + 1}
+                                                            </CTableHeaderCell>
                                                             <CTableDataCell>
-                                                                {course.title}
+                                                                {module.title}
                                                             </CTableDataCell>
                                                             <CTableDataCell>
-                                                                {course.description}
+                                                                {module.description}
                                                             </CTableDataCell>
                                                             <CTableDataCell>
-                                                                {course.modules &&
-                                                                course.modules.length > 0 ? (
-                                                                    course.modules.map(
-                                                                        (mod, idx) => (
-                                                                            <div key={idx}>
-                                                                                {mod.file_url ? (
-                                                                                    <a
-                                                                                        href={
-                                                                                            mod.file_url
-                                                                                        }
-                                                                                        target="_blank"
-                                                                                        rel="noopener noreferrer"
-                                                                                    >
-                                                                                        {mod.file_name ||
-                                                                                            'Download'}
-                                                                                    </a>
-                                                                                ) : (
-                                                                                    <span>
-                                                                                        No File
-                                                                                    </span>
-                                                                                )}
-                                                                            </div>
-                                                                        ),
-                                                                    )
+                                                                {module.file_url ? (
+                                                                    <a
+                                                                        href={module.file_url}
+                                                                        target="_blank"
+                                                                        rel="noopener noreferrer"
+                                                                    >
+                                                                        {module.file_name ||
+                                                                            'Download'}
+                                                                    </a>
                                                                 ) : (
-                                                                    <span>—</span>
+                                                                    <span>No File</span>
                                                                 )}
                                                             </CTableDataCell>
                                                             <CTableDataCell>
                                                                 <CButton
-                                                                    color="primary"
+                                                                    color="danger"
+                                                                    size="sm"
                                                                     onClick={() =>
-                                                                        handleOpenModuleModal(
-                                                                            course.id,
-                                                                        )
+                                                                        handleDelete(module.id)
                                                                     }
                                                                 >
-                                                                    {course.modules &&
-                                                                    course.modules.length > 0
-                                                                        ? 'Edit Module'
-                                                                        : 'Add Module'}
+                                                                    Delete
                                                                 </CButton>
                                                             </CTableDataCell>
                                                         </CTableRow>
-                                                    ))}
+                                                    ))
+                                                ) : (
+                                                    <CTableRow>
+                                                        <CTableDataCell
+                                                            colSpan={5}
+                                                            className="text-center"
+                                                        >
+                                                            No modules available.
+                                                        </CTableDataCell>
+                                                    </CTableRow>
+                                                )}
                                             </CTableBody>
                                         </CTable>
                                     </CAccordionBody>
