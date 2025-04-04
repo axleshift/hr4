@@ -28,12 +28,12 @@ import {
     CTableDataCell,
 } from '@coreui/react'
 
-const TrainingDelivery = () => {
+const Programs = () => {
     const [visibleProgram, setVisibleProgram] = useState(false)
     const [visibleCourse, setVisibleCourse] = useState(false)
     const [programs, setPrograms] = useState([])
     const [courses, setCourses] = useState([])
-    const [selectedProgramId, setSelectedProgramId] = useState(null) // Track selected program for course addition
+    const [selectedProgramId, setSelectedProgramId] = useState(null)
     const [programTitle, setProgramTitle] = useState('')
     const [programDescription, setProgramDescription] = useState('')
     const [courseTitle, setCourseTitle] = useState('')
@@ -56,8 +56,8 @@ const TrainingDelivery = () => {
         const fetchCourses = async () => {
             try {
                 const response = await api.get(`/api/courses`)
-                console.log('Courses fetched:', response.data) // Log response to check structure
-                setCourses(response.data.data) // Ensure correct data assignment
+                console.log('Courses fetched:', response.data)
+                setCourses(response.data.data)
             } catch (error) {
                 console.error('Error fetching courses:', error)
             }
@@ -72,16 +72,13 @@ const TrainingDelivery = () => {
                 description: programDescription,
             })
 
-            // Extract new program data properly
-            const newProgram = response.data.data // Ensure it matches the format in state
+            const newProgram = response.data.data
 
-            setPrograms((prev) => [...prev, newProgram]) // Update state immediately
+            setPrograms((prev) => [...prev, newProgram])
 
-            // Clear input fields
             setProgramTitle('')
             setProgramDescription('')
 
-            // Close modal
             setVisibleProgram(false)
         } catch (error) {
             console.error('Error adding program:', error)
@@ -266,4 +263,4 @@ const TrainingDelivery = () => {
     )
 }
 
-export default TrainingDelivery
+export default Programs

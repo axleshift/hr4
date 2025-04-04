@@ -33,6 +33,11 @@ const navItems = [
         icon: cilBook,
         roles: ['superadmin', 'admin', 'staff'],
         items: [
+            {
+                name: 'Programs',
+                to: '/ui/LearningManagement/Programs',
+                roles: ['superadmin', 'admin'],
+            },
             { name: 'LMS', to: '/ui/LearningManagement/index', roles: ['superadmin', 'admin'] },
             {
                 name: 'Module',
@@ -46,11 +51,6 @@ const navItems = [
         icon: cilNotes,
         roles: ['superadmin', 'admin', 'staff'],
         items: [
-            {
-                name: 'Programs',
-                to: '/ui/TrainingManagement/Programs',
-                roles: ['superadmin', 'admin'],
-            },
             {
                 name: 'Schedule',
                 to: '/ui/TrainingManagement/Schedule',
