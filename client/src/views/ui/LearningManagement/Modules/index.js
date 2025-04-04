@@ -100,20 +100,30 @@ const ModuleList = () => {
                 <CModalBody>
                     {base64Doc ? (
                         mimeType === 'application/pdf' ? (
-                            <iframe
-                                src={`${base64Doc}`}
-                                style={{ width: '100%', height: '500px', border: 'none' }}
-                            ></iframe>
+                            <embed
+                                src={base64Doc}
+                                type="application/pdf"
+                                width="100%"
+                                height="500px"
+                            />
                         ) : (
-                            <iframe
-                                src={`https://view.officeapps.live.com/op/embed.aspx?src=https://hr4.axleshift.com/uploads/${fileName}`}
-                                style={{ width: '100%', height: '500px', border: 'none' }}
-                            ></iframe>
+                            <p>
+                                DOCX preview is not supported inline. Please{' '}
+                                <a
+                                    href={`https://hr4.axleshift.com/uploads/${fileName}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    click here to view the file
+                                </a>{' '}
+                                in a new tab.
+                            </p>
                         )
                     ) : (
                         <p>No preview available.</p>
                     )}
                 </CModalBody>
+
                 <CModalFooter>
                     <CButton color="secondary" onClick={() => setModalVisible(false)}>
                         Close
