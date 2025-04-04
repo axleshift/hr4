@@ -32,7 +32,6 @@ class CourseController extends Controller
         $request->validate([
             'title' => 'required',
             'description' => 'required',
-            'duration' => 'required',
             'program_id' => 'required|exists:programs,id',
         ]);
 
@@ -51,7 +50,6 @@ class CourseController extends Controller
         $validated = $request->validate([
             'title' => 'sometimes|required|string|max:255',
             'description' => 'sometimes|required|string',
-            'duration' => 'sometimes|required|string',
         ]);
 
         // Update the course and return the updated resource
