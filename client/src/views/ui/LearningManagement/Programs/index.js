@@ -193,8 +193,24 @@ const Programs = () => {
                                                             <CTableDataCell>
                                                                 {course.description}
                                                             </CTableDataCell>
-                                                            <CTableDataCell>—</CTableDataCell>{' '}
-                                                            {/* You can replace this with module count later */}
+                                                            <CTableDataCell>
+                                                                {course.module &&
+                                                                course.module.file_url ? (
+                                                                    <a
+                                                                        href={
+                                                                            course.module.file_url
+                                                                        }
+                                                                        target="_blank"
+                                                                        rel="noopener noreferrer"
+                                                                    >
+                                                                        {course.module.file_name ||
+                                                                            'Download'}
+                                                                    </a>
+                                                                ) : (
+                                                                    <span>No Module</span>
+                                                                )}
+                                                            </CTableDataCell>
+
                                                             <CTableDataCell>
                                                                 <CButton
                                                                     size="sm"
