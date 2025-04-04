@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react'
 import api from '../../../../util/api'
 import {
@@ -27,8 +28,6 @@ import {
 const TrainingSchedule = () => {
     const [visibleXL, setVisibleXL] = useState(false)
     const [trainings, setTrainings] = useState([])
-    const [programs, setPrograms] = useState([])
-    const [courses, setCourses] = useState([])
     const [formData, setFormData] = useState({
         event_title: '',
         event_location: '',
@@ -39,11 +38,11 @@ const TrainingSchedule = () => {
         course_id: '',
     })
 
-    useEffect(() => {
-        fetchPrograms()
-        fetchTrainings()
-    }, [])
+    const [programs, setPrograms] = useState([])
+    const [courses, setCourses] = useState([])
+    const [selectedProgram, setSelectedProgram] = useState('')
 
+    // Fetch programs
     const fetchPrograms = async () => {
         try {
             const response = await api.get('/api/programs')
@@ -53,51 +52,45 @@ const TrainingSchedule = () => {
         }
     }
 
-    const fetchCourses = async (programId) => {
-        if (!programId) {
-            setCourses([])
-            return
-        }
+    // Fetch courses based on selected program
+    const fetchCourses = async () => {
+        if (!selectedProgram) return
         try {
-            const response = await api.get(`/api/courses?program_id=${programId}`)
+            const response = await api.get(`/api/courses?program_id=${selectedProgram}`)
             setCourses(response.data.data)
         } catch (error) {
             console.error('Error fetching courses:', error)
         }
     }
 
+    // Fetch trainings
     const fetchTrainings = async () => {
         try {
-            const response = await api.get('/training')
+            const response = await api.get(`/training`)
             setTrainings(response.data.data || [])
         } catch (error) {
             console.error('Error fetching trainings:', error)
         }
     }
 
+    useEffect(() => {
+        fetchPrograms()
+        fetchTrainings()
+    }, [])
+
+    useEffect(() => {
+        fetchCourses()
+    }, [selectedProgram])
+
     const handleInputChange = (e) => {
         const { name, value } = e.target
-
-        // If program is changed, reset course and fetch courses
-        if (name === 'program_id') {
-            setFormData({
-                ...formData,
-                program_id: value,
-                course_id: '', // Reset selected course
-            })
-            fetchCourses(value)
-        } else {
-            setFormData({
-                ...formData,
-                [name]: value,
-            })
-        }
+        setFormData({ ...formData, [name]: value })
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
         try {
-            await api.post('/training', formData)
+            await api.post(`/training`, formData)
             setVisibleXL(false)
             fetchTrainings()
             setFormData({
@@ -109,7 +102,6 @@ const TrainingSchedule = () => {
                 program_id: '',
                 course_id: '',
             })
-            setCourses([])
         } catch (error) {
             console.error('Error adding training:', error)
         }
@@ -119,7 +111,6 @@ const TrainingSchedule = () => {
         const now = new Date()
         const start = new Date(`${scheduleDate}T${startTime}`)
         const end = new Date(`${scheduleDate}T${endTime}`)
-
         if (now < start) return 'Pending'
         if (now <= end) return 'Ongoing'
         return 'Complete'
@@ -137,11 +128,13 @@ const TrainingSchedule = () => {
         <CRow>
             <CCol xs={12}>
                 <CCard className="mb-4">
-                    <CCardHeader className="d-flex justify-content-between align-items-center">
+                    <CCardHeader>
                         <strong>Training Schedule</strong>
-                        <CButton color="primary" onClick={() => setVisibleXL(true)}>
-                            Add Training
-                        </CButton>
+                        <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <CButton color="primary" onClick={() => setVisibleXL(true)}>
+                                Add Training
+                            </CButton>
+                        </div>
                     </CCardHeader>
                     <CCardBody>
                         <CTable>
@@ -188,6 +181,7 @@ const TrainingSchedule = () => {
                                                           ? 'info'
                                                           : 'success'
                                                 }
+                                                className="ms-2"
                                             >
                                                 {getTrainingStatus(
                                                     training.schedule,
@@ -204,7 +198,7 @@ const TrainingSchedule = () => {
                 </CCard>
             </CCol>
 
-            {/* Add Training Modal */}
+            {/* Modal */}
             <CModal
                 alignment="center"
                 backdrop="static"
@@ -222,7 +216,10 @@ const TrainingSchedule = () => {
                             id="program_id"
                             name="program_id"
                             value={formData.program_id}
-                            onChange={handleInputChange}
+                            onChange={(e) => {
+                                setFormData({ ...formData, program_id: e.target.value })
+                                setSelectedProgram(e.target.value)
+                            }}
                             required
                         >
                             <option value="">Select Program</option>
@@ -233,14 +230,13 @@ const TrainingSchedule = () => {
                             ))}
                         </CFormSelect>
 
-                        <CFormLabel htmlFor="course_id">Course</CFormLabel>
+                        <CFormLabel htmlFor="course_id">Course Name</CFormLabel>
                         <CFormSelect
                             id="course_id"
                             name="course_id"
                             value={formData.course_id}
                             onChange={handleInputChange}
                             required
-                            disabled={!formData.program_id}
                         >
                             <option value="">Select Course</option>
                             {courses.map((course) => (
