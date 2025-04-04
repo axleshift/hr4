@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('gender')->nullable(); // e.g., Male, Female, Other
             $table->string('phone_number')->nullable();
             $table->text('address')->nullable();
+            $table->string('department')->nullable(); // Add the department column
         });
     }
 
@@ -34,6 +35,7 @@ return new class extends Migration
                 'gender',
                 'phone_number',
                 'address',
+                'department', // Drop the department column when rolling back
             ]);
         });
     }
