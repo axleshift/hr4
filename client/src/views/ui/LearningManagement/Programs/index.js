@@ -7,26 +7,18 @@ import {
     CCardHeader,
     CRow,
     CCol,
-    CForm,
-    CFormInput,
-    CFormLabel,
-    CFormTextarea,
-    CModal,
-    CModalBody,
-    CModalFooter,
-    CModalHeader,
-    CModalTitle,
+    CAccordion,
+    CAccordionItem,
+    CAccordionHeader,
+    CAccordionBody,
     CTable,
     CTableBody,
     CTableHead,
     CTableRow,
     CTableHeaderCell,
     CTableDataCell,
-    CAccordion,
-    CAccordionItem,
-    CAccordionHeader,
-    CAccordionBody,
 } from '@coreui/react'
+import ProgramModals from '../Modals/ProgramModals'
 
 const Programs = () => {
     const [programs, setPrograms] = useState([])
@@ -196,88 +188,24 @@ const Programs = () => {
                 </CCard>
             </CCol>
 
-            {/* Add Program Modal */}
-            <CModal size="lg" visible={visibleProgram} onClose={() => setVisibleProgram(false)}>
-                <CModalHeader>
-                    <CModalTitle>Add Program</CModalTitle>
-                </CModalHeader>
-                <CModalBody>
-                    <CForm>
-                        <CRow className="mb-3">
-                            <CCol md={12}>
-                                <CFormLabel>Program Title</CFormLabel>
-                                <CFormInput
-                                    value={programTitle}
-                                    onChange={(e) => setProgramTitle(e.target.value)}
-                                />
-                            </CCol>
-                        </CRow>
-                        <CRow className="mb-3">
-                            <CCol md={12}>
-                                <CFormLabel>Program Description</CFormLabel>
-                                <CFormTextarea
-                                    value={programDescription}
-                                    onChange={(e) => setProgramDescription(e.target.value)}
-                                />
-                            </CCol>
-                        </CRow>
-                    </CForm>
-                </CModalBody>
-                <CModalFooter>
-                    <CButton color="secondary" onClick={() => setVisibleProgram(false)}>
-                        Close
-                    </CButton>
-                    <CButton color="primary" onClick={handleSaveProgram}>
-                        Save Program
-                    </CButton>
-                </CModalFooter>
-            </CModal>
-
-            {/* Add Course Modal */}
-            <CModal size="lg" visible={visibleCourse} onClose={() => setVisibleCourse(false)}>
-                <CModalHeader>
-                    <CModalTitle>Add Course</CModalTitle>
-                </CModalHeader>
-                <CModalBody>
-                    <CForm>
-                        <CRow className="mb-3">
-                            <CCol md={12}>
-                                <CFormLabel>Course Title</CFormLabel>
-                                <CFormInput
-                                    value={courseTitle}
-                                    onChange={(e) => setCourseTitle(e.target.value)}
-                                />
-                            </CCol>
-                        </CRow>
-                        <CRow className="mb-3">
-                            <CCol md={12}>
-                                <CFormLabel>Course Description</CFormLabel>
-                                <CFormTextarea
-                                    value={courseDescription}
-                                    onChange={(e) => setCourseDescription(e.target.value)}
-                                />
-                            </CCol>
-                        </CRow>
-                        <CRow className="mb-3">
-                            <CCol md={12}>
-                                <CFormLabel>Upload File</CFormLabel>
-                                <CFormInput
-                                    type="file"
-                                    onChange={(e) => setCourseFile(e.target.files[0])}
-                                />
-                            </CCol>
-                        </CRow>
-                    </CForm>
-                </CModalBody>
-                <CModalFooter>
-                    <CButton color="secondary" onClick={() => setVisibleCourse(false)}>
-                        Close
-                    </CButton>
-                    <CButton color="primary" onClick={handleSaveCourse}>
-                        Save Course
-                    </CButton>
-                </CModalFooter>
-            </CModal>
+            {/* Pass necessary props to ProgramModals */}
+            <ProgramModals
+                visibleProgram={visibleProgram}
+                setVisibleProgram={setVisibleProgram}
+                programTitle={programTitle}
+                setProgramTitle={setProgramTitle}
+                programDescription={programDescription}
+                setProgramDescription={setProgramDescription}
+                handleSaveProgram={handleSaveProgram}
+                visibleCourse={visibleCourse}
+                setVisibleCourse={setVisibleCourse}
+                courseTitle={courseTitle}
+                setCourseTitle={setCourseTitle}
+                courseDescription={courseDescription}
+                setCourseDescription={setCourseDescription}
+                setCourseFile={setCourseFile}
+                handleSaveCourse={handleSaveCourse}
+            />
         </CRow>
     )
 }
