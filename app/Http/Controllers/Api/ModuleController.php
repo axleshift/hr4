@@ -23,9 +23,7 @@ class ModuleController extends Controller
             'title'       => 'required|string|max:255|unique:modules,title',
             'description' => 'nullable|string',
             'file'        => 'nullable|file|mimes:pdf,doc,docx|max:5120',
-            'course_id'   => 'required|exists:courses,id', // ADD THIS
         ]);
-        
 
         $filePath = null;
         $fileName = null;
@@ -42,7 +40,6 @@ class ModuleController extends Controller
             'description' => $validated['description'] ?? '',
             'file_path'   => $filePath,
             'file_name'   => $fileName,
-            'course_id'   => $validated['course_id'], // ADD THIS
         ]);
 
         return new ModuleResource($module);

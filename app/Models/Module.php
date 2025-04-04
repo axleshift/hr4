@@ -15,10 +15,4 @@ class Module extends Model
         'file_path',
         'file_name',
     ];
-
-    public function course()
-    {
-        return $this->belongsTo(Course::class);
-    }
-
 }
