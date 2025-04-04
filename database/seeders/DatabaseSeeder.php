@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\Program;
+use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
@@ -29,6 +30,7 @@ class DatabaseSeeder extends Seeder
             'gender' => 'Male',
             'phone_number' => '1234567890',
             'address' => '123 Admin Street, Admin City',
+            'department' => 'Administration',
         ]);
 
         // Create an Admin
@@ -43,6 +45,7 @@ class DatabaseSeeder extends Seeder
             'gender' => 'Female',
             'phone_number' => '9876543210',
             'address' => '456 Admin Avenue, Admin City',
+            'department' => 'Administration',
         ]);
 
         // Create 2 Staff members
@@ -57,6 +60,7 @@ class DatabaseSeeder extends Seeder
             'gender' => 'Male',
             'phone_number' => '5551234567',
             'address' => '789 Staff Lane, Staff City',
+            'department' => 'Management',
         ]);
 
         User::factory()->create([
@@ -70,6 +74,7 @@ class DatabaseSeeder extends Seeder
             'gender' => 'Female',
             'phone_number' => '5557654321',
             'address' => '321 Trainer Road, Trainer City',
+            'department' => 'Training',
         ]);
 
         // Create 3 Employees
@@ -84,6 +89,7 @@ class DatabaseSeeder extends Seeder
             'gender' => 'Female',
             'phone_number' => '5552345678',
             'address' => '123 Employee Street, City A',
+            'department' => 'Customer Service',
         ]);
 
         User::factory()->create([
@@ -97,6 +103,7 @@ class DatabaseSeeder extends Seeder
             'gender' => 'Male',
             'phone_number' => '5558765432',
             'address' => '456 Employee Avenue, City B',
+            'department' => 'Operations',
         ]);
 
         User::factory()->create([
@@ -110,6 +117,7 @@ class DatabaseSeeder extends Seeder
             'gender' => 'Male',
             'phone_number' => '5553456789',
             'address' => '789 Employee Boulevard, City C',
+            'department' => 'Operations',
         ]);
 
         User::factory()->create([
@@ -123,6 +131,7 @@ class DatabaseSeeder extends Seeder
             'gender' => 'Female',
             'phone_number' => '5559876543',
             'address' => '321 Employee Circle, City D',
+            'department' => 'Customer Service',
         ]);
 
         // Seed programs
