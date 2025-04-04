@@ -55,31 +55,23 @@ const Programs = () => {
         fetchPrograms()
     }, [])
 
-    useEffect(() => {
-        const fetchCourses = async () => {
-            try {
-                const response = await api.get(`/api/courses`)
-                setCourses(response.data.data)
-            } catch (error) {
-                console.error('Error fetching courses:', error)
-            }
+    const fetchCourses = async (programId) => {
+        try {
+            const response = await api.get(`/api/courses?program_id=${programId}`)
+            setCourses(response.data.data)
+        } catch (error) {
+            console.error('Error fetching courses:', error)
         }
-        fetchCourses()
-    }, [])
+    }
 
-    useEffect(() => {
-        const fetchModules = async () => {
-            try {
-                const response = await api.get('/api/modules') // Ensure modules are fetched properly
-                setModules(response.data.data)
-            } catch (error) {
-                console.error('Error fetching modules:', error)
-            }
+    const fetchModules = async (courseId) => {
+        try {
+            const response = await api.get(`/api/modules?course_id=${courseId}`)
+            setModules(response.data.data)
+        } catch (error) {
+            console.error('Error fetching modules:', error)
         }
-        if (selectedCourseId) {
-            fetchModules()
-        }
-    }, [selectedCourseId]) // Fetch modules when a course is selected
+    }
 
     const handleSaveProgram = async () => {
         try {
@@ -105,7 +97,7 @@ const Programs = () => {
                 program_id: selectedCourseId,
             })
 
-            setCourses([...courses, response.data])
+            setCourses((prevCourses) => [...prevCourses, response.data])
             setVisibleCourse(false)
         } catch (error) {
             console.error('Error saving course:', error)
@@ -124,36 +116,31 @@ const Programs = () => {
     const handleAddModule = async () => {
         const formData = new FormData()
 
-        // Append data to FormData
         formData.append('title', module.title)
         formData.append('description', module.description)
         formData.append('course_id', selectedCourseId)
 
-        // Only append the file if it exists
         if (module.file) {
             formData.append('file', module.file)
         }
 
         try {
-            // Send the request to the backend
             const response = await api.post('/api/modules', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
             })
 
-            // Update modules list after successful upload
-            setModules((prev) => [...prev, response.data.data])
-
-            // Reset the form
+            setModules((prevModules) => [...prevModules, response.data.data])
             setModule({ title: '', description: '', file: null })
             setVisibleModule(false)
         } catch (error) {
-            console.error('Error uploading module:', error.response?.data || error.message)
+            console.error('Error uploading module:', error)
         }
     }
 
     const handleOpenModuleModal = (courseId) => {
         setSelectedCourseId(courseId)
         setVisibleModule(true)
+        fetchModules(courseId) // Fetch modules for the selected course
     }
 
     return (
@@ -174,7 +161,7 @@ const Programs = () => {
                                 <CAccordionItem key={program.id}>
                                     <CAccordionHeader
                                         onClick={() => {
-                                            setSelectedCourseId(program.id)
+                                            fetchCourses(program.id) // Fetch courses when a program is clicked
                                         }}
                                     >
                                         {program.title}
