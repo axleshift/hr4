@@ -54,4 +54,13 @@ class UserProfileController extends Controller
         ]);
     }
 
+    // Debug roles to check if roles are loaded correctly
+    public function debugRoles()
+    {
+        $users = User::with('role')->get();
+
+        foreach ($users as $user) {
+            echo "{$user->name} - Role ID: {$user->role_id} - Role: " . ($user->role->name ?? 'NULL') . "\n";
+        }
+    }
 }
