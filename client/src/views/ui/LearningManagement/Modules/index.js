@@ -25,8 +25,6 @@ const ModuleList = () => {
     const [mimeType, setMimeType] = useState('')
     const [fileName, setFileName] = useState('')
     const [modalVisible, setModalVisible] = useState(false)
-    const [loading, setLoading] = useState(false)
-    const [error, setError] = useState(null)
 
     useEffect(() => {
         fetchModules()
@@ -38,13 +36,11 @@ const ModuleList = () => {
             setModules(response.data.data)
         } catch (error) {
             console.error('Error fetching modules:', error)
-            setError('Failed to load modules.')
         }
     }
 
+    // Fetch Base64 preview for PDF & DOCX
     const fetchDocPreview = async (id) => {
-        setLoading(true)
-        setError(null)
         try {
             const response = await api.get(`/api/modules/${id}/preview`)
             setBase64Doc(response.data.base64)
@@ -53,9 +49,6 @@ const ModuleList = () => {
             setModalVisible(true)
         } catch (error) {
             console.error('Error fetching document preview:', error)
-            setError('Failed to load document preview.')
-        } finally {
-            setLoading(false)
         }
     }
 
@@ -67,7 +60,6 @@ const ModuleList = () => {
                         <strong>MODULES</strong>
                     </CCardHeader>
                     <CCardBody>
-                        {error && <div className="alert alert-danger">{error}</div>}
                         <CTable striped hover>
                             <CTableHead>
                                 <CTableRow>
@@ -89,9 +81,8 @@ const ModuleList = () => {
                                                 <CButton
                                                     color="info"
                                                     onClick={() => fetchDocPreview(module.id)}
-                                                    disabled={loading}
                                                 >
-                                                    {loading ? 'Loading...' : 'View'}
+                                                    View
                                                 </CButton>
                                             )}
                                         </CTableDataCell>
@@ -104,26 +95,19 @@ const ModuleList = () => {
             </CCol>
 
             {/* Modal for Previewing DOCX & PDF Files */}
-            <CModal
-                visible={modalVisible}
-                onClose={() => setModalVisible(false)}
-                size="xl" // Makes the modal extra large
-                fullscreen // Optionally make it fullscreen
-            >
+            <CModal visible={modalVisible} onClose={() => setModalVisible(false)}>
                 <CModalHeader>Document Preview</CModalHeader>
-                <CModalBody style={{ padding: 0 }}>
+                <CModalBody>
                     {base64Doc ? (
                         mimeType === 'application/pdf' ? (
                             <iframe
-                                src={`data:${mimeType};base64,${base64Doc}`}
-                                style={{ width: '100%', height: '90vh', border: 'none' }}
-                                title="PDF Preview"
+                                src={`${base64Doc}`}
+                                style={{ width: '100%', height: '500px', border: 'none' }}
                             ></iframe>
                         ) : (
                             <iframe
                                 src={`https://view.officeapps.live.com/op/embed.aspx?src=https://hr4.axleshift.com/uploads/${fileName}`}
-                                style={{ width: '100%', height: '90vh', border: 'none' }}
-                                title="Office Document Preview"
+                                style={{ width: '100%', height: '500px', border: 'none' }}
                             ></iframe>
                         )
                     ) : (
