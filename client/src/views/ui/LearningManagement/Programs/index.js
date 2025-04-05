@@ -29,9 +29,11 @@ const Programs = () => {
     const [courseDescription, setCourseDescription] = useState('')
     const [courseFile, setCourseFile] = useState(null)
     const [selectedProgramId, setSelectedProgramId] = useState(null)
+    const [selectedCourseFile, setSelectedCourseFile] = useState(null)
 
     const [visibleProgram, setVisibleProgram] = useState(false)
     const [visibleCourse, setVisibleCourse] = useState(false)
+    const [modalVisible, setModalVisible] = useState(false)
 
     useEffect(() => {
         const fetchPrograms = async () => {
@@ -118,6 +120,11 @@ const Programs = () => {
         }
     }
 
+    const handlePreviewCourse = (file) => {
+        setSelectedCourseFile(file)
+        setModalVisible(true)
+    }
+
     return (
         <CRow>
             <CCol xs={12}>
@@ -197,6 +204,16 @@ const Programs = () => {
                                                             </CTableDataCell>
                                                             <CTableDataCell>
                                                                 <CButton
+                                                                    color="info"
+                                                                    onClick={() =>
+                                                                        handlePreviewCourse(
+                                                                            course.file_path,
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    Preview
+                                                                </CButton>
+                                                                <CButton
                                                                     color="danger"
                                                                     onClick={() =>
                                                                         handleDeleteCourse(
@@ -236,6 +253,11 @@ const Programs = () => {
                 setCourseDescription={setCourseDescription}
                 setCourseFile={setCourseFile}
                 handleSaveCourse={handleSaveCourse}
+                modalVisible={modalVisible}
+                setModalVisible={setModalVisible}
+                base64Doc={selectedCourseFile}
+                mimeType={selectedCourseFile ? 'application/pdf' : ''}
+                fileName={selectedCourseFile}
             />
         </CRow>
     )
