@@ -31,6 +31,11 @@ const ProgramModals = ({
     setCourseDescription,
     setCourseFile,
     handleSaveCourse,
+    modalVisible,
+    setModalVisible,
+    base64Doc,
+    mimeType,
+    fileName,
 }) => {
     return (
         <>
@@ -116,6 +121,40 @@ const ProgramModals = ({
                     </CButton>
                 </CModalFooter>
             </CModal>
+
+            {/* Course Preview Modal */}
+            <CModal
+                visible={modalVisible}
+                onClose={() => setModalVisible(false)}
+                size="xl"
+                fullscreen
+            >
+                <CModalHeader>
+                    <CModalTitle>Document Preview</CModalTitle>
+                </CModalHeader>
+                <CModalBody style={{ padding: 0 }}>
+                    {base64Doc ? (
+                        mimeType === 'application/pdf' ? (
+                            <iframe
+                                src={`${base64Doc}`}
+                                style={{ width: '100%', height: '90vh', border: 'none' }}
+                            ></iframe>
+                        ) : (
+                            <iframe
+                                src={`https://view.officeapps.live.com/op/embed.aspx?src=${base64Doc}`}
+                                style={{ width: '100%', height: '90vh', border: 'none' }}
+                            ></iframe>
+                        )
+                    ) : (
+                        <p>No preview available.</p>
+                    )}
+                </CModalBody>
+                <CModalFooter>
+                    <CButton color="secondary" onClick={() => setModalVisible(false)}>
+                        Close
+                    </CButton>
+                </CModalFooter>
+            </CModal>
         </>
     )
 }
@@ -137,6 +176,12 @@ ProgramModals.propTypes = {
     setCourseDescription: PropTypes.func.isRequired,
     setCourseFile: PropTypes.func.isRequired,
     handleSaveCourse: PropTypes.func.isRequired,
+    // Props for preview modal
+    modalVisible: PropTypes.bool.isRequired,
+    setModalVisible: PropTypes.func.isRequired,
+    base64Doc: PropTypes.string.isRequired,
+    mimeType: PropTypes.string.isRequired,
+    fileName: PropTypes.string.isRequired,
 }
 
 export default ProgramModals

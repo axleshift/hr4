@@ -55,6 +55,11 @@ const Programs = () => {
     }
 
     const handleSaveProgram = async () => {
+        if (!programTitle || !programDescription) {
+            alert('Please provide both title and description for the program.')
+            return
+        }
+
         try {
             const response = await api.post(`/api/programs`, {
                 title: programTitle,
@@ -67,11 +72,17 @@ const Programs = () => {
             setVisibleProgram(false)
         } catch (error) {
             console.error('Error adding program:', error)
+            alert('Failed to add program.')
         }
     }
 
     const handleSaveCourse = async (e) => {
         e.preventDefault()
+
+        if (!courseTitle || !courseDescription) {
+            alert('Please provide both title and description for the course.')
+            return
+        }
 
         const formData = new FormData()
         formData.append('title', courseTitle)
@@ -93,6 +104,7 @@ const Programs = () => {
             setCourseFile(null)
         } catch (error) {
             console.error('Error saving course:', error)
+            alert('Failed to save course.')
         }
     }
 
@@ -102,6 +114,7 @@ const Programs = () => {
             setCourses((prevCourses) => prevCourses.filter((course) => course.id !== courseId))
         } catch (error) {
             console.error('Error deleting course:', error)
+            alert('Failed to delete course.')
         }
     }
 
