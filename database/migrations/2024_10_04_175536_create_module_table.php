@@ -24,10 +24,20 @@ return new class extends Migration
             $table->foreignId('program_id')->constrained('programs')->onDelete('cascade');
             $table->timestamps();
         });
+
+        Schema::create('modules', function (Blueprint $table) {
+            $table->id();
+            $table->string('title')->unique();
+            $table->text('description')->nullable();
+            $table->string('file_path')->nullable();
+            $table->string('file_name')->nullable();
+            $table->timestamps();
+        });
     }
 
     public function down(): void
     {
+        Schema::dropIfExists('modules');
         Schema::dropIfExists('programs');
         Schema::dropIfExists('courses');
     }

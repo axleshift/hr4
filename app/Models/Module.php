@@ -14,7 +14,6 @@ class Module extends Model
         'description',
         'file_path',
         'file_name',
-        'course_id',
     ];
 
     public function course()

@@ -15,7 +15,6 @@ class ModuleResource extends JsonResource
             'description' => $this->description,
             'file_name'   => $this->file_name,
             'file_url'    => $this->file_path ? asset($this->file_path) : null,
-            'course'      => new CourseResource($this->course), // Include course details
         ];
     }
 }
