@@ -110,24 +110,21 @@ class CourseController extends Controller
         return response()->noContent();
     }
 
-    // Preview the course file as Base64
-    public function preview($id)
+    public function getCoursePreview($courseId)
     {
-        $course = Course::findOrFail($id);
-
-        if (!$course->file_path || !Storage::exists('public/' . $course->file_path)) {
-            return response()->json(['message' => 'File not found'], Response::HTTP_NOT_FOUND);
+        $course = Course::find($courseId);
+        if (!$course || !$course->file) {
+            return response()->json(['message' => 'File not found.'], 404);
         }
 
-        $filePath = storage_path('app/public/' . $course->file_path);
-        $fileContents = file_get_contents($filePath);
-        $mimeType = mime_content_type($filePath);
-        $base64 = base64_encode($fileContents);
+        $path = storage_path('app/' . $course->file);
+        $fileContent = file_get_contents($path);
+        $base64 = base64_encode($fileContent);
 
         return response()->json([
+            'base64' => 'data:application/pdf;base64,' . $base64,
+            'mime_type' => mime_content_type($path),
             'file_name' => $course->file_name,
-            'mime_type' => $mimeType,
-            'base64'    => "data:$mimeType;base64,$base64",
         ]);
     }
 
