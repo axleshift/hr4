@@ -19,7 +19,7 @@ class UserProfileController extends Controller
         ]);
     }
 
-    // Fetch user profile by ID
+    // Fetch user profile by ID (Full profile)
     public function show($id)
     {
         // Ensure user has access to the profile (optional, can be based on authorization)
@@ -27,6 +27,24 @@ class UserProfileController extends Controller
 
         return response()->json([
             'data' => $user
+        ]);
+    }
+
+    // Fetch specific profile (only name, email, and department)
+    public function showSpecificProfile($id)
+    {
+        // Fetch the user with only the fields we need: name, email, and department
+        $user = User::with('department') // Load the department relationship
+            ->select('id', 'name', 'email') // Select only the fields you need
+            ->findOrFail($id);
+
+        // Return only the necessary data (name, email, and department)
+        return response()->json([
+            'data' => [
+                'name' => $user->name,
+                'email' => $user->email,
+                'department' => $user->department->name ?? 'No Department', // Fallback for missing department
+            ],
         ]);
     }
 

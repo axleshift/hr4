@@ -22,8 +22,6 @@ Route::get('/', function () {
     Route::resource('courses', CourseController::class);
 
     Route::apiResource('/modules', ModuleController::class);
-    Route::apiResource('/files', FileController::class);
-    Route::get('files/count', [FileController::class, 'getFileCount']);
 
     // Module File Management
     Route::get('/modules/download/{module}', [ModuleController::class, 'download']);
@@ -42,3 +40,4 @@ Route::get('/roles', [RolesController::class, 'index']);
 Route::get('/users', [UserProfileController::class, 'index']);
 Route::get('/users/{id}', [UserProfileController::class, 'show']);
 Route::put('/users/{id}', [UserProfileController::class, 'update']);
+Route::get('users/specific-profile/{id}', [UserProfileController::class, 'showSpecificProfile']);
