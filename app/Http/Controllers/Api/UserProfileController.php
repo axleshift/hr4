@@ -41,7 +41,6 @@ class UserProfileController extends Controller
             'gender' => 'nullable|string',
             'phone_number' => 'nullable|string',
             'address' => 'nullable|string',
-            'department' => 'nullable|string', // Added validation for department
         ]);
 
         // Fetch user and update their profile
@@ -52,15 +51,5 @@ class UserProfileController extends Controller
             'message' => 'Profile updated successfully',
             'data' => $user
         ]);
-    }
-
-    // Debug roles to check if roles are loaded correctly
-    public function debugRoles()
-    {
-        $users = User::with('role')->get();
-
-        foreach ($users as $user) {
-            echo "{$user->name} - Role ID: {$user->role_id} - Role: " . ($user->role->name ?? 'NULL') . "\n";
-        }
     }
 }
