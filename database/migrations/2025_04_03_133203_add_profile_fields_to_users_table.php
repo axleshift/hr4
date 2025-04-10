@@ -35,7 +35,6 @@ return new class extends Migration
                 'gender',
                 'phone_number',
                 'address',
-                'department', // Drop the department column when rolling back
             ]);
         });
     }

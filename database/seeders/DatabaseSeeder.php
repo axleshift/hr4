@@ -6,7 +6,6 @@ use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\Program;
-use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
@@ -144,5 +143,10 @@ class DatabaseSeeder extends Seeder
             'title' => 'Customer Service Excellence',
             'description' => 'Focused on enhancing customer interactions.',
         ]);
+
+        // Optional: You can also assign programs to users if needed
+        // Example: Assigning employee Cristy to Management Program
+        $cristy = User::where('name', 'Cristy')->first();
+        $cristy->programs()->attach($managementProgram->id);
     }
 }
