@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\CourseResource;
 use App\Models\Course;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
 
 class CourseController extends Controller
@@ -97,14 +96,12 @@ class CourseController extends Controller
         ]);
     }
 
-    public function download($id)
+    public function download(Module $module)
     {
-        $course = Course::findOrFail($id);
-
-        if (!$course->file_path || !Storage::exists('public/' . $course->file_path)) {
-            return response()->json(['message' => 'File not found'], Response::HTTP_NOT_FOUND);
+        if (!$module->file_path || !file_exists(public_path($module->file_path))) {
+            return response()->json(['message' => 'File not found'], 404);
         }
 
-        return response()->download(storage_path('app/public/' . $course->file_path), $course->file_name);
+        return response()->download(public_path($module->file_path), $module->file_name);
     }
 }

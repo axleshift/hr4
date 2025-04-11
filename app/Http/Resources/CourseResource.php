@@ -13,11 +13,9 @@ class CourseResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'description' => $this->description,
-            'file_name' => $this->file_name, // Add file name here
-            'file_url' => $this->file_path ? asset($this->file_path) : null, // File URL
-            'program' => new ProgramResource($this->program), // Include program details
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'file_name' => $this->file_name,
+            'file_url' => $this->file_path ? asset($this->file_path) : null,
+            'program' => new ProgramResource($this->program),
         ];
     }
 }
