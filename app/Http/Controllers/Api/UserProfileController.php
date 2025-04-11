@@ -23,13 +23,14 @@ class UserProfileController extends Controller
 
         
         $validated = $request->validate([
-            'department' => 'nullable|string',
             'employee_type' => 'nullable|string',
             'employment_status' => 'nullable|string',
             'date_of_hire' => 'nullable|date',
             'gender' => 'nullable|string',
             'phone_number' => 'nullable|string',
             'address' => 'nullable|string',
+            'role_id' => 'nullable|exists:roles,id',
+            'department_id' => 'nullable|exists:departments,id',
         ]);
 
         

@@ -15,13 +15,6 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
-        'department',
-        'employee_type',
-        'employment_status',
-        'date_of_hire',
-        'gender',
-        'phone_number',
-        'address',
     ];
 
     protected $hidden = [
@@ -29,18 +22,4 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
-
-    // Relationships
-    public function role(): BelongsTo
-    {
-        return $this->belongsTo(Role::class);
-    }
-
-    public function department(): BelongsTo
-    {
-        return $this->belongsTo(Department::class);
-    }
 }
