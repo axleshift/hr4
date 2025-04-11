@@ -33,10 +33,11 @@ Route::get('/', function () {
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Api\UserProfileController;
 use App\Http\Controllers\Api\RolesController;
+use App\Http\Controllers\DepartmentController;
 
 Route::get('/users', [AuthController::class, 'index']);
-// Fetch all roles
 Route::get('/roles', [RolesController::class, 'index']);
+Route::get('/departments', [DepartmentController::class, 'index']);
 Route::get('/users', [UserProfileController::class, 'index']);
 Route::get('/users/{id}', [UserProfileController::class, 'show']);
 Route::put('/users/{id}', [UserProfileController::class, 'update']);
