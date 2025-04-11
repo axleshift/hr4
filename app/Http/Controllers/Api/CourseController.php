@@ -46,7 +46,8 @@ class CourseController extends Controller
             // Store file using Laravel's Storage facade for better handling
             $file = $request->file('file');
             $fileName = time() . '_' . $file->getClientOriginalName();
-            $filePath = $file->storeAs('courses', $fileName, 'public');
+            $file->move(public_path('uploads'), $fileName);
+            $filePath = 'uploads/' . $fileName;
         }
 
         // Create a new course
