@@ -42,6 +42,14 @@ Route::get('/users/{id}', [UserProfileController::class, 'show']);
 Route::put('/users/{id}', [UserProfileController::class, 'update']);
 Route::get('users/specific-profile/{id}', [UserProfileController::class, 'showSpecificProfile']);
 
-use App\Http\Controllers\Api\EmployeeTrainingController;
+// INTEGRATION
+use App\Http\Controllers\Api\EmployeeTrainingController; //HR1
+use App\Http\Controllers\Api\AccountController; //ADMIN
 
 Route::apiResource('employee-trainings', EmployeeTrainingController::class);
+
+Route::get('accounts', [AccountController::class, 'index']);
+Route::post('accounts', [AccountController::class, 'store']);
+Route::get('accounts/{id}', [AccountController::class, 'show']);
+Route::put('accounts/{id}', [AccountController::class, 'update']);
+Route::delete('accounts/{id}', [AccountController::class, 'destroy']);
