@@ -115,29 +115,27 @@ class CourseController extends Controller
     {
         $course = Course::find($courseId);
 
-        // Check if course exists and has a file
         if (!$course || !$course->file_path || !file_exists(public_path($course->file_path))) {
             return response()->json(['message' => 'File not found.'], 404);
         }
 
-        // Get the file path
         $filePath = public_path($course->file_path);
-
-        // Get file contents
-        $fileContents = file_get_contents($filePath);
-
-        // Determine the MIME type
         $mimeType = mime_content_type($filePath);
 
-        // Encode the file content into base64
-        $base64 = base64_encode($fileContents);
-
-        // Return the base64 encoded file and mime type
-        return response()->json([
+        $response = [
             'file_name' => $course->file_name,
             'mime_type' => $mimeType,
-            'base64'    => "data:$mimeType;base64,$base64",
-        ]);
+        ];
+
+        if ($mimeType === 'application/pdf') {
+            $fileContents = file_get_contents($filePath);
+            $base64 = base64_encode($fileContents);
+            $response['base64'] = "data:$mimeType;base64,$base64";
+        } else {
+            $response['url'] = asset($course->file_path);
+        }
+
+        return response()->json($response);
     }
 
     public function download($id)
