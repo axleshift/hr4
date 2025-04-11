@@ -20,11 +20,12 @@ Route::get('/', function () {
     Route::resource('programs', ProgramController::class);
     Route::resource('courses', CourseController::class);
 
-    Route::apiResource('/modules', ModuleController::class);
-
     // Module File Management
+    Route::apiResource('/modules', ModuleController::class);
     Route::get('/modules/download/{module}', [ModuleController::class, 'download']);
     Route::get('/modules/{module}/preview', [ModuleController::class, 'preview']);
+    Route::get('/courses/download/{module}', [ModuleController::class, 'download']);
+    Route::get('/courses/{module}/preview', [ModuleController::class, 'preview']);
 //});
 
 
