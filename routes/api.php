@@ -39,7 +39,7 @@ Route::get('/roles', [RolesController::class, 'index']);
 Route::get('/users', [UserProfileController::class, 'index']);
 Route::get('/users/{id}', [UserProfileController::class, 'show']);
 Route::put('/users/{id}', [UserProfileController::class, 'update']);
-Route::get('users/specific-profile/{id}', [UserProfileController::class, 'showSpecificProfile']);
+Route::get('users/{id}', [AuthController::class, 'showSpecificProfile']);
 
 // INTEGRATION
 use App\Http\Controllers\Api\EmployeeTrainingController; //HR1

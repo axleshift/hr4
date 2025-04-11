@@ -26,7 +26,7 @@ class AuthController extends Controller
             }),
         ]);
     }
-    
+
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -81,5 +81,21 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
 
         return response()->json(['message' => 'Logout successful']);
+    }
+
+    public function showSpecificProfile($id)
+    {
+
+        $user = User::with('department')
+            ->select('id', 'name', 'email')
+            ->findOrFail($id);
+        
+        return response()->json([
+            'data' => [
+                'name' => $user->name,
+                'email' => $user->email,
+                'department' => $user->department->name ?? 'No Department',
+            ],
+        ]);
     }
 }

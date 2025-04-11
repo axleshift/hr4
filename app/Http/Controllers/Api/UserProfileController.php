@@ -30,24 +30,6 @@ class UserProfileController extends Controller
         ]);
     }
 
-    // Fetch specific profile (only name, email, and department)
-    public function showSpecificProfile($id)
-    {
-        // Fetch the user with only the fields we need: name, email, and department
-        $user = User::with('department') // Load the department relationship
-            ->select('id', 'name', 'email') // Select only the fields you need
-            ->findOrFail($id);
-
-        // Return only the necessary data (name, email, and department)
-        return response()->json([
-            'data' => [
-                'name' => $user->name,
-                'email' => $user->email,
-                'department' => $user->department->name ?? 'No Department', // Fallback for missing department
-            ],
-        ]);
-    }
-
     // Update user profile
     public function update(Request $request, $id)
     {
