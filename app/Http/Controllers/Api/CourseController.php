@@ -111,7 +111,7 @@ class CourseController extends Controller
         return response()->noContent();
     }
 
-    public function getCoursePreview($courseId)
+    public function preview($courseId)
     {
         $course = Course::find($courseId);
 
@@ -120,22 +120,15 @@ class CourseController extends Controller
         }
 
         $filePath = public_path($course->file_path);
+        $fileContents = file_get_contents($filePath);
         $mimeType = mime_content_type($filePath);
+        $base64 = base64_encode($fileContents);
 
-        $response = [
+        return response()->json([
             'file_name' => $course->file_name,
             'mime_type' => $mimeType,
-        ];
-
-        if ($mimeType === 'application/pdf') {
-            $fileContents = file_get_contents($filePath);
-            $base64 = base64_encode($fileContents);
-            $response['base64'] = "data:$mimeType;base64,$base64";
-        } else {
-            $response['url'] = asset($course->file_path);
-        }
-
-        return response()->json($response);
+            'base64'    => "data:$mimeType;base64,$base64",
+        ]);
     }
 
     public function download($id)
