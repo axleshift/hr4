@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\Program;
+use App\Models\Department; // Add the Department model
 
 class DatabaseSeeder extends Seeder
 {
@@ -17,13 +18,20 @@ class DatabaseSeeder extends Seeder
         $staffRole = Role::firstOrCreate(['name' => 'staff']);
         $employeeRole = Role::firstOrCreate(['name' => 'employee']);
 
+        // Create departments
+        $adminDepartment = Department::firstOrCreate(['name' => 'Administration']);
+        $managementDepartment = Department::firstOrCreate(['name' => 'Management']);
+        $trainingDepartment = Department::firstOrCreate(['name' => 'Training']);
+        $customerServiceDepartment = Department::firstOrCreate(['name' => 'Customer Service']);
+        $operationsDepartment = Department::firstOrCreate(['name' => 'Operations']);
+
         // Create a Super Admin
         User::factory()->create([
             'name' => 'Super Admin',
             'email' => 'sadmin@gmail.com',
             'password' => bcrypt('superadmin123'),
             'role_id' => $superAdminRole->id,
-            'department' => 'Administration',
+            'department_id' => $adminDepartment->id,  // Use department_id
             'employee_type' => 'Full-Time',
             'employment_status' => 'Active',
             'date_of_hire' => now()->subYears(5)->format('Y-m-d'),
@@ -38,7 +46,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@gmail.com',
             'password' => bcrypt('admin123'),
             'role_id' => $adminRole->id,
-            'department' => 'Administration',
+            'department_id' => $adminDepartment->id,  // Use department_id
             'employee_type' => 'Full-Time',
             'employment_status' => 'Active',
             'date_of_hire' => now()->subYears(3)->format('Y-m-d'),
@@ -53,7 +61,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'staff1@gmail.com',
             'password' => bcrypt('staff123'),
             'role_id' => $staffRole->id,
-            'department' => 'Management',
+            'department_id' => $managementDepartment->id,  // Use department_id
             'employee_type' => 'Full-Time',
             'employment_status' => 'Active',
             'date_of_hire' => now()->subYears(4)->format('Y-m-d'),
@@ -67,7 +75,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'staff2@gmail.com',
             'password' => bcrypt('staff123'),
             'role_id' => $staffRole->id,
-            'department' => 'Training',
+            'department_id' => $trainingDepartment->id,  // Use department_id
             'employee_type' => 'Part-Time',
             'employment_status' => 'On Leave',
             'date_of_hire' => now()->subMonths(6)->format('Y-m-d'),
@@ -82,7 +90,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'employee1@gmail.com',
             'password' => bcrypt('employee123'),
             'role_id' => $employeeRole->id,
-            'department' => 'Customer Service',
+            'department_id' => $customerServiceDepartment->id,  // Use department_id
             'employee_type' => 'Full-Time',
             'employment_status' => 'Active',
             'date_of_hire' => now()->subMonths(2)->format('Y-m-d'),
@@ -96,7 +104,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'employee2@gmail.com',
             'password' => bcrypt('employee123'),
             'role_id' => $employeeRole->id,
-            'department' => 'Operations',
+            'department_id' => $operationsDepartment->id,  // Use department_id
             'employee_type' => 'Part-Time',
             'employment_status' => 'Active',
             'date_of_hire' => now()->subYears(1)->format('Y-m-d'),
@@ -110,7 +118,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'employee3@gmail.com',
             'password' => bcrypt('employee123'),
             'role_id' => $employeeRole->id,
-            'department' => 'Operations',
+            'department_id' => $operationsDepartment->id,  // Use department_id
             'employee_type' => 'Full-Time',
             'employment_status' => 'On Leave',
             'date_of_hire' => now()->subMonths(9)->format('Y-m-d'),
@@ -124,7 +132,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'employee4@gmail.com',
             'password' => bcrypt('employee123'),
             'role_id' => $employeeRole->id,
-            'department' => 'Customer Service',
+            'department_id' => $customerServiceDepartment->id,  // Use department_id
             'employee_type' => 'Full-Time',
             'employment_status' => 'Active',
             'date_of_hire' => now()->subMonths(3)->format('Y-m-d'),

@@ -8,32 +8,20 @@ use App\Models\User;
 
 class UserProfileController extends Controller
 {
-    // Fetch all users (including profile fields)
-    public function index()
-    {
-        // Retrieve all users with the new fields
-        $users = User::all();
 
-        return response()->json([
-            'data' => $users
-        ]);
-    }
-
-    // Fetch user profile by ID (Full profile)
     public function show($id)
     {
-        // Ensure user has access to the profile (optional, can be based on authorization)
-        $user = User::findOrFail($id);
 
-        return response()->json([
-            'data' => $user
-        ]);
+        $user = User::with(['role', 'department'])->findOrFail($id);
+
+        return response()->json(['data' => $user]);
     }
 
-    // Update user profile
     public function update(Request $request, $id)
     {
-        // Validate the incoming request
+        $user = User::findOrFail($id);
+
+        
         $validated = $request->validate([
             'employee_type' => 'nullable|string',
             'employment_status' => 'nullable|string',
@@ -41,15 +29,14 @@ class UserProfileController extends Controller
             'gender' => 'nullable|string',
             'phone_number' => 'nullable|string',
             'address' => 'nullable|string',
+            'role_id' => 'nullable|exists:roles,id',
+            'department_id' => 'nullable|exists:departments,id',
         ]);
 
-        // Fetch user and update their profile
-        $user = User::findOrFail($id);
+        
         $user->update($validated);
 
-        return response()->json([
-            'message' => 'Profile updated successfully',
-            'data' => $user
-        ]);
+        
+        return response()->json(['data' => $user]);
     }
 }

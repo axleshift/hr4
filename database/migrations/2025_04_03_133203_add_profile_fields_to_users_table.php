@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('gender')->nullable(); // e.g., Male, Female, Other
             $table->string('phone_number')->nullable();
             $table->text('address')->nullable();
-            $table->string('department')->nullable(); // Add the department column
         });
     }
 
