@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\CourseResource;
 use App\Models\Course;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
 
 class CourseController extends Controller
@@ -65,15 +66,15 @@ class CourseController extends Controller
         // Find the course by its ID
         $course = Course::findOrFail($id);
 
-        // Delete the course file if it exists
-        if ($course->file_path && Storage::exists('public/' . $course->file_path)) {
-            Storage::delete('public/' . $course->file_path);
+        // Delete the course file if it exists in public/uploads
+        if ($course->file_path && file_exists(public_path($course->file_path))) {
+            unlink(public_path($course->file_path));
         }
 
         // Delete the course from the database
         $course->delete();
 
-        return response()->noContent();
+        return response()->json(['message' => 'Course deleted successfully']);
     }
 
     public function preview($courseId)
@@ -96,12 +97,15 @@ class CourseController extends Controller
         ]);
     }
 
-    public function download(Module $module)
+    public function download($id)
     {
-        if (!$module->file_path || !file_exists(public_path($module->file_path))) {
-            return response()->json(['message' => 'File not found'], 404);
+        $course = Course::findOrFail($id);
+
+        // Check if file exists in public/uploads
+        if (!$course->file_path || !file_exists(public_path($course->file_path))) {
+            return response()->json(['message' => 'File not found'], Response::HTTP_NOT_FOUND);
         }
 
-        return response()->download(public_path($module->file_path), $module->file_name);
+        return response()->download(public_path($course->file_path), $course->file_name);
     }
 }
