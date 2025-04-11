@@ -35,7 +35,7 @@ class CourseController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'program_id' => 'required|exists:programs,id',
-            'file' => 'nullable|file|mimes:pdf,doc,docx|max:5120', // Handle file upload if present
+            'file' => 'nullable|file|mimes:pdf,doc,docx|max:5120',
         ]);
 
         // Handle file upload
@@ -43,7 +43,6 @@ class CourseController extends Controller
         $fileName = null;
 
         if ($request->hasFile('file')) {
-            // Store file using Laravel's Storage facade for better handling
             $file = $request->file('file');
             $fileName = time() . '_' . $file->getClientOriginalName();
             $file->move(public_path('uploads'), $fileName);
@@ -60,39 +59,6 @@ class CourseController extends Controller
         ]);
 
         return response()->json(new CourseResource($course), Response::HTTP_CREATED);
-    }
-
-    public function update(Request $request, $id)
-    {
-        // Find the course by its ID
-        $course = Course::findOrFail($id);
-
-        // Validate the incoming request
-        $validated = $request->validate([
-            'title' => 'sometimes|required|string|max:255',
-            'description' => 'sometimes|required|string',
-            'file' => 'nullable|file|mimes:pdf,doc,docx|max:5120', // Validate file if provided
-        ]);
-
-        // Handle file upload if a new file is provided
-        if ($request->hasFile('file')) {
-            // Delete the old file if it exists
-            if ($course->file_path && Storage::exists('public/' . $course->file_path)) {
-                Storage::delete('public/' . $course->file_path);
-            }
-
-            $file = $request->file('file');
-            $fileName = time() . '_' . $file->getClientOriginalName();
-            $filePath = $file->storeAs('courses', $fileName, 'public');
-
-            $validated['file_path'] = $filePath;
-            $validated['file_name'] = $fileName;
-        }
-
-        // Update the course
-        $course->update($validated);
-
-        return response()->json(new CourseResource($course));
     }
 
     public function destroy($id)
