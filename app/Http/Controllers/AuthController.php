@@ -21,6 +21,13 @@ class AuthController extends Controller
                     'name' => $user->name,
                     'email' => $user->email,
                     'role' => $user->role->name ?? 'No Role',
+                    'department' => $user->department,
+                    'employee_type' => $user->employee_type,
+                    'employment_status' => $user->employment_status,
+                    'date_of_hire' => $user->date_of_hire,
+                    'gender' => $user->gender,
+                    'phone_number' => $user->phone_number,
+                    'address' => $user->address,
                 ];
             }),
         ]);

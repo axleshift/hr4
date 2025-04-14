@@ -12,6 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
+            $table->string('department')->nullable(); // e.g., HR, IT, Finance
+
             $table->string('employee_type')->nullable(); // e.g., Full-Time, Part-Time, etc.
             $table->string('employment_status')->nullable(); // e.g., Active, On Leave, etc.
             $table->date('date_of_hire')->nullable();
@@ -28,6 +30,7 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn([
+                'department',
                 'employee_type',
                 'employment_status',
                 'date_of_hire',
