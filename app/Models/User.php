@@ -14,7 +14,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role',
+        'role_id',
         'department',
         'employee_type',
         'employment_status',
@@ -28,7 +28,7 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
-    
+
     public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class);
