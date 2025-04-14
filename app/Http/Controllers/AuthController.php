@@ -10,29 +10,6 @@ use App\Models\User;
 class AuthController extends Controller
 {
 
-    public function index()
-    {
-        $users = User::with('role')->get();
-
-        return response()->json([
-            'data' => $users->map(function ($user) {
-                return [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'role' => $user->role->name ?? 'No Role',
-                    'department' => $user->department,
-                    'employee_type' => $user->employee_type,
-                    'employment_status' => $user->employment_status,
-                    'date_of_hire' => $user->date_of_hire,
-                    'gender' => $user->gender,
-                    'phone_number' => $user->phone_number,
-                    'address' => $user->address,
-                ];
-            }),
-        ]);
-    }
-
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -88,4 +65,16 @@ class AuthController extends Controller
 
         return response()->json(['message' => 'Logout successful']);
     }
+
+    public function getUsers(Request $request)
+    {
+        if (Auth::check() && Auth::user()->role->name === 'admin') {
+            $users = User::with('role')->get();
+
+            return response()->json(['users' => $users]);
+        }
+
+        return response()->json(['message' => 'Access Denied'], 403);
+    }
+
 }
