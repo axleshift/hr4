@@ -88,19 +88,4 @@ class AuthController extends Controller
 
         return response()->json(['message' => 'Logout successful']);
     }
-
-    public function showSpecificProfile($id)
-    {
-
-        $user = User::with('department')
-            ->select('id', 'name', 'email')
-            ->findOrFail($id);
-        
-        return response()->json([
-            'data' => [
-                'name' => $user->name,
-                'email' => $user->email,
-            ],
-        ]);
-    }
 }
