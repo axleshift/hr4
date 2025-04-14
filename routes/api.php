@@ -33,6 +33,7 @@ Route::get('/', function () {
 use App\Http\Controllers\AuthController;
 
 Route::get('/users', [AuthController::class, 'getUsers']);
+Route::get('/profile', [AuthController::class, 'profile']);
 
 // INTEGRATION
 use App\Http\Controllers\Api\EmployeeTrainingController; //HR1

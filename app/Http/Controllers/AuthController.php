@@ -77,4 +77,21 @@ class AuthController extends Controller
         return response()->json(['message' => 'Access Denied'], 403);
     }
 
+    public function profile(Request $request)
+    {
+        if (Auth::check()) {
+            $user = Auth::user();
+            return response()->json([
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'role' => $user->role->name ?? 'No Role',
+                'department' => $user->department,
+            ]);
+        }
+
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+
 }
