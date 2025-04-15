@@ -10,6 +10,12 @@ use App\Models\User;
 class AuthController extends Controller
 {
 
+    public function index()
+    {
+        $users = User::with('role')->get();  // Eager load the role relationship
+        return response()->json($users);
+    }
+
     public function login(Request $request)
     {
         $credentials = $request->validate([
