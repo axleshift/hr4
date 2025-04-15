@@ -66,17 +66,6 @@ class AuthController extends Controller
         return response()->json(['message' => 'Logout successful']);
     }
 
-    public function getUsers(Request $request)
-    {
-        if (Auth::check() && Auth::user()->role->name === 'admin') {
-            $users = User::with('role')->get();
-
-            return response()->json(['users' => $users]);
-        }
-
-        return response()->json(['message' => 'Access Denied'], 403);
-    }
-
     public function profile(Request $request)
     {
         if (Auth::check()) {
