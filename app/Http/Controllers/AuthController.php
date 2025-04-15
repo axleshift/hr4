@@ -65,39 +65,4 @@ class AuthController extends Controller
 
         return response()->json(['message' => 'Logout successful']);
     }
-
-    public function profile(Request $request)
-    {
-        if (Auth::check()) {
-            $user = Auth::user();
-            return response()->json([
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'role' => $user->role->name ?? 'No Role',
-                'department' => $user->department,
-            ]);
-        }
-
-        return response()->json(['message' => 'Unauthorized'], 401);
-    }
-
-    public function getUsers()
-    {
-        $users = User::with('role:id,name') // eager load roles with only id and name
-            ->select('id', 'name', 'email', 'department', 'role_id')
-            ->get()
-            ->map(function ($user) {
-                return [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'department' => $user->department,
-                    'role' => $user->role->name ?? 'N/A',
-                ];
-            });
-    
-        return response()->json($users);
-    }
-    
 }
