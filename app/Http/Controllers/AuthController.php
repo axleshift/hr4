@@ -83,11 +83,21 @@ class AuthController extends Controller
     }
 
     public function getUsers()
-{
-    $users = User::select('id', 'name', 'email', 'department')->get();
-
-    return response()->json($users);
-}
-
-
+    {
+        $users = User::with('role:id,name') // eager load roles with only id and name
+            ->select('id', 'name', 'email', 'department', 'role_id')
+            ->get()
+            ->map(function ($user) {
+                return [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'department' => $user->department,
+                    'role' => $user->role->name ?? 'N/A',
+                ];
+            });
+    
+        return response()->json($users);
+    }
+    
 }
