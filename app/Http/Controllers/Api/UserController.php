@@ -9,15 +9,8 @@ class UserController extends Controller
 {
     public function index()
     {
-        $users = User::with('role')->get(); // Eager load roles to avoid N+1 problem
+        $users = User::with('role')->get();
 
-        return response()->json($users->map(function ($user) {
-            return [
-                'id'    => $user->id,
-                'name'  => $user->name,
-                'email' => $user->email,
-                'role'  => $user->role->name ?? 'No Role',
-            ];
-        }));
+        return response()->json($users);
     }
 }
