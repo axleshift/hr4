@@ -40,8 +40,6 @@ Route::get('/users', [UserController::class, 'index']);
 use App\Http\Controllers\Api\EmployeeTrainingController; //HR1
 use App\Http\Controllers\Api\AccountController; //ADMIN
 
-Route::apiResource('employee-trainings', EmployeeTrainingController::class);
-
 Route::get('accounts', [AccountController::class, 'index']);
 Route::post('accounts', [AccountController::class, 'store']);
 Route::get('accounts/{id}', [AccountController::class, 'show']);
