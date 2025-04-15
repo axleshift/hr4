@@ -31,8 +31,10 @@ Route::get('/', function () {
 
 //ACCESS CONTROL
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Api\UserController;
 
-Route::get('users', [AuthController::class, 'index']);  // Add this route to list users
+Route::get('/users', [UserController::class, 'index']);
+
 
 // INTEGRATION
 use App\Http\Controllers\Api\EmployeeTrainingController; //HR1
