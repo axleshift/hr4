@@ -82,5 +82,12 @@ class AuthController extends Controller
         return response()->json(['message' => 'Unauthorized'], 401);
     }
 
+    public function getUsers()
+{
+    $users = User::select('id', 'name', 'email', 'department')->get();
+
+    return response()->json($users);
+}
+
 
 }
