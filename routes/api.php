@@ -12,6 +12,8 @@ Route::get('/', function () {
     return response()->json(['message' => 'Hello, World!']);
 });
 
+Route::get('/api/users', [AuthController::class, 'index']);
+
 // API Routes Protected by Session Middleware
 //Route::middleware('verify.session')->group(function () {
     Route::apiResource('/announcement', AnnouncementController::class);
@@ -31,8 +33,6 @@ Route::get('/', function () {
 
 
 //ACCESS CONTROL
-
-Route::get('user', [AuthController::class, 'index']);
 
 // INTEGRATION
 use App\Http\Controllers\Api\EmployeeTrainingController; //HR1
