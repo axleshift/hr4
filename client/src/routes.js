@@ -14,8 +14,6 @@ const BudgetReports = React.lazy(() => import('./views/ui/BudgetManagement/index
 const TrainingEngagement = React.lazy(() => import('./views/ui/TrainingEngagement/index'))
 
 //Integration
-const IntegrationAdmin = React.lazy(() => import('./views/ui/Integration/Admin/index'))
-const IntegrationHr1 = React.lazy(() => import('./views/ui/Integration/Hr1/index'))
 
 const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
 
