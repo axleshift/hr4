@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class ModuleResource extends JsonResource
 {
@@ -14,8 +15,10 @@ class ModuleResource extends JsonResource
             'title'       => $this->title,
             'description' => $this->description,
             'file_name'   => $this->file_name,
-            'file_url'    => $this->file_path ? asset($this->file_path) : null,
+            'file_url'    => $this->file_path ? asset($this->file_path) : null, // Direct public URL
         ];
     }
-}
 
+
+
+}

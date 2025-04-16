@@ -9,15 +9,11 @@ class Course extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'title',
-        'description',
-        'program_id',
-        'file_path',
-        'file_name',
-    ];
+    protected $fillable = ['title', 'description', 'duration', 'program_id'];
+
     public function program()
     {
         return $this->belongsTo(Program::class);
     }
 }
+

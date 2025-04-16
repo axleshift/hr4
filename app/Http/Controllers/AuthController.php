@@ -10,6 +10,22 @@ use App\Models\User;
 class AuthController extends Controller
 {
 
+    public function index()
+    {
+        $users = User::with('role')->get();
+
+        return response()->json([
+            'data' => $users->map(function ($user) {
+                return [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'role' => $user->role->name ?? 'No Role',
+                ];
+            }),
+        ]);
+    }
+
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -65,12 +81,4 @@ class AuthController extends Controller
 
         return response()->json(['message' => 'Logout successful']);
     }
-
-    public function index()
-    {
-        $users = User::all();
-        return response()->json($users);
-    }
-
-
 }

@@ -13,18 +13,8 @@ class ModuleController extends Controller
     // Get all modules
     public function index()
     {
-        $modules = Module::all();
-
-        // Loop through modules to ensure the correct file URL is returned
-        foreach ($modules as $module) {
-            if ($module->file_path) {
-                $module->file_url = asset($module->file_path);
-            }
-        }
-
-        return ModuleResource::collection($modules);
+        return ModuleResource::collection(Module::all());
     }
-
 
     // Store a new module
     public function store(Request $request)
@@ -54,7 +44,6 @@ class ModuleController extends Controller
 
         return new ModuleResource($module);
     }
-
 
     // Preview the document as Base64
     public function preview(Module $module)

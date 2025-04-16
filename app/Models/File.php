@@ -5,14 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Module extends Model
+class File extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'title',
-        'description',
-        'file_path',
-        'file_name',
+        'original_name',
+        'file_type',
+        'path',
+        // pag nilalagyan ko neto nag eerror'title',
     ];
 }
