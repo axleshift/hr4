@@ -1,187 +1,66 @@
-import React, { useState, useEffect } from 'react'
-import api from '../../../../util/api'
+import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 import {
-    CFormTextarea,
-    CAccordion,
-    CAccordionItem,
-    CAccordionHeader,
-    CAccordionBody,
     CButton,
-    CCard,
-    CCardBody,
-    CCardHeader,
+    CCol,
+    CForm,
+    CFormInput,
+    CFormLabel,
+    CFormTextarea,
     CModal,
     CModalBody,
     CModalFooter,
     CModalHeader,
     CModalTitle,
     CRow,
-    CCol,
-    CForm,
-    CFormInput,
-    CFormLabel,
-    CTable,
-    CTableBody,
-    CTableHead,
-    CTableRow,
-    CTableHeaderCell,
-    CTableDataCell,
 } from '@coreui/react'
 
-const TrainingDelivery = () => {
-    const [visibleProgram, setVisibleProgram] = useState(false)
-    const [visibleCourse, setVisibleCourse] = useState(false)
-    const [programs, setPrograms] = useState([])
-    const [courses, setCourses] = useState([])
-    const [selectedProgramId, setSelectedProgramId] = useState(null) // Track selected program for course addition
-    const [programTitle, setProgramTitle] = useState('')
-    const [programDescription, setProgramDescription] = useState('')
-    const [courseTitle, setCourseTitle] = useState('')
-    const [courseDescription, setCourseDescription] = useState('')
-    const [courseDuration, setCourseDuration] = useState('')
+const ProgramModals = ({
+    visibleProgram,
+    setVisibleProgram,
+    programTitle,
+    setProgramTitle,
+    programDescription,
+    setProgramDescription,
+    handleSaveProgram,
+    visibleCourse,
+    setVisibleCourse,
+    courseTitle,
+    setCourseTitle,
+    courseDescription,
+    setCourseDescription,
+    setCourseFile,
+    handleSaveCourse,
+    modalVisible,
+    setModalVisible,
+    base64Doc,
+    mimeType,
+    fileName,
+}) => {
+    const [viewDocModal, setViewDocModal] = useState(false)
+    const [file, setFile] = useState(null)
+    const [fileNameToPreview, setFileNameToPreview] = useState('')
+    const [fileType, setFileType] = useState('')
 
-    useEffect(() => {
-        const fetchPrograms = async () => {
-            try {
-                const response = await api.get(`/api/programs`)
-                setPrograms(response.data.data)
-            } catch (error) {
-                console.error('Error fetching programs:', error)
-            }
-        }
-        fetchPrograms()
-    }, [])
+    const handleViewFile = (file) => {
+        const extension = file.file_name.split('.').pop().toLowerCase()
 
-    useEffect(() => {
-        const fetchCourses = async () => {
-            try {
-                const response = await api.get(`/api/courses`)
-                console.log('Courses fetched:', response.data) // Log response to check structure
-                setCourses(response.data.data) // Ensure correct data assignment
-            } catch (error) {
-                console.error('Error fetching courses:', error)
-            }
-        }
-        fetchCourses()
-    }, [])
+        const mimeType =
+            extension === 'pdf'
+                ? 'application/pdf'
+                : extension === 'docx'
+                  ? 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+                  : ''
 
-    const handleSaveProgram = async () => {
-        try {
-            const response = await api.get(`/api/programs`, {
-                title: programTitle,
-                description: programDescription,
-            })
-
-            // Extract new program data properly
-            const newProgram = response.data.data // Ensure it matches the format in state
-
-            setPrograms((prev) => [...prev, newProgram]) // Update state immediately
-
-            // Clear input fields
-            setProgramTitle('')
-            setProgramDescription('')
-
-            // Close modal
-            setVisibleProgram(false)
-        } catch (error) {
-            console.error('Error adding program:', error)
-        }
-    }
-
-    const handleSaveCourse = async () => {
-        try {
-            const response = await api.post('/api/courses', {
-                title: courseTitle,
-                description: courseDescription,
-                duration: courseDuration,
-                program_id: selectedProgramId, // Associate course with program
-            })
-
-            console.log('Course saved:', response.data)
-            setCourses([...courses, response.data])
-            setVisibleCourse(false)
-        } catch (error) {
-            console.error('Error saving course:', error)
-        }
+        setFileNameToPreview(file.file_name)
+        setFileType(mimeType)
+        setViewDocModal(true)
     }
 
     return (
-        <CRow>
-            <CCol xs={12}>
-                <CCard className="mb-4">
-                    <CCardHeader>
-                        <strong>List of Programs</strong>
-                        <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-                            <CButton color="primary" onClick={() => setVisibleProgram(true)}>
-                                Add Program
-                            </CButton>
-                        </div>
-                    </CCardHeader>
-                    <CCardBody>
-                        <CAccordion alwaysOpen>
-                            {programs.map((program) => (
-                                <CAccordionItem key={program.id}>
-                                    <CAccordionHeader
-                                        onClick={() => {
-                                            setSelectedProgramId(program.id) // Track the opened program
-                                        }}
-                                    >
-                                        {program.title}
-                                    </CAccordionHeader>
-                                    <CAccordionBody>
-                                        <p>
-                                            <strong>Description:</strong> {program.description}
-                                        </p>
-                                        <CButton
-                                            color="primary"
-                                            onClick={() => {
-                                                setSelectedProgramId(program.id)
-                                                setVisibleCourse(true)
-                                            }}
-                                        >
-                                            Add Course
-                                        </CButton>
-
-                                        {/* Table for Courses under the Program */}
-                                        <CTable striped className="mt-3">
-                                            <CTableHead>
-                                                <CTableRow>
-                                                    <CTableHeaderCell>Title</CTableHeaderCell>
-                                                    <CTableHeaderCell>Description</CTableHeaderCell>
-                                                    <CTableHeaderCell>Duration</CTableHeaderCell>
-                                                </CTableRow>
-                                            </CTableHead>
-                                            <CTableBody>
-                                                {courses
-                                                    .filter(
-                                                        (course) =>
-                                                            course.program_id === program.id,
-                                                    )
-                                                    .map((course) => (
-                                                        <CTableRow key={course.id}>
-                                                            <CTableDataCell>
-                                                                {course.title}
-                                                            </CTableDataCell>
-                                                            <CTableDataCell>
-                                                                {course.description}
-                                                            </CTableDataCell>
-                                                            <CTableDataCell>
-                                                                {course.duration}
-                                                            </CTableDataCell>
-                                                        </CTableRow>
-                                                    ))}
-                                            </CTableBody>
-                                        </CTable>
-                                    </CAccordionBody>
-                                </CAccordionItem>
-                            ))}
-                        </CAccordion>
-                    </CCardBody>
-                </CCard>
-            </CCol>
-
+        <>
             {/* Add Program Modal */}
-            <CModal size="xl" visible={visibleProgram} onClose={() => setVisibleProgram(false)}>
+            <CModal size="lg" visible={visibleProgram} onClose={() => setVisibleProgram(false)}>
                 <CModalHeader>
                     <CModalTitle>Add Program</CModalTitle>
                 </CModalHeader>
@@ -218,7 +97,7 @@ const TrainingDelivery = () => {
             </CModal>
 
             {/* Add Course Modal */}
-            <CModal size="xl" visible={visibleCourse} onClose={() => setVisibleCourse(false)}>
+            <CModal size="lg" visible={visibleCourse} onClose={() => setVisibleCourse(false)}>
                 <CModalHeader>
                     <CModalTitle>Add Course</CModalTitle>
                 </CModalHeader>
@@ -244,10 +123,10 @@ const TrainingDelivery = () => {
                         </CRow>
                         <CRow className="mb-3">
                             <CCol md={12}>
-                                <CFormLabel>Course Duration</CFormLabel>
+                                <CFormLabel>Upload File</CFormLabel>
                                 <CFormInput
-                                    value={courseDuration}
-                                    onChange={(e) => setCourseDuration(e.target.value)}
+                                    type="file"
+                                    onChange={(e) => setCourseFile(e.target.files[0])}
                                 />
                             </CCol>
                         </CRow>
@@ -262,8 +141,58 @@ const TrainingDelivery = () => {
                     </CButton>
                 </CModalFooter>
             </CModal>
-        </CRow>
+
+            {/* Document Preview Modal */}
+            <CModal visible={modalVisible} onClose={() => setModalVisible(false)}>
+                <CModalHeader>Course Document Preview</CModalHeader>
+                <CModalBody>
+                    {base64Doc ? (
+                        mimeType === 'application/pdf' ? (
+                            <iframe
+                                src={`${base64Doc}`}
+                                style={{ width: '100%', height: '500px', border: 'none' }}
+                            ></iframe>
+                        ) : (
+                            <iframe
+                                src={`https://view.officeapps.live.com/op/embed.aspx?src=https://hr4.axleshift.com/uploads/${fileName}`}
+                                style={{ width: '100%', height: '500px', border: 'none' }}
+                            ></iframe>
+                        )
+                    ) : (
+                        <p>No preview available.</p>
+                    )}
+                </CModalBody>
+                <CModalFooter>
+                    <CButton color="secondary" onClick={() => setModalVisible(false)}>
+                        Close
+                    </CButton>
+                </CModalFooter>
+            </CModal>
+        </>
     )
 }
 
-export default TrainingDelivery
+ProgramModals.propTypes = {
+    visibleProgram: PropTypes.bool.isRequired,
+    setVisibleProgram: PropTypes.func.isRequired,
+    programTitle: PropTypes.string.isRequired,
+    setProgramTitle: PropTypes.func.isRequired,
+    programDescription: PropTypes.string.isRequired,
+    setProgramDescription: PropTypes.func.isRequired,
+    handleSaveProgram: PropTypes.func.isRequired,
+    visibleCourse: PropTypes.bool.isRequired,
+    setVisibleCourse: PropTypes.func.isRequired,
+    courseTitle: PropTypes.string.isRequired,
+    setCourseTitle: PropTypes.func.isRequired,
+    courseDescription: PropTypes.string.isRequired,
+    setCourseDescription: PropTypes.func.isRequired,
+    setCourseFile: PropTypes.func.isRequired,
+    handleSaveCourse: PropTypes.func.isRequired,
+    modalVisible: PropTypes.bool.isRequired,
+    setModalVisible: PropTypes.func.isRequired,
+    base64Doc: PropTypes.string.isRequired,
+    mimeType: PropTypes.string.isRequired,
+    fileName: PropTypes.string.isRequired,
+}
+
+export default ProgramModals

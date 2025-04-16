@@ -49,8 +49,6 @@ const routes = [
     { path: '/widgets', name: 'Widgets', element: Widgets },
 
     //Integration
-    { path: '/ui/Integration/Admin', name: 'IntegrationAdmin', element: IntegrationAdmin },
-    { path: '/ui/Integration/Hr1', name: 'IntegrationHr1', element: IntegrationHr1 },
 ]
 
 export default routes
