@@ -6,7 +6,6 @@ use App\Http\Controllers\Api\ModuleController;
 use App\Http\Controllers\Api\ProgramController;
 use App\Http\Controllers\Api\CourseController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -32,13 +31,14 @@ Route::get('/', function () {
 
 
 //ACCESS CONTROL
-Route::get('/auth', [AuthController::class, 'index']);
-Route::get('/users', [UserController::class, 'index']);
 
+Route::get('auth', [AuthController::class, 'index']);
 
 // INTEGRATION
 use App\Http\Controllers\Api\EmployeeTrainingController; //HR1
 use App\Http\Controllers\Api\AccountController; //ADMIN
+
+Route::apiResource('employee-trainings', EmployeeTrainingController::class);
 
 Route::get('accounts', [AccountController::class, 'index']);
 Route::post('accounts', [AccountController::class, 'store']);
