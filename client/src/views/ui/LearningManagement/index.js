@@ -22,7 +22,7 @@ import {
     CModalBody,
     CModalFooter,
 } from '@coreui/react'
-import ProgramModals from '../Modals/ProgramModals'
+import ProgramModals from './Modals/ProgramModals'
 
 const Programs = () => {
     const [programs, setPrograms] = useState([])
