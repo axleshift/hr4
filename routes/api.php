@@ -35,10 +35,7 @@ Route::get('/api/users', [AuthController::class, 'index']);
 //ACCESS CONTROL
 
 // INTEGRATION
-use App\Http\Controllers\Api\EmployeeTrainingController; //HR1
 use App\Http\Controllers\Api\AccountController; //ADMIN
-
-Route::apiResource('employee-trainings', EmployeeTrainingController::class);
 
 Route::get('accounts', [AccountController::class, 'index']);
 Route::post('accounts', [AccountController::class, 'store']);
