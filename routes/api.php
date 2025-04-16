@@ -32,7 +32,7 @@ Route::get('/', function () {
 
 //ACCESS CONTROL
 
-Route::get('auth', [AuthController::class, 'index']);
+Route::get('user', [AuthController::class, 'index']);
 
 // INTEGRATION
 use App\Http\Controllers\Api\EmployeeTrainingController; //HR1
