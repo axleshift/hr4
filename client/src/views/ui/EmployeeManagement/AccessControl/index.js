@@ -29,7 +29,7 @@ const AccessControl = () => {
 
     const fetchUsers = async () => {
         try {
-            const response = await api.get('/api/users') // Fetch all users
+            const response = await api.get('/api/users')
             setUsers(response.data.data)
         } catch (error) {
             console.error('Error fetching users:', error)
