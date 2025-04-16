@@ -68,9 +68,9 @@ class AuthController extends Controller
 
     public function index()
     {
-        $users = User::with('role')->get();
-
+        $users = User::all(); // No role relationship loaded
         return response()->json($users);
     }
+
 
 }
