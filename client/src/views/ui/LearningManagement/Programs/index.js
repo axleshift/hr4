@@ -33,12 +33,11 @@ const TrainingDelivery = () => {
     const [visibleCourse, setVisibleCourse] = useState(false)
     const [programs, setPrograms] = useState([])
     const [courses, setCourses] = useState([])
-    const [selectedProgramId, setSelectedProgramId] = useState(null) // Track selected program for course addition
+    const [selectedProgramId, setSelectedProgramId] = useState(null)
     const [programTitle, setProgramTitle] = useState('')
     const [programDescription, setProgramDescription] = useState('')
     const [courseTitle, setCourseTitle] = useState('')
     const [courseDescription, setCourseDescription] = useState('')
-    const [courseDuration, setCourseDuration] = useState('')
 
     useEffect(() => {
         const fetchPrograms = async () => {
@@ -56,8 +55,8 @@ const TrainingDelivery = () => {
         const fetchCourses = async () => {
             try {
                 const response = await api.get(`/api/courses`)
-                console.log('Courses fetched:', response.data) // Log response to check structure
-                setCourses(response.data.data) // Ensure correct data assignment
+                console.log('Courses fetched:', response.data)
+                setCourses(response.data.data)
             } catch (error) {
                 console.error('Error fetching courses:', error)
             }
@@ -72,16 +71,11 @@ const TrainingDelivery = () => {
                 description: programDescription,
             })
 
-            // Extract new program data properly
-            const newProgram = response.data.data // Ensure it matches the format in state
+            const newProgram = response.data.data
 
-            setPrograms((prev) => [...prev, newProgram]) // Update state immediately
-
-            // Clear input fields
+            setPrograms((prev) => [...prev, newProgram])
             setProgramTitle('')
             setProgramDescription('')
-
-            // Close modal
             setVisibleProgram(false)
         } catch (error) {
             console.error('Error adding program:', error)
@@ -93,8 +87,7 @@ const TrainingDelivery = () => {
             const response = await api.post('/api/courses', {
                 title: courseTitle,
                 description: courseDescription,
-                duration: courseDuration,
-                program_id: selectedProgramId, // Associate course with program
+                program_id: selectedProgramId,
             })
 
             console.log('Course saved:', response.data)
@@ -122,9 +115,7 @@ const TrainingDelivery = () => {
                             {programs.map((program) => (
                                 <CAccordionItem key={program.id}>
                                     <CAccordionHeader
-                                        onClick={() => {
-                                            setSelectedProgramId(program.id) // Track the opened program
-                                        }}
+                                        onClick={() => setSelectedProgramId(program.id)}
                                     >
                                         {program.title}
                                     </CAccordionHeader>
@@ -142,13 +133,12 @@ const TrainingDelivery = () => {
                                             Add Course
                                         </CButton>
 
-                                        {/* Table for Courses under the Program */}
                                         <CTable striped className="mt-3">
                                             <CTableHead>
                                                 <CTableRow>
                                                     <CTableHeaderCell>Title</CTableHeaderCell>
                                                     <CTableHeaderCell>Description</CTableHeaderCell>
-                                                    <CTableHeaderCell>Duration</CTableHeaderCell>
+                                                    <CTableHeaderCell>Modules</CTableHeaderCell>
                                                 </CTableRow>
                                             </CTableHead>
                                             <CTableBody>
@@ -166,7 +156,18 @@ const TrainingDelivery = () => {
                                                                 {course.description}
                                                             </CTableDataCell>
                                                             <CTableDataCell>
-                                                                {course.duration}
+                                                                <CButton
+                                                                    size="sm"
+                                                                    color="info"
+                                                                    onClick={() => {
+                                                                        console.log(
+                                                                            'Manage modules for course:',
+                                                                            course.id,
+                                                                        )
+                                                                    }}
+                                                                >
+                                                                    Manage Modules
+                                                                </CButton>
                                                             </CTableDataCell>
                                                         </CTableRow>
                                                     ))}
@@ -239,15 +240,6 @@ const TrainingDelivery = () => {
                                 <CFormTextarea
                                     value={courseDescription}
                                     onChange={(e) => setCourseDescription(e.target.value)}
-                                />
-                            </CCol>
-                        </CRow>
-                        <CRow className="mb-3">
-                            <CCol md={12}>
-                                <CFormLabel>Course Duration</CFormLabel>
-                                <CFormInput
-                                    value={courseDuration}
-                                    onChange={(e) => setCourseDuration(e.target.value)}
                                 />
                             </CCol>
                         </CRow>
