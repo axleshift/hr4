@@ -4,6 +4,7 @@ import { cilHome, cilNotes, cilBook, cilCommentBubble, cilMoney, cilStar } from 
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 
 // Define navigation items with permissions
+//superadmin
 const navItems = [
     {
         name: 'Dashboard',
@@ -11,52 +12,59 @@ const navItems = [
         icon: cilHome,
         roles: ['superadmin', 'admin', 'staff', 'employee'],
     },
+
+    // EMPLOYEE MANAGEMENT
     {
         name: 'Employee Management',
-        icon: cilNotes,
+        type: 'title',
         roles: ['superadmin', 'admin', 'staff', 'employee'],
-        items: [
-            {
-                name: 'Employee',
-                to: '/ui/EmployeeManagement',
-                roles: ['superadmin', 'admin', 'staff', 'employee'],
-            },
-            {
-                name: 'Access Control',
-                to: '/ui/EmployeeManagement/AccessControl',
-                roles: ['superadmin', 'admin', 'staff', 'employee'],
-            },
-        ],
     },
+    {
+        name: 'Employee',
+        to: '/ui/EmployeeManagement',
+        roles: ['superadmin', 'admin', 'staff', 'employee'],
+    },
+    {
+        name: 'Access Control',
+        to: '/ui/EmployeeManagement/AccessControl',
+        roles: ['superadmin'],
+    },
+
+    // LEARNING MANAGEMENT
     {
         name: 'Learning Management',
-        icon: cilBook,
-        roles: ['superadmin', 'admin', 'staff'],
-        items: [
-            { name: 'LMS', to: '/ui/LearningManagement/index', roles: ['superadmin', 'admin'] },
-            {
-                name: 'Module',
-                to: '/ui/LearningManagement/Modules/index',
-                roles: ['superadmin', 'admin', 'staff'],
-            },
-        ],
+        type: 'title',
+        roles: ['superadmin', 'admin', 'staff', 'employee'],
     },
     {
-        name: 'Training Management',
-        icon: cilNotes,
+        name: 'Programs',
+        to: '/ui/LearningManagement/Programs',
+        roles: ['superadmin', 'admin'],
+    },
+    { name: 'LMS', to: '/ui/LearningManagement/index', roles: ['superadmin', 'admin'] },
+    {
+        name: 'Module',
+        to: '/ui/LearningManagement/Modules/index',
         roles: ['superadmin', 'admin', 'staff'],
-        items: [
-            {
-                name: 'Programs',
-                to: '/ui/TrainingManagement/Programs',
-                roles: ['superadmin', 'admin'],
-            },
-            {
-                name: 'Schedule',
-                to: '/ui/TrainingManagement/Schedule',
-                roles: ['superadmin', 'admin', 'staff'],
-            },
-        ],
+    },
+
+    // TRAINING MANAGEMENT
+    {
+        name: 'Training Management',
+        type: 'title',
+        roles: ['superadmin', 'admin', 'staff', 'employee'],
+    },
+    {
+        name: 'Schedule',
+        to: '/ui/TrainingManagement/Schedule',
+        roles: ['superadmin', 'admin', 'staff'],
+    },
+
+    // TRAINING BUDGET REPORTS
+    {
+        name: 'Budget Management',
+        type: 'title',
+        roles: ['superadmin', 'admin'],
     },
     {
         name: 'Budget Management',
@@ -70,7 +78,8 @@ const navItems = [
         icon: cilCommentBubble,
         roles: ['superadmin', 'admin', 'staff', 'employee'],
     },
-    { name: 'Extras', type: 'title', roles: ['superadmin', 'admin'] },
+    { name: 'Extras', type: 'title', roles: ['superadmin'] },
+
     {
         name: 'Pages',
         icon: cilStar,
@@ -83,7 +92,20 @@ const navItems = [
             { name: 'Error 500', to: '/500', roles: ['superadmin', 'admin', 'staff', 'employee'] },
         ],
     },
+
+    // TRAINING BUDGET REPORTS
+    {
+        name: 'ADMIN',
+        to: '/ui/Integration/Admin',
+        roles: ['superadmin'],
+    },
+    {
+        name: 'HR1',
+        to: '/ui/Integration/Hr1',
+        roles: ['superadmin'],
+    },
 ]
+//admin
 
 // Helper function to create navigation components
 const createNavItem = (item) => {
