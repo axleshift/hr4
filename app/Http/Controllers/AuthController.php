@@ -12,7 +12,7 @@ class AuthController extends Controller
 
     public function index()
     {
-        $users = User::with('role')->get();  // Eager load the role relationship
+        $users = User::with('role')->get();
         return response()->json($users);
     }
 

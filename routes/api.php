@@ -5,6 +5,8 @@ use App\Http\Controllers\Api\TrainingController;
 use App\Http\Controllers\Api\ModuleController;
 use App\Http\Controllers\Api\ProgramController;
 use App\Http\Controllers\Api\CourseController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -30,9 +32,7 @@ Route::get('/', function () {
 
 
 //ACCESS CONTROL
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\Api\UserController;
-
+Route::get('/auth', [AuthController::class, 'index']);
 Route::get('/users', [UserController::class, 'index']);
 
 
