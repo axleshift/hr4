@@ -18,7 +18,8 @@ class CourseResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'description' => $this->description,
-            'duration' => $this->duration,
+            'file_name'   => $this->file_name,
+            'file_url'    => $this->file_path ? asset($this->file_path) : null,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

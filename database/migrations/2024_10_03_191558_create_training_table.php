@@ -31,8 +31,9 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('description');
-            $table->string('duration');
-            $table->foreignId('program_id')->constrained('programs')->onDelete('cascade'); // Foreign Key
+            $table->string('file_path')->nullable();
+            $table->string('file_name')->nullable();
+            $table->foreignId('program_id')->constrained('programs')->onDelete('cascade');
             $table->timestamps();
         });
         

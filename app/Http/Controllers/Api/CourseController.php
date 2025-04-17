@@ -10,34 +10,35 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CourseController extends Controller
 {
+    // List courses (optional filter by program_id)
     public function index(Request $request)
     {
         $query = Course::query();
-    
+
         if ($request->has('program_id')) {
             $query->where('program_id', $request->program_id);
         }
-    
-        return response()->json(['data' => $query->get()]);
+
+        return CourseResource::collection($query->get());
     }
 
+    // Show a specific course
     public function show($id)
     {
         $course = Course::findOrFail($id);
         return new CourseResource($course);
     }
 
+    // Store new course
     public function store(Request $request)
     {
-        // Validate the incoming request
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
+            'title'       => 'required|string|max:255',
             'description' => 'required|string',
-            'program_id' => 'required|exists:programs,id',
-            'file' => 'nullable|file|mimes:pdf,doc,docx|max:5120',
+            'program_id'  => 'required|exists:programs,id',
+            'file'        => 'nullable|file|mimes:pdf,doc,docx|max:5120',
         ]);
 
-        // Handle file upload
         $filePath = null;
         $fileName = null;
 
@@ -48,40 +49,38 @@ class CourseController extends Controller
             $filePath = 'uploads/' . $fileName;
         }
 
-        // Create a new course
         $course = Course::create([
-            'title' => $validated['title'],
+            'title'       => $validated['title'],
             'description' => $validated['description'],
-            'program_id' => $validated['program_id'],
-            'file_path' => $filePath,
-            'file_name' => $fileName,
+            'program_id'  => $validated['program_id'],
+            'file_path'   => $filePath,
+            'file_name'   => $fileName,
         ]);
 
         return response()->json(new CourseResource($course), Response::HTTP_CREATED);
     }
 
+    // Delete course and file
     public function destroy($id)
     {
-        // Find the course by its ID
         $course = Course::findOrFail($id);
 
-        // Delete the course file if it exists in public/uploads
         if ($course->file_path && file_exists(public_path($course->file_path))) {
             unlink(public_path($course->file_path));
         }
 
-        // Delete the course from the database
         $course->delete();
 
         return response()->json(['message' => 'Course deleted successfully']);
     }
 
-    public function preview($courseId)
+    // Preview course file as Base64
+    public function preview($id)
     {
-        $course = Course::find($courseId);
+        $course = Course::find($id);
 
         if (!$course || !$course->file_path || !file_exists(public_path($course->file_path))) {
-            return response()->json(['message' => 'File not found.'], 404);
+            return response()->json(['message' => 'File not found'], 404);
         }
 
         $filePath = public_path($course->file_path);
@@ -96,13 +95,13 @@ class CourseController extends Controller
         ]);
     }
 
+    // Download course file
     public function download($id)
     {
         $course = Course::findOrFail($id);
 
-        // Check if file exists in public/uploads
         if (!$course->file_path || !file_exists(public_path($course->file_path))) {
-            return response()->json(['message' => 'File not found'], Response::HTTP_NOT_FOUND);
+            return response()->json(['message' => 'File not found'], 404);
         }
 
         return response()->download(public_path($course->file_path), $course->file_name);
