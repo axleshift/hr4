@@ -8,6 +8,23 @@ return new class extends Migration
 {
     public function up(): void
     {
+        Schema::create('programs', function (Blueprint $table) {
+            $table->id();
+            $table->string('title');
+            $table->text('description');
+            $table->timestamps();
+        });
+
+        Schema::create('courses', function (Blueprint $table) {
+            $table->id();
+            $table->string('title');
+            $table->text('description');
+            $table->string('file_path')->nullable();
+            $table->string('file_name')->nullable();
+            $table->foreignId('program_id')->constrained('programs')->onDelete('cascade');
+            $table->timestamps();
+        });
+
         Schema::create('modules', function (Blueprint $table) {
             $table->id();
             $table->string('title')->unique();
@@ -21,5 +38,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('modules');
+        Schema::dropIfExists('programs');
+        Schema::dropIfExists('courses');
     }
 };
