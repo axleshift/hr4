@@ -21,6 +21,8 @@ import {
 
 const ModuleList = () => {
     const [modules, setModules] = useState([])
+    const [courses, setCourses] = useState([])
+
     const [base64Doc, setBase64Doc] = useState('')
     const [mimeType, setMimeType] = useState('')
     const [fileName, setFileName] = useState('')
@@ -28,21 +30,33 @@ const ModuleList = () => {
 
     useEffect(() => {
         fetchModules()
+        fetchCourses()
     }, [])
 
     const fetchModules = async () => {
         try {
-            const response = await api.get(`/api/modules`)
+            const response = await api.get('/api/modules')
             setModules(response.data.data)
         } catch (error) {
             console.error('Error fetching modules:', error)
         }
     }
 
-    // Fetch Base64 preview for PDF & DOCX
-    const fetchDocPreview = async (id) => {
+    const fetchCourses = async () => {
         try {
-            const response = await api.get(`/api/modules/${id}/preview`)
+            const response = await api.get('/api/courses')
+            setCourses(response.data.data)
+        } catch (error) {
+            console.error('Error fetching courses:', error)
+        }
+    }
+
+    const fetchDocPreview = async (id, type = 'module') => {
+        try {
+            const endpoint =
+                type === 'course' ? `/api/courses/${id}/preview` : `/api/modules/${id}/preview`
+            const response = await api.get(endpoint)
+
             setBase64Doc(response.data.base64)
             setMimeType(response.data.mime_type)
             setFileName(response.data.file_name)
@@ -54,6 +68,7 @@ const ModuleList = () => {
 
     return (
         <CRow>
+            {/* MODULES TABLE */}
             <CCol xs={12}>
                 <CCard className="mb-4">
                     <CCardHeader>
@@ -76,11 +91,13 @@ const ModuleList = () => {
                                         <CTableDataCell>{module.title}</CTableDataCell>
                                         <CTableDataCell>{module.description}</CTableDataCell>
                                         <CTableDataCell>
-                                            {(module.file_name?.endsWith('.docx') ||
-                                                module.file_name?.endsWith('.pdf')) && (
+                                            {(module.file_name?.endsWith('.pdf') ||
+                                                module.file_name?.endsWith('.docx')) && (
                                                 <CButton
                                                     color="info"
-                                                    onClick={() => fetchDocPreview(module.id)}
+                                                    onClick={() =>
+                                                        fetchDocPreview(module.id, 'module')
+                                                    }
                                                 >
                                                     View
                                                 </CButton>
@@ -94,14 +111,61 @@ const ModuleList = () => {
                 </CCard>
             </CCol>
 
-            {/* Modal for Previewing DOCX & PDF Files */}
+            {/* COURSES TABLE */}
+            <CCol xs={12}>
+                <CCard className="mb-4">
+                    <CCardHeader>
+                        <strong>COURSES</strong>
+                    </CCardHeader>
+                    <CCardBody>
+                        <CTable striped hover>
+                            <CTableHead>
+                                <CTableRow>
+                                    <CTableHeaderCell>#</CTableHeaderCell>
+                                    <CTableHeaderCell>Title</CTableHeaderCell>
+                                    <CTableHeaderCell>Description</CTableHeaderCell>
+                                    <CTableHeaderCell>Program</CTableHeaderCell>
+                                    <CTableHeaderCell>Actions</CTableHeaderCell>
+                                </CTableRow>
+                            </CTableHead>
+                            <CTableBody>
+                                {courses.map((course, index) => (
+                                    <CTableRow key={index}>
+                                        <CTableHeaderCell>{index + 1}</CTableHeaderCell>
+                                        <CTableDataCell>{course.title}</CTableDataCell>
+                                        <CTableDataCell>{course.description}</CTableDataCell>
+                                        <CTableDataCell>
+                                            {course.program?.title || 'N/A'}
+                                        </CTableDataCell>
+                                        <CTableDataCell>
+                                            {(course.file_name?.endsWith('.pdf') ||
+                                                course.file_name?.endsWith('.docx')) && (
+                                                <CButton
+                                                    color="info"
+                                                    onClick={() =>
+                                                        fetchDocPreview(course.id, 'course')
+                                                    }
+                                                >
+                                                    View
+                                                </CButton>
+                                            )}
+                                        </CTableDataCell>
+                                    </CTableRow>
+                                ))}
+                            </CTableBody>
+                        </CTable>
+                    </CCardBody>
+                </CCard>
+            </CCol>
+
+            {/* DOCUMENT PREVIEW MODAL */}
             <CModal visible={modalVisible} onClose={() => setModalVisible(false)}>
                 <CModalHeader>Document Preview</CModalHeader>
                 <CModalBody>
                     {base64Doc ? (
                         mimeType === 'application/pdf' ? (
                             <iframe
-                                src={`${base64Doc}`}
+                                src={base64Doc}
                                 style={{ width: '100%', height: '500px', border: 'none' }}
                             ></iframe>
                         ) : (
