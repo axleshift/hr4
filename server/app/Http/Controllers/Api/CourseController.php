@@ -57,7 +57,7 @@ class CourseController extends Controller
             'file_name'   => $fileName,
         ]);
 
-        return response()->json(new CourseResource($course), Response::HTTP_CREATED);
+        return new CourseResource($course);
     }
 
     // Delete course and file
