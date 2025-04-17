@@ -1,43 +1,45 @@
 import React, { useState, useEffect } from 'react'
 import api from '../../../../util/api'
 import {
-    CFormTextarea,
-    CAccordion,
-    CAccordionItem,
-    CAccordionHeader,
-    CAccordionBody,
     CButton,
     CCard,
     CCardBody,
     CCardHeader,
-    CModal,
-    CModalBody,
-    CModalFooter,
-    CModalHeader,
-    CModalTitle,
     CRow,
     CCol,
-    CForm,
-    CFormInput,
-    CFormLabel,
+    CAccordion,
+    CAccordionItem,
+    CAccordionHeader,
+    CAccordionBody,
     CTable,
     CTableBody,
     CTableHead,
     CTableRow,
     CTableHeaderCell,
     CTableDataCell,
+    CModal,
+    CModalHeader,
+    CModalBody,
+    CModalFooter,
 } from '@coreui/react'
+import ProgramModals from '../Modals/ProgramModals'
 
-const TrainingDelivery = () => {
-    const [visibleProgram, setVisibleProgram] = useState(false)
-    const [visibleCourse, setVisibleCourse] = useState(false)
+const Programs = () => {
     const [programs, setPrograms] = useState([])
     const [courses, setCourses] = useState([])
-    const [selectedProgramId, setSelectedProgramId] = useState(null)
     const [programTitle, setProgramTitle] = useState('')
     const [programDescription, setProgramDescription] = useState('')
     const [courseTitle, setCourseTitle] = useState('')
     const [courseDescription, setCourseDescription] = useState('')
+    const [courseFile, setCourseFile] = useState(null)
+    const [selectedProgramId, setSelectedProgramId] = useState(null)
+
+    const [base64Doc, setBase64Doc] = useState('')
+    const [mimeType, setMimeType] = useState('')
+    const [fileName, setFileName] = useState('')
+    const [modalVisible, setModalVisible] = useState(false)
+    const [visibleProgram, setVisibleProgram] = useState(false)
+    const [visibleCourse, setVisibleCourse] = useState(false)
 
     useEffect(() => {
         const fetchPrograms = async () => {
@@ -51,50 +53,89 @@ const TrainingDelivery = () => {
         fetchPrograms()
     }, [])
 
-    useEffect(() => {
-        const fetchCourses = async () => {
-            try {
-                const response = await api.get(`/api/courses`)
-                console.log('Courses fetched:', response.data)
-                setCourses(response.data.data)
-            } catch (error) {
-                console.error('Error fetching courses:', error)
-            }
+    const fetchCourses = async (programId) => {
+        try {
+            const response = await api.get(`/api/courses?program_id=${programId}`)
+            setCourses(response.data.data)
+        } catch (error) {
+            console.error('Error fetching courses:', error)
         }
-        fetchCourses()
-    }, [])
+    }
+
+    const fetchCourseDocPreview = async (id) => {
+        try {
+            const response = await api.get(`/api/courses/${id}/preview`)
+            setBase64Doc(response.data.base64)
+            setMimeType(response.data.mime_type)
+            setFileName(response.data.file_name)
+            setModalVisible(true)
+        } catch (error) {
+            console.error('Error fetching course document preview:', error)
+            alert('Error fetching preview')
+        }
+    }
 
     const handleSaveProgram = async () => {
+        if (!programTitle || !programDescription) {
+            alert('Please provide both title and description for the program.')
+            return
+        }
+
         try {
-            const response = await api.get(`/api/programs`, {
+            const response = await api.post(`/api/programs`, {
                 title: programTitle,
                 description: programDescription,
             })
 
-            const newProgram = response.data.data
-
-            setPrograms((prev) => [...prev, newProgram])
+            setPrograms((prev) => [...prev, response.data.data])
             setProgramTitle('')
             setProgramDescription('')
             setVisibleProgram(false)
         } catch (error) {
             console.error('Error adding program:', error)
+            alert('Failed to add program.')
         }
     }
 
-    const handleSaveCourse = async () => {
+    const handleSaveCourse = async (e) => {
+        e.preventDefault()
+
+        if (!courseTitle || !courseDescription) {
+            alert('Please provide both title and description for the course.')
+            return
+        }
+
+        const formData = new FormData()
+        formData.append('title', courseTitle)
+        formData.append('description', courseDescription)
+        formData.append('program_id', selectedProgramId)
+        if (courseFile) {
+            formData.append('file', courseFile)
+        }
+
         try {
-            const response = await api.post('/api/courses', {
-                title: courseTitle,
-                description: courseDescription,
-                program_id: selectedProgramId,
+            const response = await api.post('/api/courses', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
             })
 
-            console.log('Course saved:', response.data)
-            setCourses([...courses, response.data])
+            setCourses((prevCourses) => [...prevCourses, response.data])
             setVisibleCourse(false)
+            setCourseTitle('')
+            setCourseDescription('')
+            setCourseFile(null)
         } catch (error) {
             console.error('Error saving course:', error)
+            alert('Failed to save course.')
+        }
+    }
+
+    const handleDeleteCourse = async (courseId) => {
+        try {
+            await api.delete(`/api/courses/${courseId}`)
+            setCourses((prevCourses) => prevCourses.filter((course) => course.id !== courseId))
+        } catch (error) {
+            console.error('Error deleting course:', error)
+            alert('Failed to delete course.')
         }
     }
 
@@ -114,9 +155,7 @@ const TrainingDelivery = () => {
                         <CAccordion alwaysOpen>
                             {programs.map((program) => (
                                 <CAccordionItem key={program.id}>
-                                    <CAccordionHeader
-                                        onClick={() => setSelectedProgramId(program.id)}
-                                    >
+                                    <CAccordionHeader onClick={() => fetchCourses(program.id)}>
                                         {program.title}
                                     </CAccordionHeader>
                                     <CAccordionBody>
@@ -136,9 +175,12 @@ const TrainingDelivery = () => {
                                         <CTable striped className="mt-3">
                                             <CTableHead>
                                                 <CTableRow>
-                                                    <CTableHeaderCell>Title</CTableHeaderCell>
+                                                    <CTableHeaderCell>
+                                                        Course Title
+                                                    </CTableHeaderCell>
                                                     <CTableHeaderCell>Description</CTableHeaderCell>
-                                                    <CTableHeaderCell>Modules</CTableHeaderCell>
+                                                    <CTableHeaderCell>File</CTableHeaderCell>
+                                                    <CTableHeaderCell>Actions</CTableHeaderCell>
                                                 </CTableRow>
                                             </CTableHead>
                                             <CTableBody>
@@ -156,17 +198,34 @@ const TrainingDelivery = () => {
                                                                 {course.description}
                                                             </CTableDataCell>
                                                             <CTableDataCell>
+                                                                {(course.file_name?.endsWith(
+                                                                    '.docx',
+                                                                ) ||
+                                                                    course.file_name?.endsWith(
+                                                                        '.pdf',
+                                                                    )) && (
+                                                                    <CButton
+                                                                        color="info"
+                                                                        onClick={() =>
+                                                                            fetchCourseDocPreview(
+                                                                                course.id,
+                                                                            )
+                                                                        }
+                                                                    >
+                                                                        View
+                                                                    </CButton>
+                                                                )}
+                                                            </CTableDataCell>
+                                                            <CTableDataCell>
                                                                 <CButton
-                                                                    size="sm"
-                                                                    color="info"
-                                                                    onClick={() => {
-                                                                        console.log(
-                                                                            'Manage modules for course:',
+                                                                    color="danger"
+                                                                    onClick={() =>
+                                                                        handleDeleteCourse(
                                                                             course.id,
                                                                         )
-                                                                    }}
+                                                                    }
                                                                 >
-                                                                    Manage Modules
+                                                                    Delete
                                                                 </CButton>
                                                             </CTableDataCell>
                                                         </CTableRow>
@@ -181,81 +240,52 @@ const TrainingDelivery = () => {
                 </CCard>
             </CCol>
 
-            {/* Add Program Modal */}
-            <CModal size="xl" visible={visibleProgram} onClose={() => setVisibleProgram(false)}>
-                <CModalHeader>
-                    <CModalTitle>Add Program</CModalTitle>
-                </CModalHeader>
+            {/* Modal for Document Preview */}
+            <CModal visible={modalVisible} onClose={() => setModalVisible(false)}>
+                <CModalHeader>Document Preview</CModalHeader>
                 <CModalBody>
-                    <CForm>
-                        <CRow className="mb-3">
-                            <CCol md={12}>
-                                <CFormLabel>Program Title</CFormLabel>
-                                <CFormInput
-                                    value={programTitle}
-                                    onChange={(e) => setProgramTitle(e.target.value)}
-                                />
-                            </CCol>
-                        </CRow>
-                        <CRow className="mb-3">
-                            <CCol md={12}>
-                                <CFormLabel>Program Description</CFormLabel>
-                                <CFormTextarea
-                                    value={programDescription}
-                                    onChange={(e) => setProgramDescription(e.target.value)}
-                                />
-                            </CCol>
-                        </CRow>
-                    </CForm>
+                    {base64Doc ? (
+                        mimeType === 'application/pdf' ? (
+                            <iframe
+                                src={`${base64Doc}`}
+                                style={{ width: '100%', height: '500px', border: 'none' }}
+                            ></iframe>
+                        ) : (
+                            <iframe
+                                src={`https://view.officeapps.live.com/op/embed.aspx?src=https://hr4.axleshift.com/uploads/${fileName}`}
+                                style={{ width: '100%', height: '500px', border: 'none' }}
+                            ></iframe>
+                        )
+                    ) : (
+                        <p>No preview available.</p>
+                    )}
                 </CModalBody>
                 <CModalFooter>
-                    <CButton color="secondary" onClick={() => setVisibleProgram(false)}>
+                    <CButton color="secondary" onClick={() => setModalVisible(false)}>
                         Close
-                    </CButton>
-                    <CButton color="primary" onClick={handleSaveProgram}>
-                        Save Program
                     </CButton>
                 </CModalFooter>
             </CModal>
 
-            {/* Add Course Modal */}
-            <CModal size="xl" visible={visibleCourse} onClose={() => setVisibleCourse(false)}>
-                <CModalHeader>
-                    <CModalTitle>Add Course</CModalTitle>
-                </CModalHeader>
-                <CModalBody>
-                    <CForm>
-                        <CRow className="mb-3">
-                            <CCol md={12}>
-                                <CFormLabel>Course Title</CFormLabel>
-                                <CFormInput
-                                    value={courseTitle}
-                                    onChange={(e) => setCourseTitle(e.target.value)}
-                                />
-                            </CCol>
-                        </CRow>
-                        <CRow className="mb-3">
-                            <CCol md={12}>
-                                <CFormLabel>Course Description</CFormLabel>
-                                <CFormTextarea
-                                    value={courseDescription}
-                                    onChange={(e) => setCourseDescription(e.target.value)}
-                                />
-                            </CCol>
-                        </CRow>
-                    </CForm>
-                </CModalBody>
-                <CModalFooter>
-                    <CButton color="secondary" onClick={() => setVisibleCourse(false)}>
-                        Close
-                    </CButton>
-                    <CButton color="primary" onClick={handleSaveCourse}>
-                        Save Course
-                    </CButton>
-                </CModalFooter>
-            </CModal>
+            <ProgramModals
+                visibleProgram={visibleProgram}
+                setVisibleProgram={setVisibleProgram}
+                programTitle={programTitle}
+                setProgramTitle={setProgramTitle}
+                programDescription={programDescription}
+                setProgramDescription={setProgramDescription}
+                handleSaveProgram={handleSaveProgram}
+                visibleCourse={visibleCourse}
+                setVisibleCourse={setVisibleCourse}
+                courseTitle={courseTitle}
+                setCourseTitle={setCourseTitle}
+                courseDescription={courseDescription}
+                setCourseDescription={setCourseDescription}
+                setCourseFile={setCourseFile}
+                handleSaveCourse={handleSaveCourse}
+            />
         </CRow>
     )
 }
 
-export default TrainingDelivery
+export default Programs
