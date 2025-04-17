@@ -75,10 +75,8 @@ class CourseController extends Controller
     }
 
     // Preview course file as Base64
-    public function preview($id)
+    public function preview(Course $course)
     {
-        $course = Course::find($id);
-
         if (!$course || !$course->file_path || !file_exists(public_path($course->file_path))) {
             return response()->json(['message' => 'File not found'], 404);
         }
