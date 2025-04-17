@@ -89,44 +89,6 @@ class DatabaseSeeder extends Seeder
             'title' => 'Customer Service Excellence',
             'description' => 'Focused on enhancing customer interactions.',
         ]);
-
-        // Seed courses
-        Course::create([
-            'title' => 'Time Management Mastery',
-            'description' => 'Learn how to manage time effectively.',
-            'duration' => '4 weeks',
-            'program_id' => $managementProgram->id,
-        ]);
-
-        Course::create([
-            'title' => 'Project Management Basics',
-            'description' => 'An introduction to project management principles.',
-            'duration' => '6 weeks',
-            'program_id' => $customerServiceProgram->id,
-        ]);
-
-        // Seed trainings
-        DB::table('trainings')->insert([
-            [
-                'event_title' => 'Leadership Workshop',
-                'delivery_method' => 'Online',
-                'event_location' => 'Zoom',
-                'schedule' => '14:00:00',
-                'start_time' => '14:00',
-                'end_time' => '16:00',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'event_title' => 'Communication Skills Training',
-                'delivery_method' => 'On-Site',
-                'event_location' => 'Conference Hall B',
-                'schedule' => '10:00:00',
-                'start_time' => '10:00',
-                'end_time' => '12:00',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-        ]);
+        
     }
 }

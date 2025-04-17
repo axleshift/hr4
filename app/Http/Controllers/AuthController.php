@@ -12,18 +12,7 @@ class AuthController extends Controller
 
     public function index()
     {
-        $users = User::with('role')->get();
-
-        return response()->json([
-            'data' => $users->map(function ($user) {
-                return [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'role' => $user->role->name,
-                ];
-            }),
-        ]);
+        return response()->json(User::all());
     }
 
     public function login(Request $request)
