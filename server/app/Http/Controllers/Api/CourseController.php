@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\CourseResource;
 use App\Models\Course;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 class CourseController extends Controller
 {

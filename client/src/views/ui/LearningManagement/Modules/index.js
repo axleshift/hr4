@@ -55,7 +55,7 @@ const ModuleList = () => {
         try {
             const endpoint =
                 type === 'course' ? `/api/courses/${id}/preview` : `/api/modules/${id}/preview`
-                const response = await api.get(endpoint)
+            const response = await api.get(endpoint)
             setBase64Doc(response.data.base64)
             setMimeType(response.data.mime_type)
             setFileName(response.data.file_name)
