@@ -91,30 +91,28 @@ class DatabaseSeeder extends Seeder
             'description' => 'Focused on enhancing customer interactions.',
         ]);
 
-        // Seed courses for Management Development Program
-        Course::create([
-            'program_id' => $managementProgram->id,
+        $leadershipEssentials = Course::create([
             'title' => 'Leadership Essentials',
-            'description' => 'Core concepts of leading teams and projects.',
-        ]);
-
-        Course::create([
+            'description' => 'Fundamentals of team leadership and people management.',
             'program_id' => $managementProgram->id,
+        ]);
+
+        $strategicPlanning = Course::create([
             'title' => 'Strategic Planning',
-            'description' => 'Learn to create and implement strategic goals.',
+            'description' => 'Developing and executing strategic plans.',
+            'program_id' => $managementProgram->id,
         ]);
 
-        // Seed courses for Customer Service Excellence Program
-        Course::create([
-            'program_id' => $customerServiceProgram->id,
+        $effectiveCommunication = Course::create([
             'title' => 'Effective Communication',
-            'description' => 'Improve verbal and written customer communication.',
+            'description' => 'Improving internal and external communication.',
+            'program_id' => $customerServiceProgram->id,
         ]);
 
-        Course::create([
-            'program_id' => $customerServiceProgram->id,
+        $handlingCustomers = Course::create([
             'title' => 'Handling Difficult Customers',
-            'description' => 'Strategies for de-escalation and resolution.',
+            'description' => 'Conflict resolution and customer de-escalation techniques.',
+            'program_id' => $customerServiceProgram->id,
         ]);
 
         Training::create([
@@ -125,7 +123,7 @@ class DatabaseSeeder extends Seeder
             'start_time' => '09:00',
             'end_time' => '12:00',
             'program_id' => $managementProgram->id,
-            'course_id' => Course::where('title', 'Leadership Essentials')->first()->id,
+            'course_id' => $leadershipEssentials->id,
         ]);
         
         Training::create([
@@ -136,7 +134,7 @@ class DatabaseSeeder extends Seeder
             'start_time' => '13:00',
             'end_time' => '16:00',
             'program_id' => $managementProgram->id,
-            'course_id' => Course::where('title', 'Strategic Planning')->first()->id,
+            'course_id' => $strategicPlanning->id,
         ]);
         
         Training::create([
@@ -147,7 +145,7 @@ class DatabaseSeeder extends Seeder
             'start_time' => '10:00',
             'end_time' => '12:00',
             'program_id' => $customerServiceProgram->id,
-            'course_id' => Course::where('title', 'Effective Communication')->first()->id,
+            'course_id' => $effectiveCommunication->id,
         ]);
         
         Training::create([
@@ -158,7 +156,7 @@ class DatabaseSeeder extends Seeder
             'start_time' => '14:00',
             'end_time' => '17:00',
             'program_id' => $customerServiceProgram->id,
-            'course_id' => Course::where('title', 'Handling Difficult Customers')->first()->id,
-        ]);
+            'course_id' => $handlingCustomers->id,
+        ]);        
     }
 }
