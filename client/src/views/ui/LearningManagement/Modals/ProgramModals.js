@@ -143,7 +143,7 @@ const ProgramModals = ({
             </CModal>
 
             {/* Document Preview Modal */}
-            <CModal visible={modalVisible} onClose={() => setModalVisible(false)}>
+            <CModal size="xl" visible={modalVisible} onClose={() => setModalVisible(false)}>
                 <CModalHeader>Course Document Preview</CModalHeader>
                 <CModalBody>
                     {base64Doc ? (

@@ -158,7 +158,7 @@ const ModuleList = () => {
             </CCol>
 
             {/* DOCUMENT PREVIEW MODAL */}
-            <CModal visible={modalVisible} onClose={() => setModalVisible(false)}>
+            <CModal size="xl" visible={modalVisible} onClose={() => setModalVisible(false)}>
                 <CModalHeader>Document Preview</CModalHeader>
                 <CModalBody>
                     {base64Doc ? (
