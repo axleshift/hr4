@@ -187,7 +187,7 @@ const Programs = () => {
                                                 {courses
                                                     .filter(
                                                         (course) =>
-                                                            course.program_id === program.id,
+                                                            course.program.id === program.id,
                                                     )
                                                     .map((course) => (
                                                         <CTableRow key={course.id}>
@@ -247,7 +247,7 @@ const Programs = () => {
                     {base64Doc ? (
                         mimeType === 'application/pdf' ? (
                             <iframe
-                                src={`${base64Doc}`}
+                                src={base64Doc}
                                 style={{ width: '100%', height: '500px', border: 'none' }}
                             ></iframe>
                         ) : (

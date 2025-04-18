@@ -22,7 +22,10 @@ Route::get('/', function () {
     // TRAINING MANAGEMENT
     Route::apiResource('/training', TrainingController::class);
     Route::resource('programs', ProgramController::class);
-    Route::resource('courses', CourseController::class);
+
+    Route::apiResource('courses', CourseController::class);
+Route::get('/courses/{course}/preview', [CourseController::class, 'preview']);
+
 
     Route::apiResource('/modules', ModuleController::class);
 

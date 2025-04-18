@@ -149,7 +149,7 @@ const ProgramModals = ({
                     {base64Doc ? (
                         mimeType === 'application/pdf' ? (
                             <iframe
-                                src={`${base64Doc}`}
+                                src={base64Doc}
                                 style={{ width: '100%', height: '500px', border: 'none' }}
                             ></iframe>
                         ) : (
