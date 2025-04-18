@@ -11,7 +11,9 @@ class TrainingController extends Controller
 {
     public function index()
     {
-        return TrainingResource::collection(Training::all());
+        return TrainingResource::collection(
+            Training::with(['program', 'course'])->get()
+        );
     }
 
     public function show(string $id)
