@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class training extends Model
+class Training extends Model
 {
     use HasFactory;
 
@@ -16,5 +16,18 @@ class training extends Model
         'schedule',
         'start_time',
         'end_time',
+        'program_id',
+        'course_id',
     ];
+
+    public function program()
+    {
+        return $this->belongsTo(Program::class);
+    }
+
+    public function course()
+    {
+        return $this->belongsTo(Course::class);
+    }
 }
+
