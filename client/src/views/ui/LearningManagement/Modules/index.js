@@ -13,10 +13,6 @@ import {
     CTableRow,
     CTableHeaderCell,
     CTableDataCell,
-    CModal,
-    CModalHeader,
-    CModalBody,
-    CModalFooter,
 } from '@coreui/react'
 
 const ModuleList = () => {
@@ -26,7 +22,7 @@ const ModuleList = () => {
     const [base64Doc, setBase64Doc] = useState('')
     const [mimeType, setMimeType] = useState('')
     const [fileName, setFileName] = useState('')
-    const [modalVisible, setModalVisible] = useState(false)
+    const [isPreviewing, setIsPreviewing] = useState(false)
 
     useEffect(() => {
         fetchModules()
@@ -59,12 +55,44 @@ const ModuleList = () => {
             setBase64Doc(response.data.base64)
             setMimeType(response.data.mime_type)
             setFileName(response.data.file_name)
-            setModalVisible(true)
+            setIsPreviewing(true)
         } catch (error) {
             console.error('Error fetching document preview:', error)
         }
     }
 
+    // === RENDER DOCUMENT PREVIEW FULL SCREEN ===
+    if (isPreviewing) {
+        return (
+            <div style={{ padding: '20px' }}>
+                <CButton color="secondary" onClick={() => setIsPreviewing(false)}>
+                    ← Back to List
+                </CButton>
+
+                <h2 style={{ marginTop: '1rem' }}>Document Preview</h2>
+
+                {base64Doc || fileName ? (
+                    mimeType === 'application/pdf' ? (
+                        <iframe
+                            src={base64Doc}
+                            style={{ width: '100%', height: '90vh', border: 'none' }}
+                            title="PDF Preview"
+                        ></iframe>
+                    ) : (
+                        <iframe
+                            src={`https://view.officeapps.live.com/op/embed.aspx?src=https://hr4.axleshift.com/uploads/${fileName}`}
+                            style={{ width: '100%', height: '90vh', border: 'none' }}
+                            title="DOCX Preview"
+                        ></iframe>
+                    )
+                ) : (
+                    <p>No preview available.</p>
+                )}
+            </div>
+        )
+    }
+
+    // === RENDER MODULE & COURSE LIST ===
     return (
         <CRow>
             {/* MODULES TABLE */}
@@ -156,33 +184,6 @@ const ModuleList = () => {
                     </CCardBody>
                 </CCard>
             </CCol>
-
-            {/* DOCUMENT PREVIEW MODAL */}
-            <CModal size="xl" visible={modalVisible} onClose={() => setModalVisible(false)}>
-                <CModalHeader>Document Preview</CModalHeader>
-                <CModalBody>
-                    {base64Doc ? (
-                        mimeType === 'application/pdf' ? (
-                            <iframe
-                                src={base64Doc}
-                                style={{ width: '100%', height: '500px', border: 'none' }}
-                            ></iframe>
-                        ) : (
-                            <iframe
-                                src={`https://view.officeapps.live.com/op/embed.aspx?src=https://hr4.axleshift.com/uploads/${fileName}`}
-                                style={{ width: '100%', height: '500px', border: 'none' }}
-                            ></iframe>
-                        )
-                    ) : (
-                        <p>No preview available.</p>
-                    )}
-                </CModalBody>
-                <CModalFooter>
-                    <CButton color="secondary" onClick={() => setModalVisible(false)}>
-                        Close
-                    </CButton>
-                </CModalFooter>
-            </CModal>
         </CRow>
     )
 }
