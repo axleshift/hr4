@@ -9,19 +9,6 @@ return new class extends Migration
 
     public function up(): void
     {
-        Schema::create('trainings', function (Blueprint $table) {
-            $table->id();
-            $table->string('event_title');
-            $table->string('delivery_method')->nullable(); // optional or remove if not used
-            $table->string('event_location');
-            $table->date('schedule'); // fixed: should be date not time
-            $table->string('start_time');
-            $table->string('end_time');
-            $table->foreignId('program_id')->constrained('programs')->onDelete('cascade');
-            $table->foreignId('course_id')->constrained('courses')->onDelete('cascade');
-            $table->timestamps();
-        });        
-
         Schema::create('programs', function (Blueprint $table) {
             $table->id();
             $table->string('title')->unique();
@@ -38,6 +25,19 @@ return new class extends Migration
             $table->foreignId('program_id')->constrained('programs')->onDelete('cascade');
             $table->timestamps();
         });
+
+        Schema::create('trainings', function (Blueprint $table) {
+            $table->id();
+            $table->string('event_title');
+            $table->string('delivery_method')->nullable();
+            $table->string('event_location');
+            $table->date('schedule');
+            $table->string('start_time');
+            $table->string('end_time');
+            $table->foreignId('program_id')->constrained('programs')->onDelete('cascade');
+            $table->foreignId('course_id')->constrained('courses')->onDelete('cascade');
+            $table->timestamps();
+        });        
         
     }
 
