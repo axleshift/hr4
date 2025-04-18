@@ -24,16 +24,16 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'Super Admin',
             'email' => 'sadmin@gmail.com',
-            'password' => bcrypt('superadmin123'), // Secure password
-            'role_id' => $superAdminRole->id, // Assign role
+            'password' => bcrypt('superadmin123'),
+            'role_id' => $superAdminRole->id,
         ]);
 
         // Create an Admin
         User::factory()->create([
             'name' => 'Admin',
             'email' => 'admin@gmail.com',
-            'password' => bcrypt('admin123'), // Secure password
-            'role_id' => $adminRole->id, // Assign role
+            'password' => bcrypt('admin123'),
+            'role_id' => $adminRole->id,
         ]);
 
         // Create 2 Staff members
@@ -51,7 +51,7 @@ class DatabaseSeeder extends Seeder
             'role_id' => $staffRole->id,
         ]);
 
-        // Create 3 Employees
+        // Create 4 Employees
         User::factory()->create([
             'name' => 'Cristy',
             'email' => 'employee1@gmail.com',
@@ -91,6 +91,32 @@ class DatabaseSeeder extends Seeder
             'description' => 'Focused on enhancing customer interactions.',
         ]);
 
+        // Seed courses for Management Development Program
+        Course::create([
+            'program_id' => $managementProgram->id,
+            'title' => 'Leadership Essentials',
+            'description' => 'Core concepts of leading teams and projects.',
+        ]);
+
+        Course::create([
+            'program_id' => $managementProgram->id,
+            'title' => 'Strategic Planning',
+            'description' => 'Learn to create and implement strategic goals.',
+        ]);
+
+        // Seed courses for Customer Service Excellence Program
+        Course::create([
+            'program_id' => $customerServiceProgram->id,
+            'title' => 'Effective Communication',
+            'description' => 'Improve verbal and written customer communication.',
+        ]);
+
+        Course::create([
+            'program_id' => $customerServiceProgram->id,
+            'title' => 'Handling Difficult Customers',
+            'description' => 'Strategies for de-escalation and resolution.',
+        ]);
+
         Training::create([
             'event_title' => 'Leadership Kickoff 2025',
             'delivery_method' => 'In-person',
@@ -102,5 +128,37 @@ class DatabaseSeeder extends Seeder
             'course_id' => Course::where('title', 'Leadership Essentials')->first()->id,
         ]);
         
+        Training::create([
+            'event_title' => 'Strategic Planning Bootcamp',
+            'delivery_method' => 'Online',
+            'event_location' => 'Zoom',
+            'schedule' => '2025-05-10',
+            'start_time' => '13:00',
+            'end_time' => '16:00',
+            'program_id' => $managementProgram->id,
+            'course_id' => Course::where('title', 'Strategic Planning')->first()->id,
+        ]);
+        
+        Training::create([
+            'event_title' => 'Customer Care Training',
+            'delivery_method' => 'In-person',
+            'event_location' => 'Room 205',
+            'schedule' => '2025-05-15',
+            'start_time' => '10:00',
+            'end_time' => '12:00',
+            'program_id' => $customerServiceProgram->id,
+            'course_id' => Course::where('title', 'Effective Communication')->first()->id,
+        ]);
+        
+        Training::create([
+            'event_title' => 'Dealing with Difficult Clients',
+            'delivery_method' => 'Online',
+            'event_location' => 'Google Meet',
+            'schedule' => '2025-05-20',
+            'start_time' => '14:00',
+            'end_time' => '17:00',
+            'program_id' => $customerServiceProgram->id,
+            'course_id' => Course::where('title', 'Handling Difficult Customers')->first()->id,
+        ]);
     }
 }
