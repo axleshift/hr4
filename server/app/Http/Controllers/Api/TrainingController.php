@@ -25,31 +25,33 @@ class TrainingController extends Controller
     {
         $validated = $request->validate([
             'event_title' => 'required|string|max:255',
-            'delivery_method' => 'required|string|max:255',
             'event_location' => 'required|string|max:255',
             'schedule' => 'required|date',
             'start_time' => 'required|string',
             'end_time' => 'required|string',
+            'program_id' => 'required|exists:programs,id',
+            'course_id' => 'required|exists:courses,id',
         ]);
-
-        $post = Training::create($validated);
-        return new TrainingResource($post);
+        
+        $training = Training::create($validated);
+        return new TrainingResource($training);        
     }
 
     public function update(Request $request, string $id)
     {
-        $post = Training::findOrFail($id);
+        $training = Training::findOrFail($id);
         $validated = $request->validate([
             'event_title' => 'sometimes|required|string|max:255',
-            'delivery_method' => 'sometimes|required|string|max:255',
             'event_location' => 'sometimes|required|string|max:255',
             'schedule' => 'sometimes|required|date',
-            'start_time' => 'sometimes|required|time',
-            'end_time' => 'sometimes|required|time',
+            'start_time' => 'sometimes|required|string',
+            'end_time' => 'sometimes|required|string',
+            'program_id' => 'sometimes|required|exists:programs,id',
+            'course_id' => 'sometimes|required|exists:courses,id',
         ]);
 
-        $post = Training::create($validated);
-        return new TrainingResource($post);
+        $training->update($validated);
+        return new TrainingResource($training);
     }
 
     public function destroy(string $id)
