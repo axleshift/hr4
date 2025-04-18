@@ -70,6 +70,7 @@ const TrainingSchedule = () => {
     const fetchTrainings = async () => {
         try {
             const response = await api.get(`/training`)
+            console.log(response.data) // Check the full response structure
             setTrainings(response.data.data || [])
         } catch (error) {
             console.error('Error fetching trainings:', error)
