@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Role;
 use App\Models\Program;
 use App\Models\Course;
+use App\Models\Training;
 use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
@@ -88,6 +89,17 @@ class DatabaseSeeder extends Seeder
         $customerServiceProgram = Program::create([
             'title' => 'Customer Service Excellence',
             'description' => 'Focused on enhancing customer interactions.',
+        ]);
+
+        Training::create([
+            'event_title' => 'Leadership Kickoff 2025',
+            'delivery_method' => 'In-person',
+            'event_location' => 'Conference Room A',
+            'schedule' => '2025-05-01',
+            'start_time' => '09:00',
+            'end_time' => '12:00',
+            'program_id' => $managementProgram->id,
+            'course_id' => Course::where('title', 'Leadership Essentials')->first()->id,
         ]);
         
     }
