@@ -8,79 +8,76 @@ use App\Models\Role;
 use App\Models\Program;
 use App\Models\Course;
 use App\Models\Training;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // Ensure roles exist before assigning them
+        // Ensure roles exist
         $superAdminRole = Role::firstOrCreate(['name' => 'superadmin']);
         $adminRole = Role::firstOrCreate(['name' => 'admin']);
         $staffRole = Role::firstOrCreate(['name' => 'staff']);
         $employeeRole = Role::firstOrCreate(['name' => 'employee']);
 
-        // Create a Super Admin
+        // Users
         User::factory()->create([
             'name' => 'Super Admin',
             'email' => 'sadmin@gmail.com',
-            'password' => bcrypt('superadmin123'),
+            'password' => Hash::make('superadmin123'),
             'role_id' => $superAdminRole->id,
         ]);
 
-        // Create an Admin
         User::factory()->create([
             'name' => 'Admin',
             'email' => 'admin@gmail.com',
-            'password' => bcrypt('admin123'),
+            'password' => Hash::make('admin123'),
             'role_id' => $adminRole->id,
         ]);
 
-        // Create 2 Staff members
         User::factory()->create([
             'name' => 'Manager',
             'email' => 'staff1@gmail.com',
-            'password' => bcrypt('staff123'),
+            'password' => Hash::make('staff123'),
             'role_id' => $staffRole->id,
         ]);
 
         User::factory()->create([
             'name' => 'Trainer',
             'email' => 'staff2@gmail.com',
-            'password' => bcrypt('staff123'),
+            'password' => Hash::make('staff123'),
             'role_id' => $staffRole->id,
         ]);
 
-        // Create 4 Employees
         User::factory()->create([
             'name' => 'Cristy',
             'email' => 'employee1@gmail.com',
-            'password' => bcrypt('employee123'),
+            'password' => Hash::make('employee123'),
             'role_id' => $employeeRole->id,
         ]);
 
         User::factory()->create([
             'name' => 'Malabad',
             'email' => 'employee2@gmail.com',
-            'password' => bcrypt('employee123'),
+            'password' => Hash::make('employee123'),
             'role_id' => $employeeRole->id,
         ]);
 
         User::factory()->create([
             'name' => 'Guma',
             'email' => 'employee3@gmail.com',
-            'password' => bcrypt('employee123'),
+            'password' => Hash::make('employee123'),
             'role_id' => $employeeRole->id,
         ]);
 
         User::factory()->create([
             'name' => 'Tidoso',
             'email' => 'employee4@gmail.com',
-            'password' => bcrypt('employee123'),
+            'password' => Hash::make('employee123'),
             'role_id' => $employeeRole->id,
         ]);
 
-        // Seed programs
+        // Programs
         $managementProgram = Program::create([
             'title' => 'Management Development Program',
             'description' => 'A program designed to enhance managerial skills.',
@@ -91,6 +88,7 @@ class DatabaseSeeder extends Seeder
             'description' => 'Focused on enhancing customer interactions.',
         ]);
 
+        // Courses
         $leadershipEssentials = Course::create([
             'title' => 'Leadership Essentials',
             'description' => 'Fundamentals of team leadership and people management.',
@@ -115,9 +113,8 @@ class DatabaseSeeder extends Seeder
             'program_id' => $customerServiceProgram->id,
         ]);
 
+        // Trainings (no event_title, no delivery_method — per current schema)
         Training::create([
-            'event_title' => 'Leadership Kickoff 2025',
-            'delivery_method' => 'In-person',
             'event_location' => 'Conference Room A',
             'schedule' => '2025-05-01',
             'start_time' => '09:00',
@@ -125,10 +122,8 @@ class DatabaseSeeder extends Seeder
             'program_id' => $managementProgram->id,
             'course_id' => $leadershipEssentials->id,
         ]);
-        
+
         Training::create([
-            'event_title' => 'Strategic Planning Bootcamp',
-            'delivery_method' => 'Online',
             'event_location' => 'Zoom',
             'schedule' => '2025-05-10',
             'start_time' => '13:00',
@@ -136,10 +131,8 @@ class DatabaseSeeder extends Seeder
             'program_id' => $managementProgram->id,
             'course_id' => $strategicPlanning->id,
         ]);
-        
+
         Training::create([
-            'event_title' => 'Customer Care Training',
-            'delivery_method' => 'In-person',
             'event_location' => 'Room 205',
             'schedule' => '2025-05-15',
             'start_time' => '10:00',
@@ -147,16 +140,14 @@ class DatabaseSeeder extends Seeder
             'program_id' => $customerServiceProgram->id,
             'course_id' => $effectiveCommunication->id,
         ]);
-        
+
         Training::create([
-            'event_title' => 'Dealing with Difficult Clients',
-            'delivery_method' => 'Online',
             'event_location' => 'Google Meet',
             'schedule' => '2025-05-20',
             'start_time' => '14:00',
             'end_time' => '17:00',
             'program_id' => $customerServiceProgram->id,
             'course_id' => $handlingCustomers->id,
-        ]);        
+        ]);
     }
 }
