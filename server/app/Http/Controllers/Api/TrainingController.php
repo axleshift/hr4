@@ -9,11 +9,19 @@ use Illuminate\Http\Request;
 
 class TrainingController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return TrainingResource::collection(
-            Training::with(['program', 'course'])->get()
-        );
+        $query = Training::with(['program', 'course']);
+
+        if ($request->has('program_id')) {
+            $query->where('program_id', $request->program_id);
+        }
+
+        if ($request->has('course_id')) {
+            $query->where('course_id', $request->course_id);
+        }
+
+        return TrainingResource::collection($query->get());
     }
 
     public function show(string $id)
