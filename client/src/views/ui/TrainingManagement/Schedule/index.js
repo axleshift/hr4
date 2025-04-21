@@ -179,14 +179,20 @@ const TrainingSchedule = () => {
                                             {training.course?.title || 'N/A'}
                                         </CTableHeaderCell>
                                         <CTableHeaderCell>
-                                            {training.event_location}
-                                        </CTableHeaderCell>
-                                        <CTableHeaderCell>{training.schedule}</CTableHeaderCell>
-                                        <CTableHeaderCell>
-                                            {formatTime(training.start_time || 'N/A')}
+                                            {training.event_location || 'N/A'}
                                         </CTableHeaderCell>
                                         <CTableHeaderCell>
-                                            {formatTime(training.end_time || 'N/A')}
+                                            {training.schedule || 'N/A'}
+                                        </CTableHeaderCell>
+                                        <CTableHeaderCell>
+                                            {training.start_time
+                                                ? formatTime(training.start_time)
+                                                : 'N/A'}
+                                        </CTableHeaderCell>
+                                        <CTableHeaderCell>
+                                            {training.end_time
+                                                ? formatTime(training.end_time)
+                                                : 'N/A'}
                                         </CTableHeaderCell>
                                         <CTableHeaderCell>
                                             <CBadge
@@ -207,11 +213,15 @@ const TrainingSchedule = () => {
                                                 }
                                                 className="ms-2"
                                             >
-                                                {getTrainingStatus(
-                                                    training.schedule,
-                                                    training.start_time,
-                                                    training.end_time,
-                                                )}
+                                                {training.schedule &&
+                                                training.start_time &&
+                                                training.end_time
+                                                    ? getTrainingStatus(
+                                                          training.schedule,
+                                                          training.start_time,
+                                                          training.end_time,
+                                                      )
+                                                    : 'N/A'}
                                             </CBadge>
                                         </CTableHeaderCell>
                                     </CTableRow>
