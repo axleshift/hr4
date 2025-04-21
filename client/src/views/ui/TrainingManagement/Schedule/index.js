@@ -70,7 +70,7 @@ const TrainingSchedule = () => {
     // Fetch trainings
     const fetchTrainings = async () => {
         try {
-            const response = await api.get(`/training`)
+            const response = await api.get(`/trainings`)
             setTrainings(response.data.data)
         } catch (error) {
             console.error('Error fetching trainings:', error)
@@ -169,7 +169,7 @@ const TrainingSchedule = () => {
                                 </CTableRow>
                             </CTableHead>
                             <CTableBody>
-                                {training.map((training, index) => (
+                                {trainings.map((training, index) => (
                                     <CTableRow key={index}>
                                         <CTableHeaderCell>{index + 1}</CTableHeaderCell>
                                         <CTableHeaderCell>
