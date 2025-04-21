@@ -28,8 +28,6 @@ return new class extends Migration
 
         Schema::create('trainings', function (Blueprint $table) {
             $table->id();
-            $table->string('event_title');
-            $table->string('delivery_method')->nullable();
             $table->string('event_location');
             $table->date('schedule');
             $table->string('start_time');
@@ -43,8 +41,8 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('trainings');
         Schema::dropIfExists('programs');
         Schema::dropIfExists('courses');
+        Schema::dropIfExists('trainings');
     }
 };

@@ -10,8 +10,6 @@ class Training extends Model
     use HasFactory;
 
     protected $fillable = [
-        'event_title',
-        'delivery_method',
         'event_location',
         'schedule',
         'start_time',
@@ -30,4 +28,3 @@ class Training extends Model
         return $this->belongsTo(Course::class);
     }
 }
-
