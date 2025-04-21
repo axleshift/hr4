@@ -169,9 +169,8 @@ const TrainingSchedule = () => {
                                 </CTableRow>
                             </CTableHead>
                             <CTableBody>
-                                {trainings.map((training, index) => (
+                                {trainings.map((training) => (
                                     <CTableRow key={index}>
-                                        <CTableHeaderCell>{index + 1}</CTableHeaderCell>
                                         <CTableHeaderCell>
                                             {training.program?.title || 'N/A'}
                                         </CTableHeaderCell>
