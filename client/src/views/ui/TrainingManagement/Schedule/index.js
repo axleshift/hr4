@@ -33,6 +33,7 @@ const TrainingSchedule = () => {
     const [trainings, setTrainings] = useState([])
     const [formData, setFormData] = useState({
         event_title: '',
+        delivery_method: '', // ← Add this
         event_location: '',
         schedule: '',
         start_time: '',
@@ -98,6 +99,7 @@ const TrainingSchedule = () => {
             fetchTrainings()
             setFormData({
                 event_title: '',
+                delivery_method: '',
                 event_location: '',
                 schedule: '',
                 start_time: '',
@@ -169,8 +171,10 @@ const TrainingSchedule = () => {
                             <CTableBody>
                                 {trainings.map((training) => (
                                     <CTableRow key={training.id}>
-                                        <CTableHeaderCell>{training.program_name}</CTableHeaderCell>
-                                        <CTableHeaderCell>{training.course_name}</CTableHeaderCell>
+                                        <CTableHeaderCell>{training.event_title}</CTableHeaderCell>
+                                        <CTableHeaderCell>
+                                            {training.delivery_method}
+                                        </CTableHeaderCell>
                                         <CTableHeaderCell>
                                             {training.event_location}
                                         </CTableHeaderCell>
@@ -261,6 +265,20 @@ const TrainingSchedule = () => {
                                     {course.title}
                                 </option>
                             ))}
+                        </CFormSelect>
+
+                        <CFormLabel htmlFor="delivery_method">Delivery Method</CFormLabel>
+                        <CFormSelect
+                            id="delivery_method"
+                            name="delivery_method"
+                            value={formData.delivery_method}
+                            onChange={handleInputChange}
+                            required
+                        >
+                            <option value="">Select Delivery Method</option>
+                            <option value="In-Person">In-Person</option>
+                            <option value="Online">Online</option>
+                            <option value="Blended">Blended</option>
                         </CFormSelect>
 
                         <CFormLabel htmlFor="event_location">Event Location / Mode</CFormLabel>
