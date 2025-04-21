@@ -183,10 +183,10 @@ const TrainingSchedule = () => {
                                         </CTableHeaderCell>
                                         <CTableHeaderCell>{training.schedule}</CTableHeaderCell>
                                         <CTableHeaderCell>
-                                            {formatTime(training.start_time)}
+                                            {formatTime(training.start_time || 'N/A')}
                                         </CTableHeaderCell>
                                         <CTableHeaderCell>
-                                            {formatTime(training.end_time)}
+                                            {formatTime(training.end_time || 'N/A')}
                                         </CTableHeaderCell>
                                         <CTableHeaderCell>
                                             <CBadge
