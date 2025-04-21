@@ -16,16 +16,12 @@ class TrainingResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'event_title' => $this->event_title,
-            'delivery_method' => $this->delivery_method,
             'event_location' => $this->event_location,
             'schedule' => $this->schedule,
             'start_time' => $this->start_time,
             'end_time' => $this->end_time,
-            'program_id' => $this->program_id,
-            'program_name' => $this->program->title ?? null,
-            'course_id' => $this->course_id,
-            'course_name' => $this->course->title ?? null,
+            'program' => new ProgramResource($this->program),
+            'course' => new CourseResource($this->course),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
