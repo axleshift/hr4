@@ -171,9 +171,11 @@ const TrainingSchedule = () => {
                             <CTableBody>
                                 {trainings.map((training) => (
                                     <CTableRow key={training.id}>
-                                        <CTableHeaderCell>{training.event_title}</CTableHeaderCell>
                                         <CTableHeaderCell>
-                                            {training.delivery_method}
+                                            {training.program?.title}
+                                        </CTableHeaderCell>
+                                        <CTableHeaderCell>
+                                            {training.course?.title}
                                         </CTableHeaderCell>
                                         <CTableHeaderCell>
                                             {training.event_location}
