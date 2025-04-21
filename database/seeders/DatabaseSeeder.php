@@ -116,7 +116,7 @@ class DatabaseSeeder extends Seeder
         // Trainings (no event_title, no delivery_method — per current schema)
         Training::create([
             'event_location' => 'Conference Room A',
-            'schedule' => '14:00:00',
+            'schedule' => '2025-05-01',
             'start_time' => '09:00',
             'end_time' => '12:00',
             'program_id' => $managementProgram->id,
@@ -125,7 +125,7 @@ class DatabaseSeeder extends Seeder
 
         Training::create([
             'event_location' => 'Zoom',
-            'schedule' => '14:00:00',
+            'schedule' => '2025-05-10',
             'start_time' => '13:00',
             'end_time' => '16:00',
             'program_id' => $managementProgram->id,
@@ -134,7 +134,7 @@ class DatabaseSeeder extends Seeder
 
         Training::create([
             'event_location' => 'Room 205',
-            'schedule' => '14:00:00',
+            'schedule' => '2025-05-15',
             'start_time' => '10:00',
             'end_time' => '12:00',
             'program_id' => $customerServiceProgram->id,
@@ -143,7 +143,7 @@ class DatabaseSeeder extends Seeder
 
         Training::create([
             'event_location' => 'Google Meet',
-            'schedule' => '14:00:00',
+            'schedule' => '2025-05-20',
             'start_time' => '14:00',
             'end_time' => '17:00',
             'program_id' => $customerServiceProgram->id,
