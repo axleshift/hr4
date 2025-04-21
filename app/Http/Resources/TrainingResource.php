@@ -17,6 +17,7 @@ class TrainingResource extends JsonResource
         return [
             'id' => $this->id,
             'event_title' => $this->event_title,
+            'delivery_method' => $this->delivery_method,
             'event_location' => $this->event_location,
             'schedule' => $this->schedule,
             'start_time' => $this->start_time,
