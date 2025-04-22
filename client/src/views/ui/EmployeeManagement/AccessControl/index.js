@@ -53,9 +53,6 @@ const AccessControl = () => {
                 <CCard className="mb-4">
                     <CCardHeader className="d-flex justify-content-between align-items-center">
                         <strong>Access Control</strong>
-                        <CButton color="primary">
-                            <CIcon icon={cilUserPlus} className="me-2" /> Add User
-                        </CButton>
                     </CCardHeader>
                     <CCardBody>
                         <CTable align="middle" className="mb-0 border" hover responsive>
@@ -69,9 +66,6 @@ const AccessControl = () => {
                                     </CTableHeaderCell>
                                     <CTableHeaderCell className="bg-body-tertiary text-center">
                                         Role
-                                    </CTableHeaderCell>
-                                    <CTableHeaderCell className="bg-body-tertiary text-center">
-                                        More
                                     </CTableHeaderCell>
                                 </CTableRow>
                             </CTableHead>
