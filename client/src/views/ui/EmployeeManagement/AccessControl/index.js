@@ -80,7 +80,7 @@ const AccessControl = () => {
                                     <CTableRow key={user.id}>
                                         <CTableDataCell>{user.name}</CTableDataCell>
                                         <CTableDataCell>{user.email}</CTableDataCell>
-                                        <CTableDataCell>{user.role?.name || 'N/A'}</CTableDataCell>
+                                        <CTableDataCell>{user.role}</CTableDataCell>
                                         <CTableDataCell className="text-center">
                                             <CButton
                                                 color="secondary"
