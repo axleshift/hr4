@@ -61,6 +61,7 @@ const AccessControl = () => {
                         <CTable align="middle" className="mb-0 border" hover responsive>
                             <CTableHead>
                                 <CTableRow>
+                                    <CTableHeaderCell>#</CTableHeaderCell>
                                     <CTableHeaderCell className="bg-body-tertiary">
                                         Name
                                     </CTableHeaderCell>
@@ -78,6 +79,7 @@ const AccessControl = () => {
                             <CTableBody>
                                 {users.map((user) => (
                                     <CTableRow key={user.id}>
+                                        <CTableDataCell>{user.id}</CTableDataCell>
                                         <CTableDataCell>{user.name}</CTableDataCell>
                                         <CTableDataCell>{user.email}</CTableDataCell>
                                         <CTableDataCell>{user.role}</CTableDataCell>
