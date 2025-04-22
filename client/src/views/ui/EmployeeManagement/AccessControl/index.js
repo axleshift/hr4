@@ -13,9 +13,10 @@ import {
     CTableHeaderCell,
     CTableRow,
     CButton,
+    CFormInput,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import { cilUserPlus, cilOptions } from '@coreui/icons'
+import { cilOptions } from '@coreui/icons'
 import EditProfile from './EditProfile'
 
 const AccessControl = () => {
@@ -23,6 +24,7 @@ const AccessControl = () => {
     const [selectedUser, setSelectedUser] = useState(null)
     const [modalVisible, setModalVisible] = useState(false)
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' })
+    const [filterText, setFilterText] = useState('')
 
     useEffect(() => {
         fetchUsers()
@@ -60,7 +62,20 @@ const AccessControl = () => {
         })
     }
 
-    const sortedUsers = [...users].sort((a, b) => {
+    const renderSortArrow = (key) => {
+        if (sortConfig.key !== key) return ''
+        return sortConfig.direction === 'asc' ? ' ↑' : ' ↓'
+    }
+
+    // Filter users
+    const filteredUsers = users.filter((user) =>
+        [user.name, user.email, user.role].some((value) =>
+            value?.toLowerCase().includes(filterText.toLowerCase()),
+        ),
+    )
+
+    // Sort users after filtering
+    const sortedUsers = [...filteredUsers].sort((a, b) => {
         if (sortConfig.key) {
             const valA = a[sortConfig.key]?.toLowerCase?.() ?? ''
             const valB = b[sortConfig.key]?.toLowerCase?.() ?? ''
@@ -70,11 +85,6 @@ const AccessControl = () => {
         return 0
     })
 
-    const renderSortArrow = (key) => {
-        if (sortConfig.key !== key) return ''
-        return sortConfig.direction === 'asc' ? ' ↑' : ' ↓'
-    }
-
     return (
         <CRow>
             <CCol xs={12}>
@@ -83,6 +93,15 @@ const AccessControl = () => {
                         <strong>Access Control</strong>
                     </CCardHeader>
                     <CCardBody>
+                        {/* Filter Input */}
+                        <CFormInput
+                            type="text"
+                            placeholder="Search by name, email, or role..."
+                            className="mb-3"
+                            value={filterText}
+                            onChange={(e) => setFilterText(e.target.value)}
+                        />
+
                         <CTable align="middle" className="mb-0 border" hover responsive>
                             <CTableHead>
                                 <CTableRow>
@@ -114,25 +133,33 @@ const AccessControl = () => {
                                 </CTableRow>
                             </CTableHead>
                             <CTableBody>
-                                {sortedUsers.map((user) => (
-                                    <CTableRow key={user.id}>
-                                        <CTableDataCell>{user.id}</CTableDataCell>
-                                        <CTableDataCell>{user.name}</CTableDataCell>
-                                        <CTableDataCell>{user.email}</CTableDataCell>
-                                        <CTableDataCell className="text-center">
-                                            {user.role}
-                                        </CTableDataCell>
-                                        <CTableDataCell className="text-center">
-                                            <CButton
-                                                color="secondary"
-                                                size="sm"
-                                                onClick={() => handleEditUser(user.id)}
-                                            >
-                                                <CIcon icon={cilOptions} /> More
-                                            </CButton>
+                                {sortedUsers.length > 0 ? (
+                                    sortedUsers.map((user) => (
+                                        <CTableRow key={user.id}>
+                                            <CTableDataCell>{user.id}</CTableDataCell>
+                                            <CTableDataCell>{user.name}</CTableDataCell>
+                                            <CTableDataCell>{user.email}</CTableDataCell>
+                                            <CTableDataCell className="text-center">
+                                                {user.role}
+                                            </CTableDataCell>
+                                            <CTableDataCell className="text-center">
+                                                <CButton
+                                                    color="secondary"
+                                                    size="sm"
+                                                    onClick={() => handleEditUser(user.id)}
+                                                >
+                                                    <CIcon icon={cilOptions} /> More
+                                                </CButton>
+                                            </CTableDataCell>
+                                        </CTableRow>
+                                    ))
+                                ) : (
+                                    <CTableRow>
+                                        <CTableDataCell colSpan={5} className="text-center">
+                                            No users found.
                                         </CTableDataCell>
                                     </CTableRow>
-                                ))}
+                                )}
                             </CTableBody>
                         </CTable>
                     </CCardBody>
