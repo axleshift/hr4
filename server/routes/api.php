@@ -20,7 +20,7 @@ Route::get('/', function () {
     Route::apiResource('/announcement', AnnouncementController::class);
 
     // TRAINING MANAGEMENT
-    Route::apiResource('/training', TrainingController::class);
+    Route::apiResource('/trainings', TrainingController::class);
     Route::resource('programs', ProgramController::class);
 
     Route::apiResource('courses', CourseController::class);
