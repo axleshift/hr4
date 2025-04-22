@@ -46,27 +46,6 @@ const TrainingSchedule = () => {
     const [courses, setCourses] = useState([])
     const [selectedProgram, setSelectedProgram] = useState('')
 
-    // Fetch programs
-    const fetchPrograms = async () => {
-        try {
-            const response = await api.get('/api/programs')
-            setPrograms(response.data.data)
-        } catch (error) {
-            console.error('Error fetching programs:', error)
-        }
-    }
-
-    // Fetch courses based on selected program
-    const fetchCourses = async () => {
-        if (!selectedProgram) return
-        try {
-            const response = await api.get(`/api/courses?program_id=${selectedProgram}`)
-            setCourses(response.data.data)
-        } catch (error) {
-            console.error('Error fetching courses:', error)
-        }
-    }
-
     useEffect(() => {
         fetchPrograms()
         fetchTrainings()
