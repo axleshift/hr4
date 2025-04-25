@@ -46,6 +46,7 @@ const TrainingSchedule = () => {
 
     useEffect(() => {
         fetchPrograms()
+        fetchTrainings()
     }, [])
 
     useEffect(() => {
@@ -74,8 +75,8 @@ const TrainingSchedule = () => {
 
     const fetchTrainings = async () => {
         try {
-            const res = await api.get('/trainings')
-            setTrainings(res.data)
+            const res = await api.get('/api/trainings')
+            setTrainings(response.data.data)
         } catch (error) {
             console.error('Error fetching trainings:', error)
         }
