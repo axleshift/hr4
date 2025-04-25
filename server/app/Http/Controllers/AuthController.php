@@ -12,7 +12,7 @@ class AuthController extends Controller
 
     public function index()
     {
-        $users = User::with('role')->get();
+        $users = User::with('role', 'department')->get();
 
         return response()->json([
             'data' => $users->map(function ($user) {
@@ -20,7 +20,8 @@ class AuthController extends Controller
                     'id' => $user->id,
                     'name' => $user->name,
                     'email' => $user->email,
-                    'role' => $user->role->name,
+                    'role' => $user->role->name ?? 'No Role',
+                    'department' => $user->department->name ?? 'No Department',
                 ];
             }),
         ]);

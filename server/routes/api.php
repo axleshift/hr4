@@ -3,7 +3,6 @@
 use App\Http\Controllers\Api\AnnouncementController;
 use App\Http\Controllers\Api\TrainingController;
 use App\Http\Controllers\Api\ModuleController;
-use App\Http\Controllers\Api\FileController;
 use App\Http\Controllers\Api\ProgramController;
 use App\Http\Controllers\Api\CourseController;
 use App\Http\Controllers\RoleController;
