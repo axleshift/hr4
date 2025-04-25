@@ -54,17 +54,19 @@ const TrainingSchedule = () => {
 
     const fetchPrograms = async () => {
         try {
-            const res = await api.get('/programs')
-            setPrograms(res.data.data)
+            const response = await api.get('/api/programs')
+            setPrograms(response.data.data)
         } catch (error) {
             console.error('Error fetching programs:', error)
         }
     }
 
+    // Fetch courses based on selected program
     const fetchCourses = async () => {
+        if (!selectedProgram) return
         try {
-            const res = await api.get(`/courses?program_id=${selectedProgram}`)
-            setCourses(res.data.data)
+            const response = await api.get(`/api/courses?program_id=${selectedProgram}`)
+            setCourses(response.data.data)
         } catch (error) {
             console.error('Error fetching courses:', error)
         }
