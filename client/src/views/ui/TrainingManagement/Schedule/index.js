@@ -44,6 +44,41 @@ const TrainingSchedule = () => {
     const [courses, setCourses] = useState([])
     const [selectedProgram, setSelectedProgram] = useState('')
 
+    useEffect(() => {
+        fetchPrograms()
+    }, [])
+
+    useEffect(() => {
+        fetchCourses()
+    }, [selectedProgram])
+
+    const fetchPrograms = async () => {
+        try {
+            const res = await api.get('/programs')
+            setPrograms(res.data)
+        } catch (error) {
+            console.error('Error fetching programs:', error)
+        }
+    }
+
+    const fetchCourses = async () => {
+        try {
+            const res = await api.get(`/courses?program_id=${selectedProgram}`)
+            setCourses(res.data)
+        } catch (error) {
+            console.error('Error fetching courses:', error)
+        }
+    }
+
+    const fetchTrainings = async () => {
+        try {
+            const res = await api.get('/trainings')
+            setTrainings(res.data)
+        } catch (error) {
+            console.error('Error fetching trainings:', error)
+        }
+    }
+
     const handleInputChange = (e) => {
         const { name, value } = e.target
         setFormData({ ...formData, [name]: value })
@@ -139,6 +174,39 @@ const TrainingSchedule = () => {
                 <CModalBody>
                     <CForm onSubmit={handleSubmit}>
                         <CFormLabel htmlFor="program_id">Training Program</CFormLabel>
+                        <CFormSelect
+                            id="program_id"
+                            name="program_id"
+                            value={formData.program_id}
+                            onChange={(e) => {
+                                setFormData({ ...formData, program_id: e.target.value })
+                                setSelectedProgram(e.target.value)
+                            }}
+                            required
+                        >
+                            <option value="">Select Program</option>
+                            {programs.map((program) => (
+                                <option key={program.id} value={program.id}>
+                                    {program.title}
+                                </option>
+                            ))}
+                        </CFormSelect>
+
+                        <CFormLabel htmlFor="course_id">Course Name</CFormLabel>
+                        <CFormSelect
+                            id="course_id"
+                            name="course_id"
+                            value={formData.course_id}
+                            onChange={handleInputChange}
+                            required
+                        >
+                            <option value="">Select Course</option>
+                            {courses.map((course) => (
+                                <option key={course.id} value={course.id}>
+                                    {course.title}
+                                </option>
+                            ))}
+                        </CFormSelect>
 
                         <CFormLabel htmlFor="delivery_method">Delivery Method</CFormLabel>
                         <CFormSelect
