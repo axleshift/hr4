@@ -15,9 +15,7 @@ Route::get('/', function () {
     return response()->json(['message' => 'Hello, World!']);
 });
 
-// API Routes Protected by Session Middleware
-//Route::middleware('verify.session')->group(function () {
-    Route::apiResource('/announcement', AnnouncementController::class);
+Route::apiResource('/announcement', AnnouncementController::class);
 
     // TRAINING MANAGEMENT
     Route::apiResource('/trainings', TrainingController::class);
@@ -32,7 +30,7 @@ Route::get('/courses/{course}/preview', [CourseController::class, 'preview']);
     // Module File Management
     Route::get('/modules/download/{module}', [ModuleController::class, 'download']);
     Route::get('/modules/{module}/preview', [ModuleController::class, 'preview']);
-//});
+
 
 
 //ACCESS CONTROL
