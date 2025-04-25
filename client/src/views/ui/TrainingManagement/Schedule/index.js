@@ -33,11 +33,9 @@ const TrainingSchedule = () => {
     const [trainings, setTrainings] = useState([])
     const [formData, setFormData] = useState({
         event_title: '',
-        delivery_method: '', // ← Add this
+        delivery_method: '',
         event_location: '',
         schedule: '',
-        start_time: '',
-        end_time: '',
         program_id: '',
         course_id: '',
     })
@@ -55,6 +53,33 @@ const TrainingSchedule = () => {
         fetchCourses()
     }, [selectedProgram])
 
+    const fetchPrograms = async () => {
+        try {
+            const res = await api.get('/programs')
+            setPrograms(res.data)
+        } catch (error) {
+            console.error('Error fetching programs:', error)
+        }
+    }
+
+    const fetchCourses = async () => {
+        try {
+            const res = await api.get(`/courses?program_id=${selectedProgram}`)
+            setCourses(res.data)
+        } catch (error) {
+            console.error('Error fetching courses:', error)
+        }
+    }
+
+    const fetchTrainings = async () => {
+        try {
+            const res = await api.get('/trainings')
+            setTrainings(res.data)
+        } catch (error) {
+            console.error('Error fetching trainings:', error)
+        }
+    }
+
     const handleInputChange = (e) => {
         const { name, value } = e.target
         setFormData({ ...formData, [name]: value })
@@ -71,31 +96,12 @@ const TrainingSchedule = () => {
                 delivery_method: '',
                 event_location: '',
                 schedule: '',
-                start_time: '',
-                end_time: '',
                 program_id: '',
                 course_id: '',
             })
         } catch (error) {
             console.error('Error adding training:', error)
         }
-    }
-
-    const getTrainingStatus = (scheduleDate, startTime, endTime) => {
-        const now = new Date()
-        const start = new Date(`${scheduleDate}T${startTime}`)
-        const end = new Date(`${scheduleDate}T${endTime}`)
-        if (now < start) return 'Pending'
-        if (now <= end) return 'Ongoing'
-        return 'Complete'
-    }
-
-    const formatTime = (time) => {
-        const [hours, minutes] = time.split(':')
-        const hours24 = parseInt(hours, 10)
-        const suffix = hours24 >= 12 ? 'PM' : 'AM'
-        const hours12 = hours24 % 12 || 12
-        return `${hours12}:${minutes} ${suffix}`
     }
 
     return (
@@ -132,9 +138,6 @@ const TrainingSchedule = () => {
                                     <CTableHeaderCell>Course</CTableHeaderCell>
                                     <CTableHeaderCell>Location</CTableHeaderCell>
                                     <CTableHeaderCell>Schedule</CTableHeaderCell>
-                                    <CTableHeaderCell>Start Time</CTableHeaderCell>
-                                    <CTableHeaderCell>End Time</CTableHeaderCell>
-                                    <CTableHeaderCell>Status</CTableHeaderCell>
                                 </CTableRow>
                             </CTableHead>
                             <CTableBody>
@@ -151,46 +154,6 @@ const TrainingSchedule = () => {
                                         </CTableHeaderCell>
                                         <CTableHeaderCell>
                                             {training.schedule || 'N/A'}
-                                        </CTableHeaderCell>
-                                        <CTableHeaderCell>
-                                            {training.start_time
-                                                ? formatTime(training.start_time)
-                                                : 'N/A'}
-                                        </CTableHeaderCell>
-                                        <CTableHeaderCell>
-                                            {training.end_time
-                                                ? formatTime(training.end_time)
-                                                : 'N/A'}
-                                        </CTableHeaderCell>
-                                        <CTableHeaderCell>
-                                            <CBadge
-                                                color={
-                                                    getTrainingStatus(
-                                                        training.schedule,
-                                                        training.start_time,
-                                                        training.end_time,
-                                                    ) === 'Pending'
-                                                        ? 'warning'
-                                                        : getTrainingStatus(
-                                                                training.schedule,
-                                                                training.start_time,
-                                                                training.end_time,
-                                                            ) === 'Ongoing'
-                                                          ? 'info'
-                                                          : 'success'
-                                                }
-                                                className="ms-2"
-                                            >
-                                                {training.schedule &&
-                                                training.start_time &&
-                                                training.end_time
-                                                    ? getTrainingStatus(
-                                                          training.schedule,
-                                                          training.start_time,
-                                                          training.end_time,
-                                                      )
-                                                    : 'N/A'}
-                                            </CBadge>
                                         </CTableHeaderCell>
                                     </CTableRow>
                                 ))}
@@ -278,26 +241,6 @@ const TrainingSchedule = () => {
                             id="schedule"
                             name="schedule"
                             value={formData.schedule}
-                            onChange={handleInputChange}
-                            required
-                        />
-
-                        <CFormLabel htmlFor="start_time">Start Time</CFormLabel>
-                        <CFormInput
-                            type="time"
-                            id="start_time"
-                            name="start_time"
-                            value={formData.start_time}
-                            onChange={handleInputChange}
-                            required
-                        />
-
-                        <CFormLabel htmlFor="end_time">End Time</CFormLabel>
-                        <CFormInput
-                            type="time"
-                            id="end_time"
-                            name="end_time"
-                            value={formData.end_time}
                             onChange={handleInputChange}
                             required
                         />

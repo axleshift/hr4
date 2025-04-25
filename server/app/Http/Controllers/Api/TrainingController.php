@@ -35,8 +35,6 @@ class TrainingController extends Controller
         $validated = $request->validate([
             'event_location' => 'required|string|max:255',
             'schedule' => 'required|date',
-            'start_time' => 'required|string|max:10',
-            'end_time' => 'required|string|max:10',
             'program_id' => 'required|exists:programs,id',
             'course_id' => 'required|exists:courses,id',
         ]);
@@ -51,8 +49,6 @@ class TrainingController extends Controller
         $validated = $request->validate([
             'event_location' => 'sometimes|required|string|max:255',
             'schedule' => 'sometimes|required|date',
-            'start_time' => 'sometimes|required|string|max:10',
-            'end_time' => 'sometimes|required|string|max:10',
             'program_id' => 'sometimes|required|exists:programs,id',
             'course_id' => 'sometimes|required|exists:courses,id',
         ]);        

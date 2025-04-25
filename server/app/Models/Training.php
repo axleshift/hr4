@@ -12,11 +12,9 @@ class Training extends Model
     protected $fillable = [
         'event_location',
         'schedule',
-        'start_time',
-        'end_time',
         'program_id',
         'course_id',
-    ];
+    ];    
 
     public function program()
     {
