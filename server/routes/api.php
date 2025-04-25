@@ -19,7 +19,7 @@ Route::apiResource('/announcement', AnnouncementController::class);
 
     // TRAINING MANAGEMENT
     Route::apiResource('/trainings', TrainingController::class);
-    Route::resource('programs', ProgramController::class);
+    Route::apiResource('programs', ProgramController::class);
 
     Route::apiResource('courses', CourseController::class);
 Route::get('/courses/{course}/preview', [CourseController::class, 'preview']);
