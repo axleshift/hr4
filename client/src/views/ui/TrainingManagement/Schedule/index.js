@@ -48,6 +48,7 @@ const TrainingSchedule = () => {
 
     useEffect(() => {
         fetchPrograms()
+        fetchTrainings()
     }, [])
 
     useEffect(() => {
@@ -123,7 +124,79 @@ const TrainingSchedule = () => {
                             </CButton>
                         </div>
                     </CCardHeader>
-                    <CCardBody></CCardBody>
+                    <CCardBody>
+                        <CTable>
+                            <CTableHead>
+                                <CTableRow>
+                                    <CTableHeaderCell>Program</CTableHeaderCell>
+                                    <CTableHeaderCell>Course</CTableHeaderCell>
+                                    <CTableHeaderCell>Location</CTableHeaderCell>
+                                    <CTableHeaderCell>Schedule</CTableHeaderCell>
+                                    <CTableHeaderCell>Start Time</CTableHeaderCell>
+                                    <CTableHeaderCell>End Time</CTableHeaderCell>
+                                    <CTableHeaderCell>Status</CTableHeaderCell>
+                                </CTableRow>
+                            </CTableHead>
+                            <CTableBody>
+                                {trainings.map((training) => (
+                                    <CTableRow key={training.id}>
+                                        <CTableHeaderCell>
+                                            {training.program?.title || 'N/A'}
+                                        </CTableHeaderCell>
+                                        <CTableHeaderCell>
+                                            {training.course?.title || 'N/A'}
+                                        </CTableHeaderCell>
+                                        <CTableHeaderCell>
+                                            {training.event_location || 'N/A'}
+                                        </CTableHeaderCell>
+                                        <CTableHeaderCell>
+                                            {training.schedule || 'N/A'}
+                                        </CTableHeaderCell>
+                                        <CTableHeaderCell>
+                                            {training.start_time
+                                                ? formatTime(training.start_time)
+                                                : 'N/A'}
+                                        </CTableHeaderCell>
+                                        <CTableHeaderCell>
+                                            {training.end_time
+                                                ? formatTime(training.end_time)
+                                                : 'N/A'}
+                                        </CTableHeaderCell>
+                                        <CTableHeaderCell>
+                                            <CBadge
+                                                color={
+                                                    getTrainingStatus(
+                                                        training.schedule,
+                                                        training.start_time,
+                                                        training.end_time,
+                                                    ) === 'Pending'
+                                                        ? 'warning'
+                                                        : getTrainingStatus(
+                                                                training.schedule,
+                                                                training.start_time,
+                                                                training.end_time,
+                                                            ) === 'Ongoing'
+                                                          ? 'info'
+                                                          : 'success'
+                                                }
+                                                className="ms-2"
+                                            >
+                                                {training.schedule &&
+                                                training.start_time &&
+                                                training.end_time
+                                                    ? getTrainingStatus(
+                                                          training.schedule,
+                                                          training.start_time,
+                                                          training.end_time,
+                                                      )
+                                                    : 'N/A'}
+                                            </CBadge>
+                                        </CTableHeaderCell>
+                                    </CTableRow>
+                                ))}
+                            </CTableBody>
+                        </CTable>
+                    </CCardBody>
                 </CCard>
             </CCol>
 
