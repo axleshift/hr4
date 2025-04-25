@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\ModuleController;
 use App\Http\Controllers\Api\ProgramController;
 use App\Http\Controllers\Api\CourseController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\Api\EmployeeTrainingNeedController;  // Add this import
 use Illuminate\Support\Facades\Route;
 
 Route::get('/roles', [RoleController::class, 'index']);
@@ -16,24 +17,24 @@ Route::get('/', function () {
 
 Route::apiResource('/announcement', AnnouncementController::class);
 
-    // TRAINING MANAGEMENT
-    Route::apiResource('/training', TrainingController::class);
-    Route::get('/training', [TrainingController::class, 'index']);
-    Route::apiResource('programs', ProgramController::class);
+// TRAINING MANAGEMENT
+Route::apiResource('/training', TrainingController::class);
+Route::get('/training', [TrainingController::class, 'index']);
+Route::apiResource('programs', ProgramController::class);
 
-    Route::apiResource('courses', CourseController::class);
+Route::apiResource('courses', CourseController::class);
 Route::get('/courses/{course}/preview', [CourseController::class, 'preview']);
 
+Route::apiResource('/modules', ModuleController::class);
 
-    Route::apiResource('/modules', ModuleController::class);
+// Module File Management
+Route::get('/modules/download/{module}', [ModuleController::class, 'download']);
+Route::get('/modules/{module}/preview', [ModuleController::class, 'preview']);
 
-    // Module File Management
-    Route::get('/modules/download/{module}', [ModuleController::class, 'download']);
-    Route::get('/modules/{module}/preview', [ModuleController::class, 'preview']);
-
-
-
-//ACCESS CONTROL
+// ACCESS CONTROL
 use App\Http\Controllers\AuthController;
 
 Route::get('/users', [AuthController::class, 'index']);
+
+// Add the route for EmployeeTrainingNeedController
+Route::apiResource('training-needs', EmployeeTrainingNeedController::class);
