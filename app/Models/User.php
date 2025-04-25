@@ -15,19 +15,19 @@ class User extends Authenticatable
         'email',
         'password',
         'role_id',
-        'department',
-        'employee_type',
-        'employment_status',
-        'date_of_hire',
-        'gender',
-        'phone_number',
-        'address',
+        'department_id'
     ];
     
     public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class);
     }
+
+    public function department(): BelongsTo
+    {
+        return $this->belongsTo(Department::class);
+    }
+
 
     protected $hidden = [
         'password',
