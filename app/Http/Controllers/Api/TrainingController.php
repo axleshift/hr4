@@ -21,7 +21,19 @@ class TrainingController extends Controller
             $query->where('course_id', $request->course_id);
         }
 
-        return TrainingResource::collection($query->get());
+        $trainings = $query->get();
+
+        return response()->json([
+            'data' => $trainings->map(function ($training) {
+                return [
+                    'id' => $training->id,
+                    'program' => $training->program->title ?? null,
+                    'course' => $training->course->title ?? null,
+                    'event_location' => $training->event_location,
+                    'schedule' => $training->schedule,
+                ];
+            }),
+        ]);
     }
 
     public function show(string $id)
