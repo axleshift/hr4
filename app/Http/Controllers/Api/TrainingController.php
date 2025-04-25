@@ -11,29 +11,7 @@ class TrainingController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Training::with(['program', 'course']);
-
-        if ($request->has('program_id')) {
-            $query->where('program_id', $request->program_id);
-        }
-
-        if ($request->has('course_id')) {
-            $query->where('course_id', $request->course_id);
-        }
-
-        $trainings = $query->get();
-
-        return response()->json([
-            'data' => $trainings->map(function ($training) {
-                return [
-                    'id' => $training->id,
-                    'program' => $training->program->title ?? null,
-                    'course' => $training->course->title ?? null,
-                    'event_location' => $training->event_location,
-                    'schedule' => $training->schedule,
-                ];
-            }),
-        ]);
+        return TrainingResource::collection(Training::all());
     }
 
     public function show(string $id)
