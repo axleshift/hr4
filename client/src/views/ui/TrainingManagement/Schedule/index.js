@@ -64,7 +64,7 @@ const TrainingSchedule = () => {
     const fetchCourses = async () => {
         try {
             const res = await api.get(`/courses?program_id=${selectedProgram}`)
-            setCourses(res.data)
+            setCourses(res.data.data)
         } catch (error) {
             console.error('Error fetching courses:', error)
         }
