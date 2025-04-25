@@ -30,8 +30,6 @@ return new class extends Migration
             $table->id();
             $table->string('event_location');
             $table->date('schedule');
-            $table->string('start_time');
-            $table->string('end_time');
             $table->foreignId('program_id')->constrained('programs')->onDelete('cascade');
             $table->foreignId('course_id')->constrained('courses')->onDelete('cascade');
             $table->timestamps();

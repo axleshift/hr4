@@ -18,8 +18,6 @@ class TrainingResource extends JsonResource
             'id' => $this->id,
             'event_location' => $this->event_location,
             'schedule' => $this->schedule,
-            'start_time' => $this->start_time,
-            'end_time' => $this->end_time,
             'program' => new ProgramResource($this->program),
             'course' => new CourseResource($this->course),
             'created_at' => $this->created_at,
