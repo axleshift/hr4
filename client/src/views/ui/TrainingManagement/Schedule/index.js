@@ -48,7 +48,6 @@ const TrainingSchedule = () => {
 
     useEffect(() => {
         fetchPrograms()
-        fetchTrainings()
     }, [])
 
     useEffect(() => {
