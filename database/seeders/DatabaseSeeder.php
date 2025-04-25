@@ -94,14 +94,12 @@ class DatabaseSeeder extends Seeder
         Course::create([
             'title' => 'Time Management Mastery',
             'description' => 'Learn how to manage time effectively.',
-            'duration' => '4 weeks',
             'program_id' => $managementProgram->id,
         ]);
 
         Course::create([
             'title' => 'Project Management Basics',
             'description' => 'An introduction to project management principles.',
-            'duration' => '6 weeks',
             'program_id' => $customerServiceProgram->id,
         ]);
 
