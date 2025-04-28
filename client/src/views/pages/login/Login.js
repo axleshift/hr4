@@ -180,7 +180,7 @@ const Login = () => {
 
                                     {/* Google Login Button */}
                                     <div className="mt-3">
-                                        <GoogleOAuthProvider clientId="YOUR_GOOGLE_CLIENT_ID">
+                                        <GoogleOAuthProvider clientId="google-auth">
                                             <GoogleLogin
                                                 onSuccess={handleGoogleSuccess}
                                                 onError={handleGoogleFailure}
