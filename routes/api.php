@@ -38,9 +38,3 @@ Route::get('/users', [AuthController::class, 'index']);
 
 // Add the route for EmployeeTrainingNeedController
 Route::apiResource('training-needs', EmployeeTrainingNeedController::class);
-Route::get('/training-needs/user/{userId}', [EmployeeTrainingNeedController::class, 'getByUserId']);
-Route::patch('/training-needs/{id}/status', [EmployeeTrainingNeedController::class, 'updateStatus']);
-
-//Socialite
-Route::get('auth/redirect/{provider}', [\App\Http\Controllers\Auth\SocialiteController::class, 'redirectToProvider']);
-Route::get('auth/callback/{provider}', [\App\Http\Controllers\Auth\SocialiteController::class, 'handleProviderCallback']);
