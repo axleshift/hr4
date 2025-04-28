@@ -20,6 +20,7 @@ import CIcon from '@coreui/icons-react'
 import { cilUser, cilLockLocked } from '@coreui/icons'
 import api from '../../../util/api'
 import Cookies from 'js-cookie'
+import { GoogleLogin } from '@react-oauth/google'
 
 const Login = () => {
     const [email, setEmail] = useState('')
@@ -62,6 +63,45 @@ const Login = () => {
         } finally {
             setLoading(false)
         }
+    }
+
+    const handleGoogleSuccess = async (response) => {
+        try {
+            const { credential } = response
+            const responseData = await api.post('/api/auth/google', { token: credential })
+            const { user, session_id } = responseData.data
+
+            dispatch({ type: 'SET_USER', payload: user })
+            dispatch({ type: 'SET_SESSION_ID', payload: session_id })
+
+            Cookies.set('session_id', session_id, {
+                expires: 30,
+                secure: true,
+                sameSite: 'Strict',
+            })
+
+            sessionStorage.setItem('session_id', session_id)
+            sessionStorage.setItem('role', user.role)
+            sessionStorage.setItem('user_id', user.id)
+            sessionStorage.setItem('name', user.name)
+            sessionStorage.setItem('email', user.email)
+
+            navigate('/dashboard')
+        } catch (err) {
+            setAlert({
+                visible: true,
+                type: 'danger',
+                message: err.response?.data?.message || 'Google Login failed. Please try again.',
+            })
+        }
+    }
+
+    const handleGoogleFailure = (error) => {
+        setAlert({
+            visible: true,
+            type: 'danger',
+            message: 'Google login failed. Please try again.',
+        })
     }
 
     useEffect(() => {
@@ -126,6 +166,13 @@ const Login = () => {
                                             </CCol>
                                         </CRow>
                                     </CForm>
+                                    {/* Google Login Button */}
+                                    <div className="mt-3">
+                                        <GoogleLogin
+                                            onSuccess={handleGoogleSuccess}
+                                            onError={handleGoogleFailure}
+                                        />
+                                    </div>
                                 </CCardBody>
                             </CCard>
                         </CCardGroup>
