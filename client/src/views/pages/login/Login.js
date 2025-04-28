@@ -20,7 +20,7 @@ import CIcon from '@coreui/icons-react'
 import { cilUser, cilLockLocked } from '@coreui/icons'
 import api from '../../../util/api'
 import Cookies from 'js-cookie'
-import { GoogleLogin } from '@react-oauth/google'
+import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google'
 
 const Login = () => {
     const [email, setEmail] = useState('')
@@ -30,6 +30,7 @@ const Login = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
+    // Regular Login Handler
     const handleLogin = async (e) => {
         e.preventDefault()
         setLoading(true)
@@ -38,6 +39,7 @@ const Login = () => {
             const response = await api.post('/api/auth/login', { email, password })
             const { user, session_id } = response.data
 
+            // Store user and session data in Redux, Cookies, and SessionStorage
             dispatch({ type: 'SET_USER', payload: user })
             dispatch({ type: 'SET_SESSION_ID', payload: session_id })
 
@@ -65,12 +67,14 @@ const Login = () => {
         }
     }
 
+    // Google Login Handler
     const handleGoogleSuccess = async (response) => {
         try {
             const { credential } = response
             const responseData = await api.post('/api/auth/google', { token: credential })
             const { user, session_id } = responseData.data
 
+            // Store user and session data in Redux, Cookies, and SessionStorage
             dispatch({ type: 'SET_USER', payload: user })
             dispatch({ type: 'SET_SESSION_ID', payload: session_id })
 
@@ -96,6 +100,7 @@ const Login = () => {
         }
     }
 
+    // Google Login Failure Handler
     const handleGoogleFailure = (error) => {
         setAlert({
             visible: true,
@@ -104,6 +109,7 @@ const Login = () => {
         })
     }
 
+    // Auto-hide alert after 3 seconds
     useEffect(() => {
         if (alert.visible) {
             const timer = setTimeout(() => setAlert({ ...alert, visible: false }), 3000)
@@ -124,10 +130,13 @@ const Login = () => {
                                         <p className="text-body-secondary">
                                             Sign in to your account
                                         </p>
+
+                                        {/* Display Alert Message */}
                                         {alert.visible && (
                                             <CAlert color={alert.type}>{alert.message}</CAlert>
                                         )}
 
+                                        {/* Email Input */}
                                         <CInputGroup className="mb-3">
                                             <CInputGroupText>
                                                 <CIcon icon={cilUser} />
@@ -141,6 +150,7 @@ const Login = () => {
                                             />
                                         </CInputGroup>
 
+                                        {/* Password Input */}
                                         <CInputGroup className="mb-3">
                                             <CInputGroupText>
                                                 <CIcon icon={cilLockLocked} />
@@ -154,6 +164,7 @@ const Login = () => {
                                             />
                                         </CInputGroup>
 
+                                        {/* Submit Button */}
                                         <CRow>
                                             <CCol xs={6}>
                                                 <CButton
@@ -166,12 +177,15 @@ const Login = () => {
                                             </CCol>
                                         </CRow>
                                     </CForm>
+
                                     {/* Google Login Button */}
                                     <div className="mt-3">
-                                        <GoogleLogin
-                                            onSuccess={handleGoogleSuccess}
-                                            onError={handleGoogleFailure}
-                                        />
+                                        <GoogleOAuthProvider clientId="YOUR_GOOGLE_CLIENT_ID">
+                                            <GoogleLogin
+                                                onSuccess={handleGoogleSuccess}
+                                                onError={handleGoogleFailure}
+                                            />
+                                        </GoogleOAuthProvider>
                                     </div>
                                 </CCardBody>
                             </CCard>
