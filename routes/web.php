@@ -16,4 +16,5 @@ Route::prefix('api/auth')->group(function () {
     Route::get('auth/google/call-back', [GoogleAuthController::class, 'callbackGoogle']);
 });
 
+
 Route::fallback(fn() => view('index'));
