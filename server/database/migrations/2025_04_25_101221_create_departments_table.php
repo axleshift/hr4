@@ -15,7 +15,7 @@ return new class extends Migration
         });
 
         Schema::table('users', function (Blueprint $table) {
-            $table->foreignId('department_id')->nullable()->after('role_id')->constrained('departments')->onDelete('set null');
+            $table->foreignId('department_id')->nullable()->after('id')->constrained('departments')->onDelete('set null');
         });
     }
 
