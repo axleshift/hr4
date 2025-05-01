@@ -31,21 +31,24 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 const TrainingSchedule = () => {
     const [visibleXL, setVisibleXL] = useState(false)
     const [trainings, setTrainings] = useState([])
+    const [programs, setPrograms] = useState([])
+    const [courses, setCourses] = useState([])
+    const [departments, setDepartments] = useState([])
+    const [selectedProgram, setSelectedProgram] = useState('')
+
     const [formData, setFormData] = useState({
         event_title: '',
         delivery_method: '',
+        department_id: '',
         event_location: '',
         schedule: '',
         program_id: '',
         course_id: '',
     })
 
-    const [programs, setPrograms] = useState([])
-    const [courses, setCourses] = useState([])
-    const [selectedProgram, setSelectedProgram] = useState('')
-
     useEffect(() => {
         fetchPrograms()
+        fetchDepartments()
         fetchTrainings()
     }, [])
 
@@ -62,7 +65,15 @@ const TrainingSchedule = () => {
         }
     }
 
-    // Fetch courses based on selected program
+    const fetchDepartments = async () => {
+        try {
+            const response = await api.get('/api/departments')
+            setDepartments(response.data.data)
+        } catch (error) {
+            console.error('Error fetching departments:', error)
+        }
+    }
+
     const fetchCourses = async () => {
         if (!selectedProgram) return
         try {
@@ -96,6 +107,7 @@ const TrainingSchedule = () => {
             setFormData({
                 event_title: '',
                 delivery_method: '',
+                department_id: '',
                 event_location: '',
                 schedule: '',
                 program_id: '',
@@ -117,7 +129,7 @@ const TrainingSchedule = () => {
                         <FullCalendar
                             plugins={[dayGridPlugin]}
                             initialView="dayGridMonth"
-                            events={[]} // Leave it empty for now
+                            events={[]}
                             height="auto"
                         />
                     </CCardBody>
@@ -223,6 +235,22 @@ const TrainingSchedule = () => {
                             <option value="In-Person">In-Person</option>
                             <option value="Online">Online</option>
                             <option value="Blended">Blended</option>
+                        </CFormSelect>
+
+                        <CFormLabel htmlFor="department_id">Department</CFormLabel>
+                        <CFormSelect
+                            id="department_id"
+                            name="department_id"
+                            value={formData.department_id}
+                            onChange={handleInputChange}
+                            required
+                        >
+                            <option value="">Select Department</option>
+                            {departments.map((dept) => (
+                                <option key={dept.id} value={dept.id}>
+                                    {dept.name}
+                                </option>
+                            ))}
                         </CFormSelect>
 
                         <CFormLabel htmlFor="event_location">Event Location / Mode</CFormLabel>
