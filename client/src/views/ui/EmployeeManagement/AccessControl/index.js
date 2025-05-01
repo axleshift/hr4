@@ -129,10 +129,10 @@ const AccessControl = () => {
                                     </CTableHeaderCell>
                                     <CTableHeaderCell
                                         className="bg-body-tertiary text-center"
-                                        onClick={() => handleSort('department.name')}
+                                        onClick={() => handleSort('department')}
                                         style={{ cursor: 'pointer' }}
                                     >
-                                        Department{renderSortArrow('department.name')}
+                                        Department{renderSortArrow('department')}
                                     </CTableHeaderCell>
                                     <CTableHeaderCell className="bg-body-tertiary text-center">
                                         More
