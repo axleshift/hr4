@@ -15,7 +15,7 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilPencil, cilTrash, cilUserPlus } from '@coreui/icons'
-import api from '../../../../util/api' // Adjust the path if needed
+import api from '../../../util/api'
 
 const EmployeeManagement = () => {
     const [employees, setEmployees] = useState([])
