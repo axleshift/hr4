@@ -34,7 +34,7 @@ const ProfileModal = ({ modalVisible, setModalVisible }) => {
                 name: data.name,
                 email: data.email,
                 role: data.role,
-                department: data.department ?? 'N/A',
+                department: data.department,
             })
         } catch (error) {
             console.error('Failed to fetch user info:', error)

@@ -69,7 +69,7 @@ const AccessControl = () => {
 
     // Filter users
     const filteredUsers = users.filter((user) =>
-        [user.name, user.email, user.role, user.department?.name].some((value) =>
+        [user.name, user.email, user.role, user.department].some((value) =>
             value?.toLowerCase().includes(filterText.toLowerCase()),
         ),
     )
