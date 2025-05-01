@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import {
     CModal,
@@ -11,10 +11,42 @@ import {
     CFormLabel,
     CFormInput,
 } from '@coreui/react'
-import { useSelector } from 'react-redux'
+import api from '../../../../util/api'
+import Cookies from 'js-cookie'
 
 const ProfileModal = ({ modalVisible, setModalVisible }) => {
-    const user = useSelector((state) => state.user) // <-- make sure 'user' exists in your Redux store
+    const [user, setUser] = useState({
+        name: '',
+        email: '',
+        role: '',
+        department: '',
+    })
+
+    const fetchUser = async () => {
+        const session_id = Cookies.get('session_id')
+        if (!session_id) return
+
+        try {
+            const response = await api.post('/api/auth/verify-session', { session_id })
+            const data = response.data.user
+
+            setUser({
+                name: data.name,
+                email: data.email,
+                role: data.role,
+                department: data.department ?? 'N/A',
+            })
+        } catch (error) {
+            console.error('Failed to fetch user info:', error)
+        }
+    }
+
+    // Fetch user data when modal becomes visible
+    useEffect(() => {
+        if (modalVisible) {
+            fetchUser()
+        }
+    }, [modalVisible])
 
     return (
         <CModal visible={modalVisible} onClose={() => setModalVisible(false)}>
@@ -24,16 +56,16 @@ const ProfileModal = ({ modalVisible, setModalVisible }) => {
             <CModalBody>
                 <CForm>
                     <CFormLabel htmlFor="fullName">Full Name</CFormLabel>
-                    <CFormInput id="fullName" value={user?.name || ''} readOnly />
+                    <CFormInput id="fullName" value={user.name} readOnly />
 
                     <CFormLabel htmlFor="email">Email</CFormLabel>
-                    <CFormInput id="email" value={user?.email || ''} readOnly />
+                    <CFormInput id="email" value={user.email} readOnly />
 
                     <CFormLabel htmlFor="role">Role</CFormLabel>
-                    <CFormInput id="role" value={user?.role || ''} readOnly />
+                    <CFormInput id="role" value={user.role} readOnly />
 
                     <CFormLabel htmlFor="department">Department</CFormLabel>
-                    <CFormInput id="department" value={user?.department || 'N/A'} readOnly />
+                    <CFormInput id="department" value={user.department} readOnly />
                 </CForm>
             </CModalBody>
             <CModalFooter>
