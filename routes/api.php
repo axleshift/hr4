@@ -37,6 +37,9 @@ Route::get('/modules/{module}/preview', [ModuleController::class, 'preview']);
 use App\Http\Controllers\AuthController;
 
 Route::get('/users', [AuthController::class, 'index']);
+// AUTHENTICATION
+Route::post('/auth/verify-session', [AuthController::class, 'verifySession']);
+
 
 // Add the route for EmployeeTrainingNeedController
 Route::apiResource('training-needs', EmployeeTrainingNeedController::class);
