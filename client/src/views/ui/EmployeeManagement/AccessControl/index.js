@@ -69,7 +69,7 @@ const AccessControl = () => {
 
     // Filter users
     const filteredUsers = users.filter((user) =>
-        [user.name, user.email, user.role].some((value) =>
+        [user.name, user.email, user.role, user.department?.name].some((value) =>
             value?.toLowerCase().includes(filterText.toLowerCase()),
         ),
     )
@@ -96,7 +96,7 @@ const AccessControl = () => {
                         {/* Filter Input */}
                         <CFormInput
                             type="text"
-                            placeholder="Search by name, email, or role..."
+                            placeholder="Search by name, email, role, or department..."
                             className="mb-3"
                             value={filterText}
                             onChange={(e) => setFilterText(e.target.value)}
@@ -127,6 +127,13 @@ const AccessControl = () => {
                                     >
                                         Role{renderSortArrow('role')}
                                     </CTableHeaderCell>
+                                    <CTableHeaderCell
+                                        className="bg-body-tertiary text-center"
+                                        onClick={() => handleSort('department.name')}
+                                        style={{ cursor: 'pointer' }}
+                                    >
+                                        Department{renderSortArrow('department.name')}
+                                    </CTableHeaderCell>
                                     <CTableHeaderCell className="bg-body-tertiary text-center">
                                         More
                                     </CTableHeaderCell>
@@ -143,6 +150,9 @@ const AccessControl = () => {
                                                 {user.role}
                                             </CTableDataCell>
                                             <CTableDataCell className="text-center">
+                                                {user.departm1ent ? user.department.name : 'N/A'}
+                                            </CTableDataCell>
+                                            <CTableDataCell className="text-center">
                                                 <CButton
                                                     color="secondary"
                                                     size="sm"
@@ -155,7 +165,7 @@ const AccessControl = () => {
                                     ))
                                 ) : (
                                     <CTableRow>
-                                        <CTableDataCell colSpan={5} className="text-center">
+                                        <CTableDataCell colSpan={6} className="text-center">
                                             No users found.
                                         </CTableDataCell>
                                     </CTableRow>
