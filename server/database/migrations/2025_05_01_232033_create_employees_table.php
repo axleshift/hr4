@@ -10,10 +10,12 @@ return new class extends Migration
     {
         Schema::create('employee', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('employeeID')->unique();
-            $table->enum('state', ['internship', 'fulltime', 'newhired']);
-            $table->enum('status', ['trained', 'not trained'])->default('not trained');
+            $table->string('name');
+            $table->string('position');
+            $table->string('department');
+            $table->date('dateHired');
+            $table->string('email')->unique();
             $table->timestamps();
         });
     }
