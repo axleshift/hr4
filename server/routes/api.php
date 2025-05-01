@@ -8,8 +8,10 @@ use App\Http\Controllers\Api\CourseController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\Api\EmployeeTrainingNeedController;  // Add this import
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\DepartmentController;
 
 Route::get('/roles', [RoleController::class, 'index']);
+Route::get('/departments', [DepartmentController::class, 'index']);
 
 Route::get('/', function () {
     return response()->json(['message' => 'Hello, World!']);
