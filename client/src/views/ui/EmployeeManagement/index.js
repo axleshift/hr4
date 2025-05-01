@@ -26,7 +26,7 @@ const EmployeeManagement = () => {
 
     const fetchEmployees = async () => {
         try {
-            const response = await api.get('/api/employees') // Adjust endpoint as needed
+            const response = await api.get('/api/employees')
             setEmployees(response.data.data)
         } catch (error) {
             console.error('Error fetching employees:', error)
