@@ -39,9 +39,6 @@ const EmployeeManagement = () => {
                 <CCard className="mb-4">
                     <CCardHeader className="d-flex justify-content-between align-items-center">
                         <strong>Employee Management</strong>
-                        <CButton color="primary">
-                            <CIcon icon={cilUserPlus} className="me-2" /> Add Employee
-                        </CButton>
                     </CCardHeader>
                     <CCardBody>
                         <CTable align="middle" className="mb-0 border" hover responsive>
