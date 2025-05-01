@@ -20,9 +20,9 @@ class DatabaseSeeder extends Seeder
         $employeeRole = Role::firstOrCreate(['name' => 'employee']);
 
         // Ensure departments exist
-        $hr = Department::firstOrCreate(['name' => 'Human Resources']);
-        $it = Department::firstOrCreate(['name' => 'Information Technology']);
-        $training = Department::firstOrCreate(['name' => 'Training & Development']);
+        $hr = Department::firstOrCreate(['name' => 'HumanResources']);
+        $it = Department::firstOrCreate(['name' => 'InformationTechnology']);
+        $training = Department::firstOrCreate(['name' => 'Training&Development']);
         
         // Create users with different roles and departments
         User::factory()->create([
