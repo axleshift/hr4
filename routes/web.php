@@ -12,10 +12,8 @@ Route::prefix('api/auth')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/verify-session', [AuthController::class, 'verifySession']);
-    Route::get('auth/google', [GoogleAuthController::class, 'redirect'])->name('google-auth');
+    Route::post('auth/google', [GoogleAuthController::class, 'redirect'])->name('google-auth');
     Route::get('auth/google/call-back', [GoogleAuthController::class, 'callbackGoogle']);
-    Route::post('auth/google', [GoogleAuthController::class, 'callbackGoogle']);
-    Route::post('auth/google/call-back', [GoogleAuthController::class, 'callbackGoogle']);
 });
 
 
