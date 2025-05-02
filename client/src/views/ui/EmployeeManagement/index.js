@@ -17,7 +17,7 @@ import {
     CModalFooter,
     CButton,
     CBadge,
-    CSelect,
+    CFormSelect, // Change this line
 } from '@coreui/react'
 import api from '../../../util/api'
 import axios from 'axios'
@@ -137,7 +137,7 @@ const EmployeeManagement = () => {
 
     const openModal = (employee) => {
         setSelectedEmployee(employee)
-        setStatus(employee.status || 'pending')
+        setStatus(employee.status || 'pending') // Set the status to the current status of the employee
         setModalVisible(true)
     }
 
@@ -164,12 +164,12 @@ const EmployeeManagement = () => {
                         {/* Status update inside the modal */}
                         <div>
                             <label>Status</label>
-                            <CSelect value={status} onChange={(e) => setStatus(e.target.value)}>
+                            <CFormSelect value={status} onChange={(e) => setStatus(e.target.value)}>
                                 <option value="pending">Pending</option>
                                 <option value="ongoing">Ongoing</option>
                                 <option value="passed">Passed</option>
                                 <option value="failed">Failed</option>
-                            </CSelect>
+                            </CFormSelect>
                         </div>
                     </CModalBody>
                     <CModalFooter>
