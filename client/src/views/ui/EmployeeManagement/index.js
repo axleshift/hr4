@@ -12,6 +12,7 @@ import {
     CTableHeaderCell,
     CTableRow,
     CFormInput,
+    CFormSelect,
     CBadge,
 } from '@coreui/react'
 import api from '../../../util/api'
@@ -21,6 +22,7 @@ const EmployeeManagement = () => {
     const [employees, setEmployees] = useState([])
     const [newHires, setNewHires] = useState([])
     const [filterText, setFilterText] = useState('')
+    const [employeeTypeFilter, setEmployeeTypeFilter] = useState('all') // all | new | regular
 
     useEffect(() => {
         fetchEmployees()
@@ -68,9 +70,19 @@ const EmployeeManagement = () => {
         }
     }
 
-    const allEmployees = [...employees, ...newHires]
+    // Combine and filter by type
+    const allEmployees = [
+        ...employees.map((e) => ({ ...e, source: 'regular' })),
+        ...newHires.map((n) => ({ ...n, source: 'new' })),
+    ]
 
-    const filteredEmployees = allEmployees.filter((employee) =>
+    const filteredByType = allEmployees.filter((employee) => {
+        if (employeeTypeFilter === 'new') return employee.source === 'new'
+        if (employeeTypeFilter === 'regular') return employee.source === 'regular'
+        return true
+    })
+
+    const filteredEmployees = filteredByType.filter((employee) =>
         [
             employee.employeeId,
             employee.firstName,
@@ -93,12 +105,26 @@ const EmployeeManagement = () => {
                         <strong>Employee Management</strong>
                     </CCardHeader>
                     <CCardBody>
-                        <CFormInput
-                            className="mb-3"
-                            placeholder="Search by ID, name, position, department, etc..."
-                            value={filterText}
-                            onChange={(e) => setFilterText(e.target.value)}
-                        />
+                        <CRow className="mb-3">
+                            <CCol md={6}>
+                                <CFormInput
+                                    placeholder="Search by ID, name, position, department, etc..."
+                                    value={filterText}
+                                    onChange={(e) => setFilterText(e.target.value)}
+                                />
+                            </CCol>
+                            <CCol md={3}>
+                                <CFormSelect
+                                    value={employeeTypeFilter}
+                                    onChange={(e) => setEmployeeTypeFilter(e.target.value)}
+                                >
+                                    <option value="all">All Employees</option>
+                                    <option value="new">New Hires Only</option>
+                                    <option value="regular">Regular Employees Only</option>
+                                </CFormSelect>
+                            </CCol>
+                        </CRow>
+
                         <div style={{ maxHeight: '500px', overflowY: 'auto' }}>
                             <CTable align="middle" className="mb-0 border" hover responsive>
                                 <CTableHead>
