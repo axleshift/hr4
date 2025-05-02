@@ -21,12 +21,11 @@ class AuthController extends Controller
                     'name' => $user->name,
                     'email' => $user->email,
                     'role' => $user->role->name ?? 'No Role',
-                    'department' => $user->department->name ?? 'No Department',
+                    'department' => $user->department ? $user->department->name : 'No Department', // Safe check
                 ];
             }),
         ]);
     }
-
 
     public function login(Request $request)
     {
