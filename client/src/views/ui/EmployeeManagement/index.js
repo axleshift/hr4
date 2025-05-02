@@ -73,6 +73,19 @@ const EmployeeManagement = () => {
         }
     }
 
+    const getStatusColor = (status) => {
+        switch (status) {
+            case 'ongoing':
+                return 'warning'
+            case 'passed':
+                return 'success'
+            case 'failed':
+                return 'danger'
+            default:
+                return 'secondary'
+        }
+    }
+
     const renderEmployeeTable = (data, title) => (
         <CCard className="mb-4">
             <CCardHeader className="d-flex justify-content-between align-items-center">
@@ -121,19 +134,6 @@ const EmployeeManagement = () => {
             </CCardBody>
         </CCard>
     )
-
-    const getStatusColor = (status) => {
-        switch (status) {
-            case 'ongoing':
-                return 'warning'
-            case 'passed':
-                return 'success'
-            case 'failed':
-                return 'danger'
-            default:
-                return 'secondary'
-        }
-    }
 
     const openModal = (employee) => {
         setSelectedEmployee(employee)
