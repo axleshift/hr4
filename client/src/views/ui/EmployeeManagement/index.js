@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react'
 import {
     CCard,
@@ -12,9 +11,8 @@ import {
     CTableHead,
     CTableHeaderCell,
     CTableRow,
+    CFormInput,
     CBadge,
-    CFormSelect, // For the filter dropdown
-    CFormInput, // For the search input
 } from '@coreui/react'
 import api from '../../../util/api'
 import axios from 'axios'
@@ -22,19 +20,12 @@ import axios from 'axios'
 const EmployeeManagement = () => {
     const [employees, setEmployees] = useState([])
     const [newHires, setNewHires] = useState([])
-    const [filteredEmployees, setFilteredEmployees] = useState([])
-    const [searchQuery, setSearchQuery] = useState('')
-    const [sortOrder, setSortOrder] = useState({ column: 'employeeId', direction: 'asc' })
-    const [filter, setFilter] = useState('all')
+    const [filterText, setFilterText] = useState('')
 
     useEffect(() => {
         fetchEmployees()
         fetchNewHires()
     }, [])
-
-    useEffect(() => {
-        filterAndSortEmployees()
-    }, [employees, newHires, filter, sortOrder, searchQuery])
 
     const fetchEmployees = async () => {
         try {
@@ -60,149 +51,105 @@ const EmployeeManagement = () => {
         }
     }
 
-    const filterAndSortEmployees = () => {
-        let filtered = filter === 'newHires' ? newHires : employees
-
-        // Search Filter
-        if (searchQuery) {
-            filtered = filtered.filter((employee) => {
-                const fullName =
-                    `${employee.firstName} ${employee.middleName || ''} ${employee.lastName}`.toLowerCase()
-                return (
-                    fullName.includes(searchQuery.toLowerCase()) ||
-                    employee.employeeId.toLowerCase().includes(searchQuery.toLowerCase())
-                )
-            })
-        }
-
-        // Sorting
-        filtered = filtered.sort((a, b) => {
-            if (a[sortOrder.column] < b[sortOrder.column]) {
-                return sortOrder.direction === 'asc' ? -1 : 1
-            }
-            if (a[sortOrder.column] > b[sortOrder.column]) {
-                return sortOrder.direction === 'asc' ? 1 : -1
-            }
-            return 0
-        })
-
-        setFilteredEmployees(filtered)
-    }
-
     const getFullName = (employee) => {
         const middle = employee.middleName ? ` ${employee.middleName}` : ''
         return `${employee.firstName}${middle} ${employee.lastName}`
     }
 
-    const updateEmployeeStatus = async (employeeId, status) => {
-        try {
-            await api.put(`/api/employee-status/${employeeId}`, { status })
-            fetchEmployees()
-        } catch (error) {
-            console.error(`Error updating status for ${employeeId}:`, error)
+    const getStatusBadge = (status) => {
+        switch (status) {
+            case 'completed':
+                return <CBadge color="success">Completed</CBadge>
+            case 'in progress':
+                return <CBadge color="warning">In Progress</CBadge>
+            case 'pending':
+            default:
+                return <CBadge color="secondary">Pending</CBadge>
         }
     }
 
-    const renderStatusBadge = (status) => {
-        let color = 'secondary'
+    const allEmployees = [...employees, ...newHires]
 
-        if (status === 'pending') {
-            color = 'warning'
-        } else if (status === 'completed') {
-            color = 'success'
-        } else if (status === 'in-progress') {
-            color = 'info'
-        }
-
-        return <CBadge color={color}>{status}</CBadge>
-    }
-
-    const handleSort = (column) => {
-        const direction = sortOrder.direction === 'asc' ? 'desc' : 'asc'
-        setSortOrder({ column, direction })
-    }
-
-    const handleSearch = (e) => {
-        setSearchQuery(e.target.value)
-    }
-
-    const renderEmployeeTable = (data) => (
-        <CCard className="mb-4">
-            <CCardHeader className="d-flex justify-content-between align-items-center">
-                <strong>Employee Management</strong>
-                <CFormSelect
-                    aria-label="Filter by"
-                    value={filter}
-                    onChange={(e) => setFilter(e.target.value)}
-                    style={{ width: '200px' }}
-                >
-                    <option value="all">All Employees</option>
-                    <option value="newHires">New Hires</option>
-                </CFormSelect>
-            </CCardHeader>
-            <CCardBody>
-                {/* Search Input */}
-                <CFormInput
-                    type="text"
-                    placeholder="Search by Name or ID"
-                    value={searchQuery}
-                    onChange={handleSearch}
-                    className="mb-3"
-                />
-                <CTable align="middle" className="mb-0 border" hover responsive>
-                    <CTableHead>
-                        <CTableRow>
-                            <CTableHeaderCell onClick={() => handleSort('employeeId')}>
-                                Employee ID
-                            </CTableHeaderCell>
-                            <CTableHeaderCell onClick={() => handleSort('firstName')}>
-                                Name
-                            </CTableHeaderCell>
-                            <CTableHeaderCell onClick={() => handleSort('position')}>
-                                Position
-                            </CTableHeaderCell>
-                            <CTableHeaderCell onClick={() => handleSort('department')}>
-                                Department
-                            </CTableHeaderCell>
-                            <CTableHeaderCell onClick={() => handleSort('dateHired')}>
-                                Date Hired
-                            </CTableHeaderCell>
-                            <CTableHeaderCell onClick={() => handleSort('email')}>
-                                Email
-                            </CTableHeaderCell>
-                            <CTableHeaderCell
-                                className="text-center"
-                                onClick={() => handleSort('status')}
-                            >
-                                Status
-                            </CTableHeaderCell>
-                        </CTableRow>
-                    </CTableHead>
-                    <CTableBody>
-                        {data.map((employee) => (
-                            <CTableRow key={employee.id}>
-                                <CTableDataCell>{employee.employeeId}</CTableDataCell>
-                                <CTableDataCell>{getFullName(employee)}</CTableDataCell>
-                                <CTableDataCell>{employee.position}</CTableDataCell>
-                                <CTableDataCell>{employee.department}</CTableDataCell>
-                                <CTableDataCell>{employee.dateHired}</CTableDataCell>
-                                <CTableDataCell>{employee.email}</CTableDataCell>
-                                <CTableDataCell className="text-center">
-                                    {employee.trainingStatus
-                                        ? renderStatusBadge(employee.trainingStatus.status)
-                                        : renderStatusBadge('pending')}
-                                </CTableDataCell>
-                            </CTableRow>
-                        ))}
-                    </CTableBody>
-                </CTable>
-            </CCardBody>
-        </CCard>
+    const filteredEmployees = allEmployees.filter((employee) =>
+        [
+            employee.employeeId,
+            employee.firstName,
+            employee.middleName,
+            employee.lastName,
+            employee.position,
+            employee.department,
+            employee.email,
+            employee.dateHired,
+        ]
+            .filter(Boolean)
+            .some((field) => field.toLowerCase().includes(filterText.toLowerCase())),
     )
 
     return (
         <CRow>
-            <CCol xs={12}>{renderEmployeeTable(filteredEmployees)}</CCol>
+            <CCol xs={12}>
+                <CCard className="mb-4">
+                    <CCardHeader className="d-flex justify-content-between align-items-center">
+                        <strong>Employee Management</strong>
+                    </CCardHeader>
+                    <CCardBody>
+                        <CFormInput
+                            className="mb-3"
+                            placeholder="Search by ID, name, position, department, etc..."
+                            value={filterText}
+                            onChange={(e) => setFilterText(e.target.value)}
+                        />
+                        <div style={{ maxHeight: '500px', overflowY: 'auto' }}>
+                            <CTable align="middle" className="mb-0 border" hover responsive>
+                                <CTableHead>
+                                    <CTableRow>
+                                        <CTableHeaderCell>Employee ID</CTableHeaderCell>
+                                        <CTableHeaderCell>Name</CTableHeaderCell>
+                                        <CTableHeaderCell>Position</CTableHeaderCell>
+                                        <CTableHeaderCell>Department</CTableHeaderCell>
+                                        <CTableHeaderCell>Date Hired</CTableHeaderCell>
+                                        <CTableHeaderCell>Email</CTableHeaderCell>
+                                        <CTableHeaderCell className="text-center">
+                                            Status
+                                        </CTableHeaderCell>
+                                    </CTableRow>
+                                </CTableHead>
+                                <CTableBody>
+                                    {filteredEmployees.length > 0 ? (
+                                        filteredEmployees.map((employee) => (
+                                            <CTableRow key={employee.id}>
+                                                <CTableDataCell>
+                                                    {employee.employeeId}
+                                                </CTableDataCell>
+                                                <CTableDataCell>
+                                                    {getFullName(employee)}
+                                                </CTableDataCell>
+                                                <CTableDataCell>{employee.position}</CTableDataCell>
+                                                <CTableDataCell>
+                                                    {employee.department}
+                                                </CTableDataCell>
+                                                <CTableDataCell>
+                                                    {employee.dateHired}
+                                                </CTableDataCell>
+                                                <CTableDataCell>{employee.email}</CTableDataCell>
+                                                <CTableDataCell className="text-center">
+                                                    {getStatusBadge(employee.status)}
+                                                </CTableDataCell>
+                                            </CTableRow>
+                                        ))
+                                    ) : (
+                                        <CTableRow>
+                                            <CTableDataCell colSpan={7} className="text-center">
+                                                No employees found.
+                                            </CTableDataCell>
+                                        </CTableRow>
+                                    )}
+                                </CTableBody>
+                            </CTable>
+                        </div>
+                    </CCardBody>
+                </CCard>
+            </CCol>
         </CRow>
     )
 }
