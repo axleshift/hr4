@@ -46,4 +46,4 @@ Route::apiResource('training-needs', EmployeeTrainingNeedController::class);
 
 use App\Http\Controllers\Api\EmployeeController;
 
-Route::apiResource('employees', EmployeeController::class);
+Route::apiResource('employee', EmployeeController::class);
