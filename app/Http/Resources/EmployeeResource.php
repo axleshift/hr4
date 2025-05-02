@@ -12,7 +12,9 @@ class EmployeeResource extends JsonResource
         return [
             'id' => $this->id,
             'employeeID' => $this->employeeID,
-            'name' => $this->name,
+            'lastName' => $this->lastName,
+            'firstName' => $this->firstName,
+            'middleName' => $this->middleName,
             'position' => $this->position,
             'department' => $this->department,
             'dateHired' => $this->dateHired->toDateString(),

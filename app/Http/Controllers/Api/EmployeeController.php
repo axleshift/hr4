@@ -17,12 +17,14 @@ class EmployeeController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'employeeID' => 'required|unique:employee,employeeID',
-            'name' => 'required|string|max:255',
+            'employeeID' => 'required|unique:employees,employeeID',
+            'lastName' => 'required|string|max:255',
+            'firstName' => 'required|string|max:255',
+            'middleName' => 'nullable|string|max:255',
             'position' => 'required|string|max:255',
             'department' => 'required|string|max:255',
             'dateHired' => 'required|date',
-            'email' => 'required|email|unique:employee,email',
+            'email' => 'required|email|unique:employees,email',
         ]);
 
         $employee = Employee::create($data);
@@ -38,12 +40,14 @@ class EmployeeController extends Controller
     public function update(Request $request, Employee $employee)
     {
         $data = $request->validate([
-            'employeeID' => 'sometimes|required|unique:employee,employeeID,' . $employee->id,
-            'name' => 'sometimes|required|string|max:255',
+            'employeeID' => 'sometimes|required|unique:employees,employeeID,' . $employee->id,
+            'lastName' => 'sometimes|required|string|max:255',
+            'firstName' => 'sometimes|required|string|max:255',
+            'middleName' => 'nullable|string|max:255',
             'position' => 'sometimes|required|string|max:255',
             'department' => 'sometimes|required|string|max:255',
             'dateHired' => 'sometimes|required|date',
-            'email' => 'sometimes|required|email|unique:employee,email,' . $employee->id,
+            'email' => 'sometimes|required|email|unique:employees,email,' . $employee->id,
         ]);
 
         $employee->update($data);
