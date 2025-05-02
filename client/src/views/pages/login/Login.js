@@ -36,20 +36,27 @@ const Login = () => {
         setLoading(true)
 
         try {
-            const response = await api.post('/api/auth/login', { email, password })
-            const { user, session_id } = response.data
+            const response = await api.post(
+                'https://backend-admin.axleshift.com/integ/external-login/HR',
+                {
+                    email,
+                    password,
+                },
+            )
 
-            // Store user and session data in Redux, Cookies, and SessionStorage
+            const { token, user } = response.data
+
+            // Save user info and token to Redux, Cookies, and Session Storage
             dispatch({ type: 'SET_USER', payload: user })
-            dispatch({ type: 'SET_SESSION_ID', payload: session_id })
+            dispatch({ type: 'SET_SESSION_ID', payload: token }) // Or use a real session_id if available
 
-            Cookies.set('session_id', session_id, {
+            Cookies.set('external_token', token, {
                 expires: 30,
                 secure: true,
                 sameSite: 'Strict',
             })
 
-            sessionStorage.setItem('session_id', session_id)
+            sessionStorage.setItem('external_token', token)
             sessionStorage.setItem('role', user.role)
             sessionStorage.setItem('user_id', user.id)
             sessionStorage.setItem('name', user.name)
