@@ -11,10 +11,8 @@ import {
     CTableHead,
     CTableHeaderCell,
     CTableRow,
-    CBadge,
     CModal,
     CModalHeader,
-    CModalTitle,
     CModalBody,
     CModalFooter,
     CButton,
@@ -27,7 +25,6 @@ const EmployeeManagement = () => {
     const [newHires, setNewHires] = useState([])
     const [modalVisible, setModalVisible] = useState(false)
     const [selectedEmployee, setSelectedEmployee] = useState(null)
-    const [newStatus, setNewStatus] = useState('')
 
     useEffect(() => {
         fetchEmployees()
@@ -67,21 +64,8 @@ const EmployeeManagement = () => {
         try {
             await api.put(`/api/employee-status/${employeeId}`, { status })
             fetchEmployees()
-            setModalVisible(false)
         } catch (error) {
             console.error(`Error updating status for ${employeeId}:`, error)
-        }
-    }
-
-    const openModal = (employee) => {
-        setSelectedEmployee(employee)
-        setNewStatus(employee.status || 'pending') // Default to current status
-        setModalVisible(true)
-    }
-
-    const handleSave = () => {
-        if (selectedEmployee) {
-            updateEmployeeStatus(selectedEmployee.employeeId, newStatus)
         }
     }
 
@@ -101,6 +85,7 @@ const EmployeeManagement = () => {
                             <CTableHeaderCell>Date Hired</CTableHeaderCell>
                             <CTableHeaderCell>Email</CTableHeaderCell>
                             <CTableHeaderCell className="text-center">Status</CTableHeaderCell>
+                            <CTableHeaderCell className="text-center">Actions</CTableHeaderCell>
                         </CTableRow>
                     </CTableHead>
                     <CTableBody>
@@ -113,19 +98,29 @@ const EmployeeManagement = () => {
                                 <CTableDataCell>{employee.dateHired}</CTableDataCell>
                                 <CTableDataCell>{employee.email}</CTableDataCell>
                                 <CTableDataCell className="text-center">
-                                    <CBadge color={getStatusBadge(employee.status)}>
-                                        {employee.status
-                                            ? employee.status.charAt(0).toUpperCase() +
-                                              employee.status.slice(1)
-                                            : 'Pending'}
-                                    </CBadge>
-                                    <CButton
-                                        color="primary"
-                                        onClick={() => openModal(employee)}
-                                        className="ms-2"
+                                    <select
+                                        className="form-select"
+                                        value={employee.status || 'pending'}
+                                        onChange={(e) =>
+                                            updateEmployeeStatus(
+                                                employee.employeeId,
+                                                e.target.value,
+                                            )
+                                        }
                                     >
-                                        Change Status
-                                    </CButton>
+                                        <option value="pending">Pending</option>
+                                        <option value="ongoing">Ongoing</option>
+                                        <option value="passed">Passed</option>
+                                        <option value="failed">Failed</option>
+                                    </select>
+                                </CTableDataCell>
+                                <CTableDataCell className="text-center">
+                                    <button
+                                        className="btn btn-primary"
+                                        onClick={() => openModal(employee)}
+                                    >
+                                        Action
+                                    </button>
                                 </CTableDataCell>
                             </CTableRow>
                         ))}
@@ -135,18 +130,14 @@ const EmployeeManagement = () => {
         </CCard>
     )
 
-    const getStatusBadge = (status) => {
-        switch ((status || '').toLowerCase()) {
-            case 'passed':
-                return 'success'
-            case 'ongoing':
-                return 'warning'
-            case 'failed':
-                return 'danger'
-            case 'pending':
-            default:
-                return 'secondary'
-        }
+    const openModal = (employee) => {
+        setSelectedEmployee(employee)
+        setModalVisible(true)
+    }
+
+    const closeModal = () => {
+        setModalVisible(false)
+        setSelectedEmployee(null)
     }
 
     return (
@@ -156,34 +147,25 @@ const EmployeeManagement = () => {
                 {renderEmployeeTable(newHires, 'New Hires')}
             </CCol>
 
-            {/* Modal for changing status */}
-            <CModal show={modalVisible} onClose={() => setModalVisible(false)} size="lg">
-                <CModalHeader closeButton>
-                    <CModalTitle>
-                        Change Status for {selectedEmployee && getFullName(selectedEmployee)}
-                    </CModalTitle>
-                </CModalHeader>
-                <CModalBody>
-                    <select
-                        className="form-select"
-                        value={newStatus}
-                        onChange={(e) => setNewStatus(e.target.value)}
-                    >
-                        <option value="pending">Pending</option>
-                        <option value="ongoing">Ongoing</option>
-                        <option value="passed">Passed</option>
-                        <option value="failed">Failed</option>
-                    </select>
-                </CModalBody>
-                <CModalFooter>
-                    <CButton color="secondary" onClick={() => setModalVisible(false)}>
-                        Cancel
-                    </CButton>
-                    <CButton color="primary" onClick={handleSave}>
-                        Save Changes
-                    </CButton>
-                </CModalFooter>
-            </CModal>
+            {/* Modal */}
+            {selectedEmployee && (
+                <CModal visible={modalVisible} onClose={closeModal}>
+                    <CModalHeader>
+                        <strong>{getFullName(selectedEmployee)}</strong>{' '}
+                        {/* Employee name in the modal title */}
+                    </CModalHeader>
+                    <CModalBody>
+                        {/* You can add more content here, like employee details */}
+                        <p>More details about {getFullName(selectedEmployee)}</p>
+                    </CModalBody>
+                    <CModalFooter>
+                        <CButton color="secondary" onClick={closeModal}>
+                            Close
+                        </CButton>
+                        <CButton color="primary">Confirm Action</CButton>
+                    </CModalFooter>
+                </CModal>
+            )}
         </CRow>
     )
 }
