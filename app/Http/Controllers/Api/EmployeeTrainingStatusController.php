@@ -14,9 +14,13 @@ class EmployeeStatusController extends Controller
     {
         $employees = Employee::with('trainingStatus')->get();
 
-        return response()->json([
-            'data' => $employees,
-        ]);
+        // Append the actual status from the related model to make frontend handling easier
+        $employees = $employees->map(function ($employee) {
+            $employee->status = $employee->trainingStatus->status ?? 'pending';
+            return $employee;
+        });
+
+        return response()->json($employees);
     }
 
     // Update an employee's training status
