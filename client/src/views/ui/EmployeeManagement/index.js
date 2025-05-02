@@ -11,7 +11,6 @@ import {
     CTableHead,
     CTableHeaderCell,
     CTableRow,
-    CBadge,
 } from '@coreui/react'
 import api from '../../../util/api'
 import axios from 'axios'
@@ -54,17 +53,12 @@ const EmployeeManagement = () => {
         return `${employee.firstName}${middle} ${employee.lastName}`
     }
 
-    const getStatusBadge = (status) => {
-        switch ((status || '').toLowerCase()) {
-            case 'passed':
-                return 'success'
-            case 'ongoing':
-                return 'warning'
-            case 'failed':
-                return 'danger'
-            case 'pending':
-            default:
-                return 'secondary'
+    const updateEmployeeStatus = async (employeeId, status) => {
+        try {
+            await api.put(`/api/employee-status/${employeeId}`, { status })
+            fetchEmployees()
+        } catch (error) {
+            console.error(`Error updating status for ${employeeId}:`, error)
         }
     }
 
@@ -77,23 +71,13 @@ const EmployeeManagement = () => {
                 <CTable align="middle" className="mb-0 border" hover responsive>
                     <CTableHead>
                         <CTableRow>
-                            <CTableHeaderCell className="bg-body-tertiary">
-                                Employee ID
-                            </CTableHeaderCell>
-                            <CTableHeaderCell className="bg-body-tertiary">Name</CTableHeaderCell>
-                            <CTableHeaderCell className="bg-body-tertiary">
-                                Position
-                            </CTableHeaderCell>
-                            <CTableHeaderCell className="bg-body-tertiary">
-                                Department
-                            </CTableHeaderCell>
-                            <CTableHeaderCell className="bg-body-tertiary">
-                                Date Hired
-                            </CTableHeaderCell>
-                            <CTableHeaderCell className="bg-body-tertiary">Email</CTableHeaderCell>
-                            <CTableHeaderCell className="bg-body-tertiary text-center">
-                                Status
-                            </CTableHeaderCell>
+                            <CTableHeaderCell>Employee ID</CTableHeaderCell>
+                            <CTableHeaderCell>Name</CTableHeaderCell>
+                            <CTableHeaderCell>Position</CTableHeaderCell>
+                            <CTableHeaderCell>Department</CTableHeaderCell>
+                            <CTableHeaderCell>Date Hired</CTableHeaderCell>
+                            <CTableHeaderCell>Email</CTableHeaderCell>
+                            <CTableHeaderCell className="text-center">Status</CTableHeaderCell>
                         </CTableRow>
                     </CTableHead>
                     <CTableBody>
@@ -106,12 +90,21 @@ const EmployeeManagement = () => {
                                 <CTableDataCell>{employee.dateHired}</CTableDataCell>
                                 <CTableDataCell>{employee.email}</CTableDataCell>
                                 <CTableDataCell className="text-center">
-                                    <CBadge color={getStatusBadge(employee.status)}>
-                                        {employee.status
-                                            ? employee.status.charAt(0).toUpperCase() +
-                                              employee.status.slice(1)
-                                            : 'Pending'}
-                                    </CBadge>
+                                    <select
+                                        className="form-select"
+                                        value={employee.status || 'pending'}
+                                        onChange={(e) =>
+                                            updateEmployeeStatus(
+                                                employee.employeeId,
+                                                e.target.value,
+                                            )
+                                        }
+                                    >
+                                        <option value="pending">Pending</option>
+                                        <option value="ongoing">Ongoing</option>
+                                        <option value="passed">Passed</option>
+                                        <option value="failed">Failed</option>
+                                    </select>
                                 </CTableDataCell>
                             </CTableRow>
                         ))}
