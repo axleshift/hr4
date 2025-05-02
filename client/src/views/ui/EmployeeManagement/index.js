@@ -11,6 +11,7 @@ import {
     CTableHead,
     CTableHeaderCell,
     CTableRow,
+    CBadge, // Import CBadge for the status badge
 } from '@coreui/react'
 import api from '../../../util/api'
 import axios from 'axios'
@@ -62,6 +63,20 @@ const EmployeeManagement = () => {
         }
     }
 
+    const renderStatusBadge = (status) => {
+        let color = 'secondary'
+
+        if (status === 'pending') {
+            color = 'warning'
+        } else if (status === 'completed') {
+            color = 'success'
+        } else if (status === 'in-progress') {
+            color = 'info'
+        }
+
+        return <CBadge color={color}>{status}</CBadge>
+    }
+
     const renderEmployeeTable = (data, title) => (
         <CCard className="mb-4">
             <CCardHeader className="d-flex justify-content-between align-items-center">
@@ -90,21 +105,9 @@ const EmployeeManagement = () => {
                                 <CTableDataCell>{employee.dateHired}</CTableDataCell>
                                 <CTableDataCell>{employee.email}</CTableDataCell>
                                 <CTableDataCell className="text-center">
-                                    <select
-                                        className="form-select"
-                                        value={employee.status || 'pending'}
-                                        onChange={(e) =>
-                                            updateEmployeeStatus(
-                                                employee.employeeId,
-                                                e.target.value,
-                                            )
-                                        }
-                                    >
-                                        <option value="pending">Pending</option>
-                                        <option value="ongoing">Ongoing</option>
-                                        <option value="passed">Passed</option>
-                                        <option value="failed">Failed</option>
-                                    </select>
+                                    {employee.trainingStatus
+                                        ? renderStatusBadge(employee.trainingStatus.status)
+                                        : renderStatusBadge('pending')}
                                 </CTableDataCell>
                             </CTableRow>
                         ))}

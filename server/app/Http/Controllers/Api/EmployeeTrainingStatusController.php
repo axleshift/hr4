@@ -12,40 +12,10 @@ class EmployeeStatusController extends Controller
     // List employees with their training status
     public function index()
     {
+        // Get all employees along with their training status
         $employees = Employee::with('trainingStatus')->get();
 
-        // Append the actual status from the related model to make frontend handling easier
-        $employees = $employees->map(function ($employee) {
-            $employee->status = $employee->trainingStatus->status ?? 'pending';
-            return $employee;
-        });
-
+        // Return the response in JSON format
         return response()->json($employees);
-    }
-
-    // Update an employee's training status
-    public function updateStatus(Request $request, $employeeId)
-    {
-        $request->validate([
-            'status' => 'required|in:pending,ongoing,passed,failed',
-        ]);
-
-        $employee = Employee::where('employeeId', $employeeId)->firstOrFail();
-
-        $trainingStatus = $employee->trainingStatus;
-
-        if ($trainingStatus) {
-            $trainingStatus->update(['status' => $request->status]);
-        } else {
-            $trainingStatus = EmployeeTrainingStatus::create([
-                'employee_id' => $employee->employeeId,
-                'status' => $request->status,
-            ]);
-        }
-
-        return response()->json([
-            'message' => 'Status updated successfully',
-            'trainingStatus' => $trainingStatus,
-        ]);
     }
 }
