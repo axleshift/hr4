@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react'
 import {
     CCard,
@@ -38,10 +39,23 @@ const EmployeeManagement = () => {
         fetchNewHires()
     }, [])
 
+    // Function to save employees to local DB
+    const saveEmployeesToLocalDatabase = async (employees) => {
+        try {
+            await api.post('/api/employees/save-external', { employees })
+            console.log('Employees saved to local database.')
+        } catch (error) {
+            console.error('Error saving employees to local database:', error)
+        }
+    }
+
+    // Fetch external employees and save them locally
     const fetchEmployees = async () => {
         try {
             const response = await axios.get('https://backend-hr1.axleshift.com/api/employees')
-            setEmployees(response.data.data || response.data)
+            const fetchedEmployees = response.data.data || response.data
+            setEmployees(fetchedEmployees)
+            saveEmployeesToLocalDatabase(fetchedEmployees) // Save data to local DB
         } catch (error) {
             console.error('Error fetching external employees:', error)
             try {
@@ -53,10 +67,13 @@ const EmployeeManagement = () => {
         }
     }
 
+    // Fetch external new hires and save them locally
     const fetchNewHires = async () => {
         try {
             const response = await axios.get('https://backend-hr1.axleshift.com/api/newhires')
-            setNewHires(response.data.data || response.data)
+            const fetchedNewHires = response.data.data || response.data
+            setNewHires(fetchedNewHires)
+            saveEmployeesToLocalDatabase(fetchedNewHires) // Save new hires to local DB
         } catch (error) {
             console.error('Error fetching new hires:', error)
         }
