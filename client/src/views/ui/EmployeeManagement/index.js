@@ -11,11 +11,9 @@ import {
     CTableHead,
     CTableHeaderCell,
     CTableRow,
-    CButton,
 } from '@coreui/react'
-import CIcon from '@coreui/icons-react'
-import { cilPencil, cilTrash, cilUserPlus } from '@coreui/icons'
 import api from '../../../util/api'
+import axios from 'axios'
 
 const EmployeeManagement = () => {
     const [employees, setEmployees] = useState([])
@@ -26,10 +24,18 @@ const EmployeeManagement = () => {
 
     const fetchEmployees = async () => {
         try {
-            const response = await api.get('/api/employee')
-            setEmployees(response.data.data)
+            const response = await axios.get('https://backend-hr1.axleshift.com/api/employees')
+            setEmployees(response.data.data || response.data) // Adjust depending on the structure
         } catch (error) {
-            console.error('Error fetching employees:', error)
+            console.error('Error fetching external employees:', error)
+
+            // Optional: fallback to local API
+            try {
+                const localResponse = await api.get('/api/employee')
+                setEmployees(localResponse.data.data)
+            } catch (localError) {
+                console.error('Error fetching local employees:', localError)
+            }
         }
     }
 
@@ -76,6 +82,7 @@ const EmployeeManagement = () => {
                                         <CTableDataCell>{employee.department}</CTableDataCell>
                                         <CTableDataCell>{employee.dateHired}</CTableDataCell>
                                         <CTableDataCell>{employee.email}</CTableDataCell>
+                                        <CTableDataCell className="text-center">—</CTableDataCell>
                                     </CTableRow>
                                 ))}
                             </CTableBody>
