@@ -55,32 +55,7 @@ class EmployeeController extends Controller
         return new EmployeeResource($employee);
     }
 
-    public function storeExternalEmployees(Request $request)
-    {
-        $employees = $request->validate([
-            'employees' => 'required|array',
-            'employees.*.employeeId' => 'required|string',
-            'employees.*.lastName' => 'required|string',
-            'employees.*.firstName' => 'required|string',
-            'employees.*.position' => 'required|string',
-            'employees.*.department' => 'required|string',
-            'employees.*.dateHired' => 'required|date',
-            'employees.*.email' => 'required|email',
-        ]);
-
-        $savedEmployees = [];
-        foreach ($employees['employees'] as $employeeData) {
-            $savedEmployees[] = Employee::updateOrCreate(
-                ['employeeId' => $employeeData['employeeId']],
-                $employeeData
-            );
-        }
-
-        return response()->json([
-            'message' => 'Employees successfully saved.',
-            'data' => EmployeeResource::collection($savedEmployees),
-        ]);
-    }
+    
 
     public function destroy(Employee $employee)
     {

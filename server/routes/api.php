@@ -48,7 +48,6 @@ Route::apiResource('/training-needs', EmployeeTrainingNeedController::class);
 use App\Http\Controllers\Api\EmployeeController;
 
 Route::apiResource('/employee', EmployeeController::class);
-Route::post('/employees/save-external', [EmployeeController::class, 'storeExternalEmployees']);
 
 use App\Http\Controllers\Api\EmployeeStatusController;
 
