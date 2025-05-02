@@ -68,26 +68,26 @@ const EmployeeManagement = () => {
                                 </CTableRow>
                             </CTableHead>
                             <CTableBody>
-                                {employees.length > 0 ? (
-                                    employees.map((emp, index) => (
-                                        <CTableRow key={index}>
-                                            <CTableDataCell>{emp.employeeID}</CTableDataCell>
-                                            <CTableDataCell>{emp.name}</CTableDataCell>
-                                            <CTableDataCell>{emp.position}</CTableDataCell>
-                                            <CTableDataCell>{emp.department}</CTableDataCell>
-                                            <CTableDataCell>{emp.dateHired}</CTableDataCell>
-                                            <CTableDataCell>{emp.email}</CTableDataCell>
-                                            <CTableDataCell className="text-center">
-                                                <CButton color="info" size="sm" className="me-2">
-                                                    <CIcon icon={cilPencil} />
-                                                </CButton>
-                                                <CButton color="danger" size="sm">
-                                                    <CIcon icon={cilTrash} />
-                                                </CButton>
-                                            </CTableDataCell>
-                                        </CTableRow>
-                                    ))
-                                ) : (
+                                {employees.map((employee) => (
+                                    <CTableRow key={employee.id}>
+                                        <CTableDataCell>{employee.employeeID}</CTableDataCell>
+                                        <CTableDataCell>{employee.name}</CTableDataCell>
+                                        <CTableDataCell>{employee.position}</CTableDataCell>
+                                        <CTableDataCell>{employee.department}</CTableDataCell>
+                                        <CTableDataCell>{employee.dateHired}</CTableDataCell>
+                                        <CTableDataCell>{employee.email}</CTableDataCell>
+                                        <CTableDataCell className="text-center">
+                                            <CButton color="info" size="sm" className="me-2">
+                                                <CIcon icon={cilPencil} />
+                                            </CButton>
+                                            <CButton color="danger" size="sm">
+                                                <CIcon icon={cilTrash} />
+                                            </CButton>
+                                        </CTableDataCell>
+                                    </CTableRow>
+                                ))}
+
+                                {employees.length === 0 && (
                                     <CTableRow>
                                         <CTableDataCell colSpan={7} className="text-center">
                                             No users found.
