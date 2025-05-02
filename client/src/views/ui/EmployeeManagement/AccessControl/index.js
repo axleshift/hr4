@@ -150,7 +150,7 @@ const AccessControl = () => {
                                                 {user.role}
                                             </CTableDataCell>
                                             <CTableDataCell className="text-center">
-                                                {user.department}
+                                                {user.department.name}
                                             </CTableDataCell>
                                             <CTableDataCell className="text-center">
                                                 <CButton
