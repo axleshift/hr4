@@ -10,8 +10,10 @@ return new class extends Migration
     {
         Schema::create('employees', function (Blueprint $table) {
             $table->id();
-            $table->string('employeeID')->unique();
-            $table->string('name');
+            $table->string('employeeId')->unique();
+            $table->string('lastName');
+            $table->string('firstName');
+            $table->string('middleName')->nullable();
             $table->string('position');
             $table->string('department');
             $table->date('dateHired');
@@ -22,6 +24,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('employee');
+        Schema::dropIfExists('employees');
     }
 };
