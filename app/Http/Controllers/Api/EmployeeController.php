@@ -55,8 +55,6 @@ class EmployeeController extends Controller
         return new EmployeeResource($employee);
     }
 
-    
-
     public function destroy(Employee $employee)
     {
         $employee->delete();
