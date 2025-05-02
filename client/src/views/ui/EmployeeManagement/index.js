@@ -150,26 +150,22 @@ const EmployeeManagement = () => {
                             </CTableHeaderCell>
                         </CTableRow>
                     </CTableHead>
-                    <CTableBody style={{ maxHeight: '400px', overflowY: 'scroll' }}>
-                        {data.slice(0, 5).map(
-                            (
-                                employee, // Only display the first 5 employees
-                            ) => (
-                                <CTableRow key={employee.id}>
-                                    <CTableDataCell>{employee.employeeId}</CTableDataCell>
-                                    <CTableDataCell>{getFullName(employee)}</CTableDataCell>
-                                    <CTableDataCell>{employee.position}</CTableDataCell>
-                                    <CTableDataCell>{employee.department}</CTableDataCell>
-                                    <CTableDataCell>{employee.dateHired}</CTableDataCell>
-                                    <CTableDataCell>{employee.email}</CTableDataCell>
-                                    <CTableDataCell className="text-center">
-                                        {employee.trainingStatus
-                                            ? renderStatusBadge(employee.trainingStatus.status)
-                                            : renderStatusBadge('pending')}
-                                    </CTableDataCell>
-                                </CTableRow>
-                            ),
-                        )}
+                    <CTableBody style={{ maxHeight: '300px', overflowY: 'auto' }}>
+                        {data.map((employee) => (
+                            <CTableRow key={employee.id}>
+                                <CTableDataCell>{employee.employeeId}</CTableDataCell>
+                                <CTableDataCell>{getFullName(employee)}</CTableDataCell>
+                                <CTableDataCell>{employee.position}</CTableDataCell>
+                                <CTableDataCell>{employee.department}</CTableDataCell>
+                                <CTableDataCell>{employee.dateHired}</CTableDataCell>
+                                <CTableDataCell>{employee.email}</CTableDataCell>
+                                <CTableDataCell className="text-center">
+                                    {employee.trainingStatus
+                                        ? renderStatusBadge(employee.trainingStatus.status)
+                                        : renderStatusBadge('pending')}
+                                </CTableDataCell>
+                            </CTableRow>
+                        ))}
                     </CTableBody>
                 </CTable>
             </CCardBody>
