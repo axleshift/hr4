@@ -222,7 +222,9 @@ const EmployeeManagement = () => {
                                     <CTableBody>
                                         {filteredEmployees.length > 0 ? (
                                             filteredEmployees.map((employee, index) => (
-                                                <CTableRow key={employee.employeeId}>
+                                                <CTableRow
+                                                    key={`${employee.employeeId}-${employee.source}`}
+                                                >
                                                     <CTableDataCell>{index + 1}</CTableDataCell>
                                                     <CTableDataCell>
                                                         {employee.employeeId}
