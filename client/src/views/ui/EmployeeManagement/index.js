@@ -15,7 +15,7 @@ import {
     CBadge,
     CFormSelect, // For the filter dropdown
 } from '@coreui/react'
-import api from '../../../../util/api'
+import api from '../../../util/api'
 import axios from 'axios'
 
 const EmployeeManagement = () => {
