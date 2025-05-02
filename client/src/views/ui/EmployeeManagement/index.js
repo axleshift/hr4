@@ -192,6 +192,8 @@ const EmployeeManagement = () => {
                                 <CTable align="middle" className="mb-0 border" hover responsive>
                                     <CTableHead>
                                         <CTableRow>
+                                            <CTableHeaderCell>#</CTableHeaderCell>{' '}
+                                            {/* New header cell for # */}
                                             <CTableHeaderCell>Employee ID</CTableHeaderCell>
                                             <CTableHeaderCell>Name</CTableHeaderCell>
                                             <CTableHeaderCell>Position</CTableHeaderCell>
@@ -206,10 +208,13 @@ const EmployeeManagement = () => {
                                             </CTableHeaderCell>
                                         </CTableRow>
                                     </CTableHead>
+
                                     <CTableBody>
                                         {filteredEmployees.length > 0 ? (
-                                            filteredEmployees.map((employee) => (
+                                            filteredEmployees.map((employee, index) => (
                                                 <CTableRow key={employee.id}>
+                                                    <CTableDataCell>{index + 1}</CTableDataCell>{' '}
+                                                    {/* Display index + 1 as # */}
                                                     <CTableDataCell>
                                                         {employee.employeeId}
                                                     </CTableDataCell>
@@ -246,7 +251,9 @@ const EmployeeManagement = () => {
                                             ))
                                         ) : (
                                             <CTableRow>
-                                                <CTableDataCell colSpan={8} className="text-center">
+                                                <CTableDataCell colSpan={9} className="text-center">
+                                                    {' '}
+                                                    {/* Adjust colSpan to 9 */}
                                                     No employees found.
                                                 </CTableDataCell>
                                             </CTableRow>
