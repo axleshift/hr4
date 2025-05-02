@@ -204,7 +204,8 @@ const EmployeeManagement = () => {
                                 <CTable align="middle" className="mb-0 border" hover responsive>
                                     <CTableHead>
                                         <CTableRow>
-                                            <CTableHeaderCell>Employee ID</CTableHeaderCell>
+                                            <CTableHeaderCell>#</CTableHeaderCell>
+                                            <CTableHeaderCell>EmployeeID</CTableHeaderCell>
                                             <CTableHeaderCell>Name</CTableHeaderCell>
                                             <CTableHeaderCell>Position</CTableHeaderCell>
                                             <CTableHeaderCell>Department</CTableHeaderCell>
@@ -222,6 +223,7 @@ const EmployeeManagement = () => {
                                         {filteredEmployees.length > 0 ? (
                                             filteredEmployees.map((employee) => (
                                                 <CTableRow key={employee.employeeId}>
+                                                    <CTableHeaderCell>{index + 1}</CTableHeaderCell>
                                                     <CTableDataCell>
                                                         {employee.employeeId}
                                                     </CTableDataCell>
