@@ -12,8 +12,19 @@ class AuthController extends Controller
 
     public function index()
     {
-        $users = User::with('department')->get(); // this is the key line
-        return response()->json(['data' => $users]);
+        $users = User::with('role')->get();
+
+        return response()->json([
+            'data' => $users->map(function ($user) {
+                return [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'role' => $user->role->name ?? 'No Role',
+                    'department' => $user->department->name ?? 'No Department',
+                ];
+            }),
+        ]);
     }
 
     public function login(Request $request)
