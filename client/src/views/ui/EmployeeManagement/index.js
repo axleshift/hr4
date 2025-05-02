@@ -11,13 +11,6 @@ import {
     CTableHead,
     CTableHeaderCell,
     CTableRow,
-    CModal,
-    CModalHeader,
-    CModalBody,
-    CModalFooter,
-    CButton,
-    CBadge,
-    CFormSelect, // Change this line
 } from '@coreui/react'
 import api from '../../../util/api'
 import axios from 'axios'
@@ -25,9 +18,6 @@ import axios from 'axios'
 const EmployeeManagement = () => {
     const [employees, setEmployees] = useState([])
     const [newHires, setNewHires] = useState([])
-    const [modalVisible, setModalVisible] = useState(false)
-    const [selectedEmployee, setSelectedEmployee] = useState(null)
-    const [status, setStatus] = useState('')
 
     useEffect(() => {
         fetchEmployees()
@@ -67,22 +57,8 @@ const EmployeeManagement = () => {
         try {
             await api.put(`/api/employee-status/${employeeId}`, { status })
             fetchEmployees()
-            setModalVisible(false) // Close modal after successful status update
         } catch (error) {
             console.error(`Error updating status for ${employeeId}:`, error)
-        }
-    }
-
-    const getStatusColor = (status) => {
-        switch (status) {
-            case 'ongoing':
-                return 'warning'
-            case 'passed':
-                return 'success'
-            case 'failed':
-                return 'danger'
-            default:
-                return 'secondary'
         }
     }
 
@@ -102,7 +78,6 @@ const EmployeeManagement = () => {
                             <CTableHeaderCell>Date Hired</CTableHeaderCell>
                             <CTableHeaderCell>Email</CTableHeaderCell>
                             <CTableHeaderCell className="text-center">Status</CTableHeaderCell>
-                            <CTableHeaderCell className="text-center">Actions</CTableHeaderCell>
                         </CTableRow>
                     </CTableHead>
                     <CTableBody>
@@ -115,17 +90,21 @@ const EmployeeManagement = () => {
                                 <CTableDataCell>{employee.dateHired}</CTableDataCell>
                                 <CTableDataCell>{employee.email}</CTableDataCell>
                                 <CTableDataCell className="text-center">
-                                    <CBadge color={getStatusColor(employee.status)}>
-                                        {employee.status}
-                                    </CBadge>
-                                </CTableDataCell>
-                                <CTableDataCell className="text-center">
-                                    <button
-                                        className="btn btn-primary"
-                                        onClick={() => openModal(employee)}
+                                    <select
+                                        className="form-select"
+                                        value={employee.status || 'pending'}
+                                        onChange={(e) =>
+                                            updateEmployeeStatus(
+                                                employee.employeeId,
+                                                e.target.value,
+                                            )
+                                        }
                                     >
-                                        Action
-                                    </button>
+                                        <option value="pending">Pending</option>
+                                        <option value="ongoing">Ongoing</option>
+                                        <option value="passed">Passed</option>
+                                        <option value="failed">Failed</option>
+                                    </select>
                                 </CTableDataCell>
                             </CTableRow>
                         ))}
@@ -135,58 +114,12 @@ const EmployeeManagement = () => {
         </CCard>
     )
 
-    const openModal = (employee) => {
-        setSelectedEmployee(employee)
-        setStatus(employee.status || 'pending') // Set the status to the current status of the employee
-        setModalVisible(true)
-    }
-
-    const closeModal = () => {
-        setModalVisible(false)
-        setSelectedEmployee(null)
-    }
-
     return (
         <CRow>
             <CCol xs={12}>
                 {renderEmployeeTable(employees, 'Employee Management')}
                 {renderEmployeeTable(newHires, 'New Hires')}
             </CCol>
-
-            {/* Modal */}
-            {selectedEmployee && (
-                <CModal visible={modalVisible} onClose={closeModal}>
-                    <CModalHeader>
-                        <strong>{getFullName(selectedEmployee)}</strong>{' '}
-                        {/* Employee name in the modal title */}
-                    </CModalHeader>
-                    <CModalBody>
-                        {/* Status update inside the modal */}
-                        <div>
-                            <label>Status</label>
-                            <CFormSelect value={status} onChange={(e) => setStatus(e.target.value)}>
-                                <option value="pending">Pending</option>
-                                <option value="ongoing">Ongoing</option>
-                                <option value="passed">Passed</option>
-                                <option value="failed">Failed</option>
-                            </CFormSelect>
-                        </div>
-                    </CModalBody>
-                    <CModalFooter>
-                        <CButton color="secondary" onClick={closeModal}>
-                            Close
-                        </CButton>
-                        <CButton
-                            color="primary"
-                            onClick={() =>
-                                updateEmployeeStatus(selectedEmployee.employeeId, status)
-                            }
-                        >
-                            Update Status
-                        </CButton>
-                    </CModalFooter>
-                </CModal>
-            )}
         </CRow>
     )
 }
