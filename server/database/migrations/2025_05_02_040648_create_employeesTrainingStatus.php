@@ -8,16 +8,18 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('employeesTrainingStatus', function (Blueprint $table) {
+        Schema::create('employeeTrainingStatus', function (Blueprint $table) {
             $table->id();
-            $table->string('employeeId')->unique();
+            $table->string('employee_id')->unique();
             $table->string('status')->default('pending');
             $table->timestamps();
+
+            $table->foreign('employee_id')->references('employeeId')->on('employees')->onDelete('cascade');
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('employees');
+        Schema::dropIfExists('employee_training_statuses');
     }
 };
