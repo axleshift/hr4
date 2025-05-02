@@ -9,13 +9,24 @@ use App\Http\Controllers\Controller;
 
 class EmployeeStatusController extends Controller
 {
-    // List employees with their training status
     public function index()
     {
-        // Get all employees along with their training status
         $employees = Employee::with('trainingStatus')->get();
-
-        // Return the response in JSON format
         return response()->json($employees);
+    }
+
+    public function update(Request $request, $employeeId)
+    {
+        $request->validate(['status' => 'required|string']);
+
+        $trainingStatus = EmployeeTrainingStatus::updateOrCreate(
+            ['employee_id' => $employeeId],
+            ['status' => $request->status]
+        );
+
+        return response()->json([
+            'message' => 'Status updated successfully',
+            'data' => $trainingStatus,
+        ]);
     }
 }
