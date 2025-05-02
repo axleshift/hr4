@@ -11,6 +11,7 @@ import {
     CTableHead,
     CTableHeaderCell,
     CTableRow,
+    CBadge,
 } from '@coreui/react'
 import api from '../../../util/api'
 import axios from 'axios'
@@ -53,6 +54,20 @@ const EmployeeManagement = () => {
         return `${employee.firstName}${middle} ${employee.lastName}`
     }
 
+    const getStatusBadge = (status) => {
+        switch ((status || '').toLowerCase()) {
+            case 'passed':
+                return 'success'
+            case 'ongoing':
+                return 'warning'
+            case 'failed':
+                return 'danger'
+            case 'pending':
+            default:
+                return 'secondary'
+        }
+    }
+
     const renderEmployeeTable = (data, title) => (
         <CCard className="mb-4">
             <CCardHeader className="d-flex justify-content-between align-items-center">
@@ -77,7 +92,7 @@ const EmployeeManagement = () => {
                             </CTableHeaderCell>
                             <CTableHeaderCell className="bg-body-tertiary">Email</CTableHeaderCell>
                             <CTableHeaderCell className="bg-body-tertiary text-center">
-                                Actions
+                                Status
                             </CTableHeaderCell>
                         </CTableRow>
                     </CTableHead>
@@ -90,7 +105,14 @@ const EmployeeManagement = () => {
                                 <CTableDataCell>{employee.department}</CTableDataCell>
                                 <CTableDataCell>{employee.dateHired}</CTableDataCell>
                                 <CTableDataCell>{employee.email}</CTableDataCell>
-                                <CTableDataCell className="text-center">—</CTableDataCell>
+                                <CTableDataCell className="text-center">
+                                    <CBadge color={getStatusBadge(employee.status)}>
+                                        {employee.status
+                                            ? employee.status.charAt(0).toUpperCase() +
+                                              employee.status.slice(1)
+                                            : 'Pending'}
+                                    </CBadge>
+                                </CTableDataCell>
                             </CTableRow>
                         ))}
                     </CTableBody>
