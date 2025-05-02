@@ -45,7 +45,6 @@ class AuthController extends Controller
                     'name' => $user->name,
                     'email' => $user->email,
                     'role' => $user->role->name ?? 'No Role',
-                    'department' => $users->department->name ?? 'No Department'
                 ],
                 'session_id' => $sessionId,
             ]);
