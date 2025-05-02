@@ -54,6 +54,7 @@ const Login = () => {
             sessionStorage.setItem('user_id', user.id)
             sessionStorage.setItem('name', user.name)
             sessionStorage.setItem('email', user.email)
+            sessionStorage.setItem('role', user.department)
 
             navigate('/dashboard')
         } catch (err) {
