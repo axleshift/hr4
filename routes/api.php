@@ -49,8 +49,12 @@ use App\Http\Controllers\Api\EmployeeController;
 
 Route::apiResource('/employee', EmployeeController::class);
 
-use App\Http\Controllers\Api\EmployeeStatusController;
 
-Route::put('/employee-training-status/{employeeId}', [EmployeeStatusController::class, 'update']);
-Route::get('/employee-training-status', [EmployeeStatusController::class, 'index']);
+use App\Http\Controllers\Api\EmployeeTrainingStatusController;
 
+Route::prefix('employee/{employeeId}/trainingStatus')->group(function() {
+    Route::get('/', [EmployeeTrainingStatusController::class, 'show']);        
+    Route::post('/', [EmployeeTrainingStatusController::class, 'store']);
+    Route::put('/', [EmployeeTrainingStatusController::class, 'update']);
+    Route::delete('/', [EmployeeTrainingStatusController::class, 'destroy']);
+});

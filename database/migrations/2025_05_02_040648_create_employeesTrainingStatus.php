@@ -10,16 +10,16 @@ return new class extends Migration
     {
         Schema::create('employeeTrainingStatus', function (Blueprint $table) {
             $table->id();
-            $table->string('employee_id')->unique();
-            $table->string('status')->default('pending');
+            $table->unsignedBigInteger('employee_id');
+            $table->string('name'); // status name (pending, ongoing, passed, failed)
             $table->timestamps();
 
-            $table->foreign('employee_id')->references('employeeId')->on('employees')->onDelete('cascade');
+            $table->foreign('employee_id')->references('id')->on('employees')->onDelete('cascade');
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('employee_training_statuses');
+        Schema::dropIfExists('employeeTrainingStatus');
     }
 };
