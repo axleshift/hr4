@@ -178,7 +178,7 @@ const EmployeeManagement = () => {
                             </CTableHeaderCell>
                         </CTableRow>
                     </CTableHead>
-                    <CTableBody style={{ maxHeight: '300px', overflowY: 'auto' }}>
+                    <CTableBody>
                         {data.map((employee) => (
                             <CTableRow key={employee.id}>
                                 <CTableDataCell>{employee.employeeId}</CTableDataCell>
