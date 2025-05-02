@@ -25,11 +25,10 @@ const EmployeeManagement = () => {
     const fetchEmployees = async () => {
         try {
             const response = await axios.get('https://backend-hr1.axleshift.com/api/employees')
-            setEmployees(response.data.data || response.data) // Adjust depending on the structure
+            setEmployees(response.data.data || response.data)
         } catch (error) {
             console.error('Error fetching external employees:', error)
 
-            // Optional: fallback to local API
             try {
                 const localResponse = await api.get('/api/employee')
                 setEmployees(localResponse.data.data)
@@ -37,6 +36,11 @@ const EmployeeManagement = () => {
                 console.error('Error fetching local employees:', localError)
             }
         }
+    }
+
+    const getFullName = (employee) => {
+        const middle = employee.middleName ? ` ${employee.middleName}` : ''
+        return `${employee.firstName}${middle} ${employee.lastName}`
     }
 
     return (
@@ -76,8 +80,8 @@ const EmployeeManagement = () => {
                             <CTableBody>
                                 {employees.map((employee) => (
                                     <CTableRow key={employee.id}>
-                                        <CTableDataCell>{employee.employeeID}</CTableDataCell>
-                                        <CTableDataCell>{employee.name}</CTableDataCell>
+                                        <CTableDataCell>{employee.employeeId}</CTableDataCell>
+                                        <CTableDataCell>{getFullName(employee)}</CTableDataCell>
                                         <CTableDataCell>{employee.position}</CTableDataCell>
                                         <CTableDataCell>{employee.department}</CTableDataCell>
                                         <CTableDataCell>{employee.dateHired}</CTableDataCell>
