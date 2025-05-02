@@ -76,24 +76,8 @@ const EmployeeManagement = () => {
                                         <CTableDataCell>{employee.department}</CTableDataCell>
                                         <CTableDataCell>{employee.dateHired}</CTableDataCell>
                                         <CTableDataCell>{employee.email}</CTableDataCell>
-                                        <CTableDataCell className="text-center">
-                                            <CButton color="info" size="sm" className="me-2">
-                                                <CIcon icon={cilPencil} />
-                                            </CButton>
-                                            <CButton color="danger" size="sm">
-                                                <CIcon icon={cilTrash} />
-                                            </CButton>
-                                        </CTableDataCell>
                                     </CTableRow>
                                 ))}
-
-                                {employees.length === 0 && (
-                                    <CTableRow>
-                                        <CTableDataCell colSpan={7} className="text-center">
-                                            No users found.
-                                        </CTableDataCell>
-                                    </CTableRow>
-                                )}
                             </CTableBody>
                         </CTable>
                     </CCardBody>
