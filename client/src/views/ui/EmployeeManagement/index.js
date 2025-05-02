@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react'
 import {
     CCard,
@@ -34,14 +35,19 @@ const EmployeeManagement = () => {
     const [statusUpdate, setStatusUpdate] = useState('pending')
 
     useEffect(() => {
-        fetchEmployees()
+        fetchAndSaveEmployees()
         fetchNewHires()
     }, [])
 
-    const fetchEmployees = async () => {
+    const fetchAndSaveEmployees = async () => {
         try {
             const response = await axios.get('https://backend-hr1.axleshift.com/api/employees')
-            setEmployees(response.data.data || response.data)
+            const fetchedEmployees = response.data.data || response.data
+
+            // Save the fetched employees to the local database
+            saveEmployeesToDatabase(fetchedEmployees)
+
+            setEmployees(fetchedEmployees) // Update state
         } catch (error) {
             console.error('Error fetching external employees:', error)
             try {
@@ -59,6 +65,29 @@ const EmployeeManagement = () => {
             setNewHires(response.data.data || response.data)
         } catch (error) {
             console.error('Error fetching new hires:', error)
+        }
+    }
+
+    const saveEmployeesToDatabase = async (employeesToSave) => {
+        try {
+            for (const employee of employeesToSave) {
+                const employeeData = {
+                    employeeId: employee.employeeId,
+                    lastName: employee.lastName,
+                    firstName: employee.firstName,
+                    middleName: employee.middleName,
+                    position: employee.position,
+                    department: employee.department,
+                    dateHired: employee.dateHired,
+                    email: employee.email,
+                }
+
+                // Send data to the backend API to save it to the database
+                await api.post('/api/employee', employeeData)
+            }
+            console.log('Employees saved successfully')
+        } catch (error) {
+            console.error('Error saving employees:', error)
         }
     }
 
@@ -91,6 +120,7 @@ const EmployeeManagement = () => {
             await api.put(`/api/employee-training-status/${selectedEmployee.id}`, {
                 status: statusUpdate,
             })
+            // Update state
             const updateStatusInList = (list) =>
                 list.map((emp) =>
                     emp.id === selectedEmployee.id ? { ...emp, status: statusUpdate } : emp,
@@ -129,45 +159,6 @@ const EmployeeManagement = () => {
             .some((field) => field.toLowerCase().includes(filterText.toLowerCase())),
     )
 
-    const handleSaveToDatabase = async () => {
-        try {
-            const localEmployees = await api.get('/api/employee')
-            const existingEmployeeIds = localEmployees.data.data.map((e) => e.employeeId)
-            const existingEmails = localEmployees.data.data.map((e) => e.email)
-
-            const employeesToSave = allEmployees.filter(
-                (emp) =>
-                    !existingEmployeeIds.includes(emp.employeeId) &&
-                    !existingEmails.includes(emp.email),
-            )
-
-            for (const employee of employeesToSave) {
-                try {
-                    const employeeData = {
-                        employeeId: employee.employeeId,
-                        lastName: employee.lastName,
-                        firstName: employee.firstName,
-                        middleName: employee.middleName,
-                        position: employee.position,
-                        department: employee.department,
-                        dateHired: employee.dateHired,
-                        email: employee.email,
-                    }
-                    await api.post('/api/employee', employeeData)
-                } catch (err) {
-                    console.error(
-                        `Failed to save employee ${employee.employeeId}:`,
-                        err.response?.data || err.message,
-                    )
-                }
-            }
-
-            alert('Save completed.')
-        } catch (err) {
-            console.error('Failed to save employees:', err)
-        }
-    }
-
     return (
         <>
             <CRow>
@@ -175,9 +166,6 @@ const EmployeeManagement = () => {
                     <CCard className="mb-4">
                         <CCardHeader className="d-flex justify-content-between align-items-center">
                             <strong>Employee Management</strong>
-                            <CButton size="sm" color="success" onClick={handleSaveToDatabase}>
-                                Save to Database
-                            </CButton>
                         </CCardHeader>
                         <CCardBody>
                             <CRow className="mb-3">
@@ -204,8 +192,7 @@ const EmployeeManagement = () => {
                                 <CTable align="middle" className="mb-0 border" hover responsive>
                                     <CTableHead>
                                         <CTableRow>
-                                            <CTableHeaderCell>#</CTableHeaderCell>
-                                            <CTableHeaderCell>EmployeeID</CTableHeaderCell>
+                                            <CTableHeaderCell>Employee ID</CTableHeaderCell>
                                             <CTableHeaderCell>Name</CTableHeaderCell>
                                             <CTableHeaderCell>Position</CTableHeaderCell>
                                             <CTableHeaderCell>Department</CTableHeaderCell>
@@ -221,11 +208,8 @@ const EmployeeManagement = () => {
                                     </CTableHead>
                                     <CTableBody>
                                         {filteredEmployees.length > 0 ? (
-                                            filteredEmployees.map((employee, index) => (
-                                                <CTableRow
-                                                    key={`${employee.employeeId}-${employee.source}`}
-                                                >
-                                                    <CTableDataCell>{index + 1}</CTableDataCell>
+                                            filteredEmployees.map((employee) => (
+                                                <CTableRow key={employee.id}>
                                                     <CTableDataCell>
                                                         {employee.employeeId}
                                                     </CTableDataCell>
@@ -262,7 +246,7 @@ const EmployeeManagement = () => {
                                             ))
                                         ) : (
                                             <CTableRow>
-                                                <CTableDataCell colSpan={9} className="text-center">
+                                                <CTableDataCell colSpan={8} className="text-center">
                                                     No employees found.
                                                 </CTableDataCell>
                                             </CTableRow>
@@ -275,12 +259,14 @@ const EmployeeManagement = () => {
                 </CCol>
             </CRow>
 
+            {/* Modal for Editing Status */}
             <CModal visible={showModal} onClose={() => setShowModal(false)}>
                 <CModalHeader closeButton>
                     <CModalTitle>Edit Training Status</CModalTitle>
                 </CModalHeader>
                 <CModalBody>
                     <CFormSelect
+                        label="Training Status"
                         value={statusUpdate}
                         onChange={(e) => setStatusUpdate(e.target.value)}
                     >
