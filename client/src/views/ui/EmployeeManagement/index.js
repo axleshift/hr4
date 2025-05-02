@@ -260,7 +260,7 @@ const EmployeeManagement = () => {
                                             ))
                                         ) : (
                                             <CTableRow>
-                                                <CTableDataCell colSpan={8} className="text-center">
+                                                <CTableDataCell colSpan={9} className="text-center">
                                                     No employees found.
                                                 </CTableDataCell>
                                             </CTableRow>
