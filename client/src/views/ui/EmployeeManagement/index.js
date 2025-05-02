@@ -41,14 +41,14 @@ const EmployeeManagement = () => {
     const fetchEmployees = async () => {
         try {
             const response = await axios.get('https://backend-hr1.axleshift.com/api/employees')
-            setEmployees(response.data.data ?? response.data)
+            setEmployees(response.data.data || response.data)
         } catch (error) {
-            console.error('External fetch failed, trying local API...', error)
+            console.error('Error fetching external employees:', error)
             try {
                 const localResponse = await api.get('/api/employee')
                 setEmployees(localResponse.data.data)
             } catch (localError) {
-                console.error('Local fetch failed:', localError)
+                console.error('Error fetching local employees:', localError)
             }
         }
     }
@@ -56,26 +56,27 @@ const EmployeeManagement = () => {
     const fetchNewHires = async () => {
         try {
             const response = await axios.get('https://backend-hr1.axleshift.com/api/newhires')
-            setNewHires(response.data.data ?? response.data)
+            setNewHires(response.data.data || response.data)
         } catch (error) {
             console.error('Error fetching new hires:', error)
         }
     }
 
-    const getFullName = (e) =>
-        `${e.firstName}${e.middleName ? ` ${e.middleName}` : ''} ${e.lastName}`
+    const getFullName = (employee) => {
+        const middle = employee.middleName ? ` ${employee.middleName}` : ''
+        return `${employee.firstName}${middle} ${employee.lastName}`
+    }
 
     const getStatusBadge = (status) => {
-        const colors = {
-            completed: 'success',
-            'in progress': 'warning',
-            pending: 'secondary',
+        switch (status) {
+            case 'completed':
+                return <CBadge color="success">Completed</CBadge>
+            case 'in progress':
+                return <CBadge color="warning">In Progress</CBadge>
+            case 'pending':
+            default:
+                return <CBadge color="secondary">Pending</CBadge>
         }
-        return (
-            <CBadge color={colors[status] || 'secondary'}>
-                {status?.charAt(0).toUpperCase() + status?.slice(1)}
-            </CBadge>
-        )
     }
 
     const handleEditStatus = (employee) => {
@@ -86,17 +87,16 @@ const EmployeeManagement = () => {
 
     const handleUpdateStatus = async () => {
         if (!selectedEmployee) return
-
         try {
             await api.put(`/api/employee-training-status/${selectedEmployee.id}`, {
                 status: statusUpdate,
             })
-
-            const updateList = (list) =>
-                list.map((e) => (e.id === selectedEmployee.id ? { ...e, status: statusUpdate } : e))
-
-            setEmployees(updateList)
-            setNewHires(updateList)
+            const updateStatusInList = (list) =>
+                list.map((emp) =>
+                    emp.id === selectedEmployee.id ? { ...emp, status: statusUpdate } : emp,
+                )
+            setEmployees((prev) => updateStatusInList(prev))
+            setNewHires((prev) => updateStatusInList(prev))
             setShowModal(false)
         } catch (error) {
             console.error('Error updating status:', error)
@@ -105,56 +105,58 @@ const EmployeeManagement = () => {
 
     const allEmployees = [
         ...employees.map((e) => ({ ...e, source: 'regular' })),
-        ...newHires.map((e) => ({ ...e, source: 'new' })),
+        ...newHires.map((n) => ({ ...n, source: 'new' })),
     ]
 
-    const filteredByType = allEmployees.filter((e) => {
-        if (employeeTypeFilter === 'new') return e.source === 'new'
-        if (employeeTypeFilter === 'regular') return e.source === 'regular'
+    const filteredByType = allEmployees.filter((employee) => {
+        if (employeeTypeFilter === 'new') return employee.source === 'new'
+        if (employeeTypeFilter === 'regular') return employee.source === 'regular'
         return true
     })
 
-    const filteredEmployees = filteredByType.filter((e) =>
+    const filteredEmployees = filteredByType.filter((employee) =>
         [
-            e.employeeId,
-            e.firstName,
-            e.middleName,
-            e.lastName,
-            e.position,
-            e.department,
-            e.email,
-            e.dateHired,
+            employee.employeeId,
+            employee.firstName,
+            employee.middleName,
+            employee.lastName,
+            employee.position,
+            employee.department,
+            employee.email,
+            employee.dateHired,
         ]
             .filter(Boolean)
-            .some((val) => val.toLowerCase().includes(filterText.toLowerCase())),
+            .some((field) => field.toLowerCase().includes(filterText.toLowerCase())),
     )
 
     const handleSaveToDatabase = async () => {
         try {
             const localEmployees = await api.get('/api/employee')
-            const localData = localEmployees.data.data
-            const existingIds = localData.map((e) => e.employeeId)
-            const existingEmails = localData.map((e) => e.email)
+            const existingEmployeeIds = localEmployees.data.data.map((e) => e.employeeId)
+            const existingEmails = localEmployees.data.data.map((e) => e.email)
 
-            const toSave = allEmployees.filter(
-                (e) => !existingIds.includes(e.employeeId) && !existingEmails.includes(e.email),
+            const employeesToSave = allEmployees.filter(
+                (emp) =>
+                    !existingEmployeeIds.includes(emp.employeeId) &&
+                    !existingEmails.includes(emp.email),
             )
 
-            for (const emp of toSave) {
+            for (const employee of employeesToSave) {
                 try {
-                    await api.post('/api/employee', {
-                        employeeId: emp.employeeId,
-                        lastName: emp.lastName,
-                        firstName: emp.firstName,
-                        middleName: emp.middleName,
-                        position: emp.position,
-                        department: emp.department,
-                        dateHired: emp.dateHired,
-                        email: emp.email,
-                    })
+                    const employeeData = {
+                        employeeId: employee.employeeId,
+                        lastName: employee.lastName,
+                        firstName: employee.firstName,
+                        middleName: employee.middleName,
+                        position: employee.position,
+                        department: employee.department,
+                        dateHired: employee.dateHired,
+                        email: employee.email,
+                    }
+                    await api.post('/api/employee', employeeData)
                 } catch (err) {
                     console.error(
-                        `Error saving ${emp.employeeId}:`,
+                        `Failed to save employee ${employee.employeeId}:`,
                         err.response?.data || err.message,
                     )
                 }
@@ -162,7 +164,7 @@ const EmployeeManagement = () => {
 
             alert('Save completed.')
         } catch (err) {
-            console.error('Error saving employees:', err)
+            console.error('Failed to save employees:', err)
         }
     }
 
@@ -199,11 +201,11 @@ const EmployeeManagement = () => {
                             </CRow>
 
                             <div style={{ maxHeight: '500px', overflowY: 'auto' }}>
-                                <CTable align="middle" hover responsive className="mb-0 border">
+                                <CTable align="middle" className="mb-0 border" hover responsive>
                                     <CTableHead>
                                         <CTableRow>
                                             <CTableHeaderCell>#</CTableHeaderCell>
-                                            <CTableHeaderCell>Employee ID</CTableHeaderCell>
+                                            <CTableHeaderCell>EmployeeID</CTableHeaderCell>
                                             <CTableHeaderCell>Name</CTableHeaderCell>
                                             <CTableHeaderCell>Position</CTableHeaderCell>
                                             <CTableHeaderCell>Department</CTableHeaderCell>
@@ -221,7 +223,7 @@ const EmployeeManagement = () => {
                                         {filteredEmployees.length > 0 ? (
                                             filteredEmployees.map((employee, index) => (
                                                 <CTableRow key={employee.employeeId}>
-                                                    <CTableHeaderCell>{index + 1}</CTableHeaderCell>
+                                                    <CTableDataCell>{index + 1}</CTableDataCell>
                                                     <CTableDataCell>
                                                         {employee.employeeId}
                                                     </CTableDataCell>
@@ -245,8 +247,8 @@ const EmployeeManagement = () => {
                                                     </CTableDataCell>
                                                     <CTableDataCell className="text-center">
                                                         <CButton
-                                                            size="sm"
                                                             color="primary"
+                                                            size="sm"
                                                             onClick={() =>
                                                                 handleEditStatus(employee)
                                                             }
