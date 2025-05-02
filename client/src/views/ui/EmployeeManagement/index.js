@@ -14,6 +14,7 @@ import {
     CTableRow,
     CBadge,
     CFormSelect, // For the filter dropdown
+    CFormInput, // For the search input
 } from '@coreui/react'
 import api from '../../../util/api'
 import axios from 'axios'
@@ -22,6 +23,7 @@ const EmployeeManagement = () => {
     const [employees, setEmployees] = useState([])
     const [newHires, setNewHires] = useState([])
     const [filteredEmployees, setFilteredEmployees] = useState([])
+    const [searchQuery, setSearchQuery] = useState('')
     const [sortOrder, setSortOrder] = useState({ column: 'employeeId', direction: 'asc' })
     const [filter, setFilter] = useState('all')
 
@@ -32,7 +34,7 @@ const EmployeeManagement = () => {
 
     useEffect(() => {
         filterAndSortEmployees()
-    }, [employees, newHires, filter, sortOrder])
+    }, [employees, newHires, filter, sortOrder, searchQuery])
 
     const fetchEmployees = async () => {
         try {
@@ -60,6 +62,19 @@ const EmployeeManagement = () => {
 
     const filterAndSortEmployees = () => {
         let filtered = filter === 'newHires' ? newHires : employees
+
+        // Search Filter
+        if (searchQuery) {
+            filtered = filtered.filter((employee) => {
+                const fullName =
+                    `${employee.firstName} ${employee.middleName || ''} ${employee.lastName}`.toLowerCase()
+                return (
+                    fullName.includes(searchQuery.toLowerCase()) ||
+                    employee.employeeId.toLowerCase().includes(searchQuery.toLowerCase())
+                )
+            })
+        }
+
         // Sorting
         filtered = filtered.sort((a, b) => {
             if (a[sortOrder.column] < b[sortOrder.column]) {
@@ -70,6 +85,7 @@ const EmployeeManagement = () => {
             }
             return 0
         })
+
         setFilteredEmployees(filtered)
     }
 
@@ -106,6 +122,10 @@ const EmployeeManagement = () => {
         setSortOrder({ column, direction })
     }
 
+    const handleSearch = (e) => {
+        setSearchQuery(e.target.value)
+    }
+
     const renderEmployeeTable = (data) => (
         <CCard className="mb-4">
             <CCardHeader className="d-flex justify-content-between align-items-center">
@@ -121,6 +141,14 @@ const EmployeeManagement = () => {
                 </CFormSelect>
             </CCardHeader>
             <CCardBody>
+                {/* Search Input */}
+                <CFormInput
+                    type="text"
+                    placeholder="Search by Name or ID"
+                    value={searchQuery}
+                    onChange={handleSearch}
+                    className="mb-3"
+                />
                 <CTable align="middle" className="mb-0 border" hover responsive>
                     <CTableHead>
                         <CTableRow>
