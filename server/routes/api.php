@@ -42,8 +42,8 @@ Route::post('/auth/verify-session', [AuthController::class, 'verifySession']);
 
 
 // Add the route for EmployeeTrainingNeedController
-Route::apiResource('training-needs', EmployeeTrainingNeedController::class);
+Route::apiResource('/training-needs', EmployeeTrainingNeedController::class);
 
 use App\Http\Controllers\Api\EmployeeController;
 
-Route::apiResource('employee', EmployeeController::class);
+Route::apiResource('/employee', EmployeeController::class);
