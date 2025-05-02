@@ -21,7 +21,7 @@ class AuthController extends Controller
                     'name' => $user->name,
                     'email' => $user->email,
                     'role' => $user->role->name ?? 'No Role',
-                    '' => $user->departments->name ?? 'No Department',
+                    'departments' => $user->departments->name ?? 'No Department',
                 ];
             }),
         ]);
