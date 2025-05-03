@@ -9,14 +9,12 @@ class EmployeeTrainingStatus extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'employee_id',
-        'name', // status like pending, ongoing, passed, failed
-    ];
+    protected $table = 'employeeTrainingStatus';
 
-    // Defining the inverse relationship to the Employee model
+    protected $fillable = ['employee_id', 'status'];
+
     public function employee()
     {
-        return $this->belongsTo(Employee::class, 'employee_id');
+        return $this->belongsTo(Employee::class, 'employee_id', 'employeeId');
     }
 }

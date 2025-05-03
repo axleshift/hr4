@@ -26,6 +26,6 @@ class Employee extends Model
 
     public function trainingStatus()
     {
-        return $this->hasOne(EmployeeTrainingStatus::class);
+        return $this->hasOne(EmployeeTrainingStatus::class, 'employee_id', 'employeeId');
     }
 }
