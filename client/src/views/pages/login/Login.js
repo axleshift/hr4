@@ -189,16 +189,6 @@ const Login = () => {
                                             </CCol>
                                         </CRow>
                                     </CForm>
-
-                                    {/* Google Login Button */}
-                                    <div className="mt-3">
-                                        <GoogleOAuthProvider clientId="417979810176-9n90pqqm735jisrjnqlejt5hqtcnm7mu.apps.googleusercontent.com">
-                                            <GoogleLogin
-                                                onSuccess={handleGoogleSuccess}
-                                                onError={handleGoogleFailure}
-                                            />
-                                        </GoogleOAuthProvider>
-                                    </div>
                                 </CCardBody>
                             </CCard>
                         </CCardGroup>
