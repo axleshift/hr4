@@ -20,7 +20,6 @@ import CIcon from '@coreui/icons-react'
 import { cilUser, cilLockLocked } from '@coreui/icons'
 import api from '../../../util/api'
 import Cookies from 'js-cookie'
-import axios from 'axios'
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google'
 
 const Login = () => {
@@ -37,7 +36,7 @@ const Login = () => {
         setLoading(true)
 
         try {
-            const response = await axios.post(
+            const response = await api.post(
                 'https://backend-admin.axleshift.com/integ/external-login/HR',
                 {
                     email,
