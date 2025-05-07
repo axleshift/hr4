@@ -49,7 +49,7 @@ use App\Http\Controllers\Api\EmployeeController;
 
 Route::apiResource('/employee', EmployeeController::class);
 
-use App\Http\Controllers\Api\EmployeeStatusController;
+use App\Http\Controllers\Api\EmployeeTrainingStatusController;
 
-Route::get('/employeeTrainingStatus', [EmployeeStatusController::class, 'index']);
-Route::put('/employeeTrainingStatus/{employeeId}', [EmployeeStatusController::class, 'update']);
+Route::get('/employeeTrainingStatus', [EmployeeTrainingStatusController::class, 'index']);
+Route::put('/employeeTrainingStatus/{employeeId}', [EmployeeTrainingStatusController::class, 'update']);
