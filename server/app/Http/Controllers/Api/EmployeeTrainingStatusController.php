@@ -7,7 +7,7 @@ use App\Models\EmployeeTrainingStatus;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-class EmployeeStatusController extends Controller
+class EmployeeTrainingStatusController extends Controller
 {
     public function index()
     {
