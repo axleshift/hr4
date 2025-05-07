@@ -20,6 +20,7 @@ import CIcon from '@coreui/icons-react'
 import { cilUser, cilLockLocked } from '@coreui/icons'
 import api from '../../../util/api'
 import Cookies from 'js-cookie'
+import axios from 'axios'
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google'
 
 const Login = () => {
