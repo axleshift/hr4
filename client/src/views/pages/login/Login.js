@@ -42,6 +42,14 @@ const Login = () => {
                     email,
                     password,
                 },
+                {
+                    headers: {
+                        Authorization: 'Bearer admin1229102',
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        Accept: 'application/json',
+                    },
+                },
             )
 
             const { token, user } = response.data
