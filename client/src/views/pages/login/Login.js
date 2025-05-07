@@ -42,11 +42,6 @@ const Login = () => {
                     email,
                     password,
                 },
-                {
-                    headers: {
-                        Authorization: 'Bearer admin1229102',
-                    },
-                },
             )
 
             const { token, user } = response.data
