@@ -36,7 +36,7 @@ const Login = () => {
         setLoading(true)
 
         try {
-            const response = await api.post(
+            const response = await axios.post(
                 'https://backend-admin.axleshift.com/integ/external-login/HR',
                 {
                     email,
