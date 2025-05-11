@@ -44,15 +44,14 @@ const App = () => {
                 }
             >
                 <Routes>
-                    <Route element={<ProtectedRoute />}>
-                        <Route path="*" element={<DefaultLayout />} />
-                    </Route>
                     <Route exact path="/login" name="Login Page" element={<Login />} />
                     <Route exact path="/register" name="Register Page" element={<Register />} />
                     <Route exact path="/database" name="Database" element={<Database />} />
                     <Route exact path="/404" name="Page 404" element={<Page404 />} />
                     <Route exact path="/500" name="Page 500" element={<Page500 />} />
-                    <Route path="*" name="Home" element={<DefaultLayout />} />
+                    <Route element={<ProtectedRoute />}>
+                        <Route path="*" element={<DefaultLayout />} />
+                    </Route>
                 </Routes>
             </Suspense>
         </Router>

@@ -10,8 +10,6 @@ const useAuthStatus = () => {
     const checkAuthStatus = async (session_id) => {
         try {
             const response = await api.post('/api/auth/verify-session', { session_id })
-            dispatch({ type: 'SET_USER', payload: response.data.user })
-            dispatch({ type: 'SET_SESSION_ID', payload: session_id })
             setStatus('authenticated')
         } catch (error) {
             if (Cookies.get('session_id')) Cookies.remove('session_id')
