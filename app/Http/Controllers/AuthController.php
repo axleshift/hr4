@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use App\Models\User;
+use Illuminate\Support\Facades\Http;
 
 class AuthController extends Controller
 {
@@ -33,18 +34,26 @@ class AuthController extends Controller
             'email' => 'required|email',
             'password' => 'required',
         ]);
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer admin1229102',
+        ])->post('https://backend-admin.axleshift.com/integ/external-login/HR', [
+            'email' => $credentials['email'],
+            'password' => $credentials['password'],
+        ]);
 
-        if (Auth::attempt($credentials)) {
+        if ($response->successful()) {
+            $data = $response->json();
+            $user = $data['user'];
+
             $request->session()->regenerate();
             $sessionId = $request->session()->getId();
-            $user = Auth::user();
 
             return response()->json([
                 'user' => [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'role' => $user->role->name ?? 'No Role',
+                    'id' => $user['id'],
+                    'name' => $user['name'],
+                    'email' => $user['email'],
+                    'role' => $user['role'] ?? 'No Role',
                 ],
                 'session_id' => $sessionId,
             ]);
@@ -57,17 +66,10 @@ class AuthController extends Controller
     {
         $sessionId = $request->input('session_id');
 
-        if (Session::getId() === $sessionId && Auth::check()) {
-            $user = Auth::user();
+        if (Session::getId() === $sessionId) {
 
             return response()->json([
-                'message' => 'Session is active',
-                'user' => [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'role' => $user->role->name ?? 'No Role',
-                ],
+                'message' => 'Session is active'
             ]);
         }
 
