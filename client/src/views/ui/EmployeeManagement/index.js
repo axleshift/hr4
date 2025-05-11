@@ -117,7 +117,7 @@ const EmployeeManagement = () => {
     const handleUpdateStatus = async () => {
         if (!selectedEmployee) return
         try {
-            await api.put(`/api/employee-training-status/${selectedEmployee.id}`, {
+            await api.put(`/api/employee-training-status/${selectedEmployee.employeeId}`, {
                 status: statusUpdate,
             })
             // Update state
