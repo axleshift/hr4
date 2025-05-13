@@ -132,9 +132,9 @@ const BudgetReports = () => {
 
             {/* Button and Table */}
             <CCol xs={12} className="mb-3 d-flex justify-content-end">
-                <CButton color="primary" onClick={() => setModalVisible(true)}>
+                {/* <CButton color="primary" onClick={() => setModalVisible(true)}>
                     Add Budget
-                </CButton>
+                </CButton> */}
             </CCol>
             <CCol xs={12}>
                 <CTable striped hover>
