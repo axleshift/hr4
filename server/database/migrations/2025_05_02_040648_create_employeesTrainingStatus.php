@@ -8,18 +8,17 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('EmployeeTrainingStatus', function (Blueprint $table) {
+        Schema::create('employee_training_statuses', function (Blueprint $table) {
             $table->id();
-            $table->string('employee_id')->unique();
-            $table->string('status')->default('pending');
+            $table->string('employee_id')->unique(); // Unique since one status per employee
+            $table->string('name');
+            $table->enum('status', ['pending', 'in progress', 'completed'])->default('pending');
             $table->timestamps();
-
-            $table->foreign('employee_id')->references('employeeId')->on('employees')->onDelete('cascade');
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('EmployeeTrainingStatus');
+        Schema::dropIfExists('employee_training_statuses');
     }
 };

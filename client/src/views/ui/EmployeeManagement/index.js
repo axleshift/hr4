@@ -119,7 +119,9 @@ const EmployeeManagement = () => {
         try {
             await api.put(`/api/employee-training-status/${selectedEmployee.employeeId}`, {
                 status: statusUpdate,
+                name: `${selectedEmployee.firstName} ${selectedEmployee.middleName ?? ''} ${selectedEmployee.lastName}`,
             })
+
             // Update state
             const updateStatusInList = (list) =>
                 list.map((emp) =>
