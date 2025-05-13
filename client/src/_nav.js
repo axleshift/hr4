@@ -24,11 +24,11 @@ const navItems = [
         to: '/ui/EmployeeManagement',
         roles: ['superadmin', 'admin', 'staff', 'employee'],
     },
-    {
-        name: 'Access Control',
-        to: '/ui/EmployeeManagement/AccessControl',
-        roles: ['superadmin'],
-    },
+    // {
+    //     name: 'Access Control',
+    //     to: '/ui/EmployeeManagement/AccessControl',
+    //     roles: ['superadmin'],
+    // },
 
     // LEARNING MANAGEMENT
     {
