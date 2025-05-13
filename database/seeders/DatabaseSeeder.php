@@ -112,9 +112,12 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // Trainings (without start_time and end_time)
+        // Trainings with delivery_method and department_id (placeholder)
         Training::create([
             'event_location' => 'Conference Room A',
             'schedule' => '2025-05-01',
+            'delivery_method' => 'In-person',
+            'department_id' => 1,
             'program_id' => $managementProgram->id,
             'course_id' => $leadershipEssentials->id,
         ]);
@@ -122,6 +125,8 @@ class DatabaseSeeder extends Seeder
         Training::create([
             'event_location' => 'Zoom',
             'schedule' => '2025-05-10',
+            'delivery_method' => 'Online',
+            'department_id' => 2,
             'program_id' => $managementProgram->id,
             'course_id' => $strategicPlanning->id,
         ]);
@@ -129,6 +134,8 @@ class DatabaseSeeder extends Seeder
         Training::create([
             'event_location' => 'Room 205',
             'schedule' => '2025-05-15',
+            'delivery_method' => 'In-person',
+            'department_id' => 3,
             'program_id' => $customerServiceProgram->id,
             'course_id' => $effectiveCommunication->id,
         ]);
@@ -136,6 +143,8 @@ class DatabaseSeeder extends Seeder
         Training::create([
             'event_location' => 'Google Meet',
             'schedule' => '2025-05-20',
+            'delivery_method' => 'Online',
+            'department_id' => 4,
             'program_id' => $customerServiceProgram->id,
             'course_id' => $handlingCustomers->id,
         ]);
