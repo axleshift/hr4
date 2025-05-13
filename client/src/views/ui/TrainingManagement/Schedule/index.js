@@ -71,14 +71,23 @@ const TrainingSchedule = () => {
             const response = await axios.get('https://backend-hr1.axleshift.com/api/employees')
             const fetchedEmployees = response.data.data || response.data
 
-            // Extract unique departments
-            const uniqueDepartments = [
-                ...new Set(fetchedEmployees.map((employee) => employee.department)),
-            ]
+            const uniqueDepartmentsMap = new Map()
 
-            setDepartments(uniqueDepartments) // Set unique departments
+            fetchedEmployees.forEach((emp) => {
+                // Check if emp.department exists before accessing its properties
+                if (emp.department && emp.department.id && emp.department.name) {
+                    if (!uniqueDepartmentsMap.has(emp.department.id)) {
+                        uniqueDepartmentsMap.set(emp.department.id, {
+                            id: emp.department.id,
+                            name: emp.department.name,
+                        })
+                    }
+                }
+            })
+
+            setDepartments(Array.from(uniqueDepartmentsMap.values())) // Set unique departments
         } catch (error) {
-            console.error('Error fetching external employees:', error)
+            console.error('Error fetching departments from employees:', error)
         }
     }
 
