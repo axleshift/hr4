@@ -71,23 +71,12 @@ const TrainingSchedule = () => {
             const response = await axios.get('https://backend-hr1.axleshift.com/api/employees')
             const fetchedEmployees = response.data.data || response.data
 
-            const uniqueDepartmentsMap = new Map()
+            // Extracting only the departments from the employees
+            const departmentsList = fetchedEmployees.map((employee) => employee.department)
 
-            fetchedEmployees.forEach((emp) => {
-                // Check if emp.department exists before accessing its properties
-                if (emp.department && emp.department.id && emp.department.name) {
-                    if (!uniqueDepartmentsMap.has(emp.department.id)) {
-                        uniqueDepartmentsMap.set(emp.department.id, {
-                            id: emp.department.id,
-                            name: emp.department.name,
-                        })
-                    }
-                }
-            })
-
-            setDepartments(Array.from(uniqueDepartmentsMap.values())) // Set unique departments
+            setDepartments(departmentsList) // Set departments directly without filtering for uniqueness
         } catch (error) {
-            console.error('Error fetching departments from employees:', error)
+            console.error('Error fetching external employees:', error)
         }
     }
 
@@ -263,9 +252,9 @@ const TrainingSchedule = () => {
                             required
                         >
                             <option value="">Select Department</option>
-                            {departments.map((dept) => (
-                                <option key={dept.id} value={dept.id}>
-                                    {dept.name}
+                            {departments.map((dept, index) => (
+                                <option key={index} value={dept}>
+                                    {dept}
                                 </option>
                             ))}
                         </CFormSelect>
