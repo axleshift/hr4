@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\Employee;
 use App\Models\EmployeeTrainingStatus;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -11,17 +10,23 @@ class EmployeeTrainingStatusController extends Controller
 {
     public function index()
     {
-        $employees = Employee::with('trainingStatus')->get();
-        return response()->json($employees);
+        $statuses = EmployeeTrainingStatus::all();
+        return response()->json($statuses);
     }
 
     public function update(Request $request, $employeeId)
     {
-        $request->validate(['status' => 'required|string']);
+        $request->validate([
+            'status' => 'required|in:pending,in progress,completed',
+            'name' => 'required|string', // name should come from frontend or external API
+        ]);
 
         $trainingStatus = EmployeeTrainingStatus::updateOrCreate(
             ['employee_id' => $employeeId],
-            ['status' => $request->status]
+            [
+                'name' => $request->name,
+                'status' => $request->status,
+            ]
         );
 
         return response()->json([
