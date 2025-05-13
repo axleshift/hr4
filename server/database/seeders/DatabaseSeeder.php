@@ -117,7 +117,7 @@ class DatabaseSeeder extends Seeder
             'event_location' => 'Conference Room A',
             'schedule' => '2025-05-01',
             'delivery_method' => 'In-person',
-            'department_id' => 1,
+            'department_id' => 'Human Resource',
             'program_id' => $managementProgram->id,
             'course_id' => $leadershipEssentials->id,
         ]);
@@ -126,7 +126,7 @@ class DatabaseSeeder extends Seeder
             'event_location' => 'Zoom',
             'schedule' => '2025-05-10',
             'delivery_method' => 'Online',
-            'department_id' => 2,
+            'department_id' => 'Operations',
             'program_id' => $managementProgram->id,
             'course_id' => $strategicPlanning->id,
         ]);
@@ -135,7 +135,7 @@ class DatabaseSeeder extends Seeder
             'event_location' => 'Room 205',
             'schedule' => '2025-05-15',
             'delivery_method' => 'In-person',
-            'department_id' => 3,
+            'department_id' => 'Logistice',
             'program_id' => $customerServiceProgram->id,
             'course_id' => $effectiveCommunication->id,
         ]);
@@ -144,7 +144,7 @@ class DatabaseSeeder extends Seeder
             'event_location' => 'Google Meet',
             'schedule' => '2025-05-20',
             'delivery_method' => 'Online',
-            'department_id' => 4,
+            'department_id' => 'Dispatch',
             'program_id' => $customerServiceProgram->id,
             'course_id' => $handlingCustomers->id,
         ]);
