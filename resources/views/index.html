@@ -17,7 +17,7 @@
     <title>Freight Main</title>
     <link rel="manifest" href="/manifest.json">
     <link rel="shortcut icon" href="/favicon.ico">
-    <script type="module" crossorigin src="/assets/index-ByQM_gyO.js"></script>
+    <script type="module" crossorigin src="/assets/index-CUaEGW_9.js"></script>
     <link rel="stylesheet" crossorigin href="/assets/index-DEmOjv53.css">
   </head>
   <body>
