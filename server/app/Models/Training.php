@@ -12,10 +12,10 @@ class Training extends Model
     protected $fillable = [
     'event_location',
     'schedule',
-    'program_id',
-    'course_id',
     'delivery_method',
     'department_id',
+    'program_id',
+    'course_id',
     ];
 
     public function program()

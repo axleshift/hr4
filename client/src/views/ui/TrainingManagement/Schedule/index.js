@@ -38,7 +38,6 @@ const TrainingSchedule = () => {
     const [selectedProgram, setSelectedProgram] = useState('')
 
     const [formData, setFormData] = useState({
-        event_title: '',
         delivery_method: '',
         department_id: '',
         event_location: '',
@@ -114,7 +113,6 @@ const TrainingSchedule = () => {
             setVisibleXL(false)
             fetchTrainings()
             setFormData({
-                event_title: '',
                 delivery_method: '',
                 department_id: '',
                 event_location: '',
@@ -154,30 +152,57 @@ const TrainingSchedule = () => {
                         </div>
                     </CCardHeader>
                     <CCardBody>
-                        <CTable>
+                        <CTable hover responsive>
                             <CTableHead>
                                 <CTableRow>
+                                    <CTableHeaderCell>#</CTableHeaderCell>
                                     <CTableHeaderCell>Program</CTableHeaderCell>
                                     <CTableHeaderCell>Course</CTableHeaderCell>
+                                    <CTableHeaderCell>Delivery Method</CTableHeaderCell>
+                                    <CTableHeaderCell>Department</CTableHeaderCell>
                                     <CTableHeaderCell>Location</CTableHeaderCell>
                                     <CTableHeaderCell>Schedule</CTableHeaderCell>
                                 </CTableRow>
                             </CTableHead>
                             <CTableBody>
-                                {trainings.map((training) => (
-                                    <CTableRow key={training.id}>
-                                        <CTableHeaderCell>
-                                            {training.program?.title}
+                                {trainings.length === 0 ? (
+                                    <CTableRow>
+                                        <CTableHeaderCell
+                                            colSpan="7"
+                                            className="text-center text-muted"
+                                        >
+                                            No training records available.
                                         </CTableHeaderCell>
-                                        <CTableHeaderCell>
-                                            {training.course?.title}
-                                        </CTableHeaderCell>
-                                        <CTableHeaderCell>
-                                            {training.event_location}
-                                        </CTableHeaderCell>
-                                        <CTableHeaderCell>{training.schedule}</CTableHeaderCell>
                                     </CTableRow>
-                                ))}
+                                ) : (
+                                    trainings.map((training, index) => (
+                                        <CTableRow key={training.id}>
+                                            <CTableHeaderCell>{index + 1}</CTableHeaderCell>
+                                            <CTableHeaderCell>
+                                                {training.program?.title || 'N/A'}
+                                            </CTableHeaderCell>
+                                            <CTableHeaderCell>
+                                                {training.course?.title || 'N/A'}
+                                            </CTableHeaderCell>
+                                            <CTableHeaderCell>
+                                                {training.delivery_method || 'N/A'}
+                                            </CTableHeaderCell>
+                                            <CTableHeaderCell>
+                                                {training.department_id || 'N/A'}
+                                            </CTableHeaderCell>
+                                            <CTableHeaderCell>
+                                                {training.event_location || 'N/A'}
+                                            </CTableHeaderCell>
+                                            <CTableHeaderCell>
+                                                {training.schedule
+                                                    ? new Date(
+                                                          training.schedule,
+                                                      ).toLocaleDateString()
+                                                    : 'N/A'}
+                                            </CTableHeaderCell>
+                                        </CTableRow>
+                                    ))
+                                )}
                             </CTableBody>
                         </CTable>
                     </CCardBody>
