@@ -22,6 +22,7 @@ Route::apiResource('/announcement', AnnouncementController::class);
 // TRAINING MANAGEMENT
 Route::apiResource('/training', TrainingController::class);
 Route::get('/training', [TrainingController::class, 'index']);
+Route::apiResource('/training', TrainingController::class);
 Route::apiResource('programs', ProgramController::class);
 
 Route::apiResource('courses', CourseController::class);
