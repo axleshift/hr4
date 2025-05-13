@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Role;
-use App\Models\Department;
 use App\Models\Program;
 use App\Models\Course;
 use App\Models\Training;
@@ -18,11 +17,6 @@ class DatabaseSeeder extends Seeder
         $adminRole = Role::firstOrCreate(['name' => 'admin']);
         $staffRole = Role::firstOrCreate(['name' => 'staff']);
         $employeeRole = Role::firstOrCreate(['name' => 'employee']);
-
-        // Ensure departments exist
-        $hr = Department::firstOrCreate(['name' => 'HumanResources']);
-        $it = Department::firstOrCreate(['name' => 'InformationTechnology']);
-        $training = Department::firstOrCreate(['name' => 'Training&Development']);
         
         // Create users with different roles and departments
         User::factory()->create([
@@ -30,7 +24,6 @@ class DatabaseSeeder extends Seeder
             'email' => 'sadmin@gmail.com',
             'password' => bcrypt('superadmin123'),
             'role_id' => $superAdminRole->id,
-            'department_id' => $hr->id,
         ]);
 
         User::factory()->create([
@@ -38,7 +31,6 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@gmail.com',
             'password' => bcrypt('admin123'),
             'role_id' => $adminRole->id,
-            'department_id' => $it->id,
         ]);
 
         User::factory()->create([
@@ -46,7 +38,6 @@ class DatabaseSeeder extends Seeder
             'email' => 'staff1@gmail.com',
             'password' => bcrypt('staff123'),
             'role_id' => $staffRole->id,
-            'department_id' => $hr->id,
         ]);
 
         User::factory()->create([
@@ -54,7 +45,6 @@ class DatabaseSeeder extends Seeder
             'email' => 'staff2@gmail.com',
             'password' => bcrypt('staff123'),
             'role_id' => $staffRole->id,
-            'department_id' => $training->id,
         ]);
 
         User::factory()->create([
@@ -62,7 +52,6 @@ class DatabaseSeeder extends Seeder
             'email' => 'employee1@gmail.com',
             'password' => bcrypt('employee123'),
             'role_id' => $employeeRole->id,
-            'department_id' => $it->id,
         ]);
 
         User::factory()->create([
@@ -70,7 +59,6 @@ class DatabaseSeeder extends Seeder
             'email' => 'employee2@gmail.com',
             'password' => bcrypt('employee123'),
             'role_id' => $employeeRole->id,
-            'department_id' => $hr->id,
         ]);
 
         User::factory()->create([
@@ -78,7 +66,6 @@ class DatabaseSeeder extends Seeder
             'email' => 'employee3@gmail.com',
             'password' => bcrypt('employee123'),
             'role_id' => $employeeRole->id,
-            'department_id' => $it->id,
         ]);
 
         User::factory()->create([
@@ -86,7 +73,6 @@ class DatabaseSeeder extends Seeder
             'email' => 'employee4@gmail.com',
             'password' => bcrypt('employee123'),
             'role_id' => $employeeRole->id,
-            'department_id' => $training->id, // Assigned to Training & Development
         ]);
 
         // Programs
