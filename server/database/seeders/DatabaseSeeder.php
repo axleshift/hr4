@@ -111,8 +111,6 @@ class DatabaseSeeder extends Seeder
             'program_id' => $customerServiceProgram->id,
         ]);
 
-        // Trainings (without start_time and end_time)
-        // Trainings with delivery_method and department_id (placeholder)
         Training::create([
             'event_location' => 'Conference Room A',
             'schedule' => '2025-05-01',

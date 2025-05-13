@@ -72,12 +72,12 @@ const navItems = [
         icon: cilMoney,
         roles: ['superadmin', 'admin'],
     },
-    {
-        name: 'Evaluation And Feedback',
-        to: '/ui/TrainingEngagement',
-        icon: cilCommentBubble,
-        roles: ['superadmin', 'admin', 'staff', 'employee'],
-    },
+    // {
+    //     name: 'Evaluation And Feedback',
+    //     to: '/ui/TrainingEngagement',
+    //     icon: cilCommentBubble,
+    //     roles: ['superadmin', 'admin', 'staff', 'employee'],
+    // },
     { name: 'Extras', type: 'title', roles: ['superadmin'] },
 
     {
