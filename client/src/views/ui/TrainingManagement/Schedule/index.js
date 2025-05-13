@@ -70,7 +70,7 @@ const TrainingSchedule = () => {
         try {
             const response = await axios.get('https://backend-hr1.axleshift.com/api/employees')
 
-            const employees = response.data // Since the response is already an array
+            const employees = response.data.data || response.data
 
             const uniqueDepartmentsMap = new Map()
             employees.forEach((emp) => {
