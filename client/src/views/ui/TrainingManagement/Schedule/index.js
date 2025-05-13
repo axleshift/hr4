@@ -74,7 +74,10 @@ const TrainingSchedule = () => {
             // Extracting only the departments from the employees
             const departmentsList = fetchedEmployees.map((employee) => employee.department)
 
-            setDepartments(departmentsList) // Set departments directly without filtering for uniqueness
+            // Filter unique departments
+            const uniqueDepartments = [...new Set(departmentsList)]
+
+            setDepartments(uniqueDepartments) // Set departments with unique values only
         } catch (error) {
             console.error('Error fetching external employees:', error)
         }
