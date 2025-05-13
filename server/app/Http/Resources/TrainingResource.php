@@ -18,10 +18,13 @@ class TrainingResource extends JsonResource
             'id' => $this->id,
             'event_location' => $this->event_location,
             'schedule' => $this->schedule,
+            'delivery_method' => $this->delivery_method,
+            'department_id' => $this->department_id,  // Add department_id here
             'program' => new ProgramResource($this->program),
             'course' => new CourseResource($this->course),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
     }
+
 }

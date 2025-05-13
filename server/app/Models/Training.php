@@ -10,11 +10,13 @@ class Training extends Model
     use HasFactory;
 
     protected $fillable = [
-        'event_location',
-        'schedule',
-        'program_id',
-        'course_id',
-    ];    
+    'event_location',
+    'schedule',
+    'program_id',
+    'course_id',
+    'delivery_method',
+    'department_id',
+    ];
 
     public function program()
     {
