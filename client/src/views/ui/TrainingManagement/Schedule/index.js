@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react'
+import axios from 'axios'
 import api from '../../../../util/api'
 import {
     CBadge,
@@ -67,10 +68,23 @@ const TrainingSchedule = () => {
 
     const fetchDepartments = async () => {
         try {
-            const response = await api.get('/api/departments')
-            setDepartments(response.data.data)
+            const response = await axios.get('https://backend-hr1.axleshift.com/api/employees')
+
+            const employees = response.data.data
+
+            const uniqueDepartmentsMap = new Map()
+            employees.forEach((emp) => {
+                if (emp.department && !uniqueDepartmentsMap.has(emp.department.id)) {
+                    uniqueDepartmentsMap.set(emp.department.id, {
+                        id: emp.department.id,
+                        name: emp.department.name,
+                    })
+                }
+            })
+
+            setDepartments(Array.from(uniqueDepartmentsMap.values()))
         } catch (error) {
-            console.error('Error fetching departments:', error)
+            console.error('Error fetching departments from employees:', error)
         }
     }
 
