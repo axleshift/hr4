@@ -27,13 +27,15 @@ return new class extends Migration
         });
 
         Schema::create('trainings', function (Blueprint $table) {
-            $table->id();
-            $table->string('event_location');
-            $table->date('schedule');
-            $table->foreignId('program_id')->constrained('programs')->onDelete('cascade');
-            $table->foreignId('course_id')->constrained('courses')->onDelete('cascade');
-            $table->timestamps();
-        });        
+        $table->id();
+        $table->string('event_location');
+        $table->date('schedule');
+        $table->string('delivery_method');
+        $table->string('department_id');
+        $table->foreignId('program_id')->constrained('programs')->onDelete('cascade');
+        $table->foreignId('course_id')->constrained('courses')->onDelete('cascade');
+        $table->timestamps();
+        });
         
     }
 
