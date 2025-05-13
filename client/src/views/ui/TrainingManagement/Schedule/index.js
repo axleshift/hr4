@@ -69,25 +69,20 @@ const TrainingSchedule = () => {
     const fetchDepartments = async () => {
         try {
             const response = await axios.get('https://backend-hr1.axleshift.com/api/employees')
-            console.log(response.data) // Log the full response
 
-            // Check if data exists and is an array
-            if (response.data && Array.isArray(response.data.data)) {
-                const employees = response.data.data
+            const employees = response.data // Since the response is already an array
 
-                const uniqueDepartmentsMap = new Map()
-                employees.forEach((emp) => {
-                    if (emp.department && !uniqueDepartmentsMap.has(emp.department.id)) {
-                        uniqueDepartmentsMap.set(emp.department.id, {
-                            id: emp.department.id,
-                            name: emp.department.name,
-                        })
-                    }
-                })
-                setDepartments(Array.from(uniqueDepartmentsMap.values()))
-            } else {
-                console.error('Expected data format not received', response.data)
-            }
+            const uniqueDepartmentsMap = new Map()
+            employees.forEach((emp) => {
+                if (emp.department && !uniqueDepartmentsMap.has(emp.department.id)) {
+                    uniqueDepartmentsMap.set(emp.department.id, {
+                        id: emp.department.id,
+                        name: emp.department.name,
+                    })
+                }
+            })
+
+            setDepartments(Array.from(uniqueDepartmentsMap.values())) // Update departments state
         } catch (error) {
             console.error('Error fetching departments from employees:', error)
         }
