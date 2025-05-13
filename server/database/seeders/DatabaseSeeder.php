@@ -8,6 +8,8 @@ use App\Models\Role;
 use App\Models\Program;
 use App\Models\Course;
 use App\Models\Training;
+use App\Models\Department;
+
 class DatabaseSeeder extends Seeder
 {
     public function run(): void
@@ -76,129 +78,113 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // Programs
-        $managementProgram = Program::create([
-            'title' => 'Management Development Program',
-            'description' => 'A program designed to enhance managerial skills.',
+        $managementProgram = Program::firstOrCreate([
+            'title' => 'Management Development Program'
+        ], [
+            'description' => 'A program designed to enhance managerial skills.'
         ]);
 
-        $customerServiceProgram = Program::create([
-            'title' => 'Customer Service Excellence',
-            'description' => 'Focused on enhancing customer interactions.',
+        $customerServiceProgram = Program::firstOrCreate([
+            'title' => 'Customer Service Excellence'
+        ], [
+            'description' => 'Focused on enhancing customer interactions within freight and logistics services.'
+        ]);
+
+        $inventoryProgram = Program::firstOrCreate([
+            'title' => 'Inventory and Supply Chain Management'
+        ], [
+            'description' => 'Covers inventory control and supply chain optimization for freight operations.'
+        ]);
+
+        $dataTechProgram = Program::firstOrCreate([
+            'title' => 'Freight Data and Technology Program'
+        ], [
+            'description' => 'Focuses on using digital tools and data analytics in freight logistics.'
         ]);
 
         // Courses
-        $leadershipEssentials = Course::create([
+        $leadershipEssentials = Course::firstOrCreate([
             'title' => 'Leadership Essentials',
-            'description' => 'Fundamentals of team leadership and people management.',
             'program_id' => $managementProgram->id,
+        ], [
+            'description' => 'Fundamentals of team leadership and people management.'
         ]);
 
-        $strategicPlanning = Course::create([
+        $strategicPlanning = Course::firstOrCreate([
             'title' => 'Strategic Planning',
-            'description' => 'Developing and executing strategic plans.',
             'program_id' => $managementProgram->id,
+        ], [
+            'description' => 'Developing and executing strategic plans.'
         ]);
 
-        $effectiveCommunication = Course::create([
+        $effectiveCommunication = Course::firstOrCreate([
             'title' => 'Effective Communication',
-            'description' => 'Improving internal and external communication.',
             'program_id' => $customerServiceProgram->id,
+        ], [
+            'description' => 'Improving internal and external communication in a freight environment.'
         ]);
 
-        $handlingCustomers = Course::create([
+        $handlingCustomers = Course::firstOrCreate([
             'title' => 'Handling Difficult Customers',
-            'description' => 'Conflict resolution and customer de-escalation techniques.',
             'program_id' => $customerServiceProgram->id,
+        ], [
+            'description' => 'Conflict resolution and customer de-escalation techniques.'
         ]);
 
-        $managementProgram = Program::create([
-        'title' => 'Management Development Program',
-        'description' => 'A program designed to enhance managerial skills for freight team leaders and supervisors.',
-        ]);
-
-        Course::create([
-            'title' => 'Leadership Essentials',
-            'description' => 'Fundamentals of team leadership and people management.',
-            'program_id' => $managementProgram->id,
-        ]);
-
-        Course::create([
-            'title' => 'Strategic Planning',
-            'description' => 'Developing and executing strategic plans in logistics and operations.',
-            'program_id' => $managementProgram->id,
-        ]);
-
-        // === Program 2: Customer Service Excellence ===
-        $customerServiceProgram = Program::create([
-            'title' => 'Customer Service Excellence',
-            'description' => 'Focused on enhancing customer interactions within freight and logistics services.',
-        ]);
-
-        Course::create([
-            'title' => 'Effective Communication',
-            'description' => 'Improving internal and external communication in a freight environment.',
-            'program_id' => $customerServiceProgram->id,
-        ]);
-
-        Course::create([
-            'title' => 'Handling Difficult Customers',
-            'description' => 'Conflict resolution and customer de-escalation techniques.',
-            'program_id' => $customerServiceProgram->id,
-        ]);
-
-        // === Program 3: Inventory and Supply Chain Management ===
-        $inventoryProgram = Program::create([
-            'title' => 'Inventory and Supply Chain Management',
-            'description' => 'Covers inventory control and supply chain optimization for freight operations.',
-        ]);
-
-        Course::create([
+        $inventoryControl = Course::firstOrCreate([
             'title' => 'Inventory Control Techniques',
-            'description' => 'Learn methods for stock management, cycle counting, and reducing shrinkage.',
             'program_id' => $inventoryProgram->id,
+        ], [
+            'description' => 'Learn methods for stock management, cycle counting, and reducing shrinkage.'
         ]);
 
-        Course::create([
+        $demandForecasting = Course::firstOrCreate([
             'title' => 'Demand Forecasting and Planning',
-            'description' => 'Using data to anticipate demand and align inventory accordingly.',
             'program_id' => $inventoryProgram->id,
+        ], [
+            'description' => 'Using data to anticipate demand and align inventory accordingly.'
         ]);
 
-        Course::create([
+        $supplyChainOptimization = Course::firstOrCreate([
             'title' => 'Supply Chain Optimization',
-            'description' => 'Streamlining supplier coordination, lead times, and freight procurement.',
             'program_id' => $inventoryProgram->id,
+        ], [
+            'description' => 'Streamlining supplier coordination, lead times, and freight procurement.'
         ]);
 
-        // === Program 4: Freight Data and Technology Program ===
-        $dataTechProgram = Program::create([
-            'title' => 'Freight Data and Technology Program',
-            'description' => 'Focuses on using digital tools and data analytics in freight logistics.',
-        ]);
-
-        Course::create([
+        $freightManagementSystems = Course::firstOrCreate([
             'title' => 'Freight Management Systems (FMS)',
-            'description' => 'Overview of software used for tracking, scheduling, and documentation in freight.',
             'program_id' => $dataTechProgram->id,
+        ], [
+            'description' => 'Overview of software used for tracking, scheduling, and documentation in freight.'
         ]);
 
-        Course::create([
+        $dataAnalyticsForLogistics = Course::firstOrCreate([
             'title' => 'Data Analytics for Logistics',
-            'description' => 'Using dashboards and KPIs to make operational decisions.',
             'program_id' => $dataTechProgram->id,
+        ], [
+            'description' => 'Using dashboards and KPIs to make operational decisions.'
         ]);
 
-        Course::create([
+        $digitalDocumentation = Course::firstOrCreate([
             'title' => 'Digital Documentation and E-BOLs',
-            'description' => 'Training on electronic Bills of Lading and digital record-keeping.',
             'program_id' => $dataTechProgram->id,
+        ], [
+            'description' => 'Training on electronic Bills of Lading and digital record-keeping.'
         ]);
 
+        // Departments (Add departments to reference in training records)
+        $humanResourceDept = Department::firstOrCreate(['name' => 'Human Resource']);
+        $operationsDept = Department::firstOrCreate(['name' => 'Operations']);
+        $logisticsDept = Department::firstOrCreate(['name' => 'Logistics']);
+        $dispatchDept = Department::firstOrCreate(['name' => 'Dispatch']);
+
+        // Trainings
         Training::create([
             'event_location' => 'Conference Room A',
             'schedule' => '2025-05-01',
             'delivery_method' => 'In-person',
-            'department_id' => 'Human Resource',
+            'department_id' => $humanResourceDept->id,
             'program_id' => $managementProgram->id,
             'course_id' => $leadershipEssentials->id,
         ]);
@@ -207,7 +193,7 @@ class DatabaseSeeder extends Seeder
             'event_location' => 'Zoom',
             'schedule' => '2025-05-10',
             'delivery_method' => 'Online',
-            'department_id' => 'Operations',
+            'department_id' => $operationsDept->id,
             'program_id' => $managementProgram->id,
             'course_id' => $strategicPlanning->id,
         ]);
@@ -216,7 +202,7 @@ class DatabaseSeeder extends Seeder
             'event_location' => 'Room 205',
             'schedule' => '2025-05-15',
             'delivery_method' => 'In-person',
-            'department_id' => 'Logistice',
+            'department_id' => $logisticsDept->id,
             'program_id' => $customerServiceProgram->id,
             'course_id' => $effectiveCommunication->id,
         ]);
@@ -225,7 +211,7 @@ class DatabaseSeeder extends Seeder
             'event_location' => 'Google Meet',
             'schedule' => '2025-05-20',
             'delivery_method' => 'Online',
-            'department_id' => 'Dispatch',
+            'department_id' => $dispatchDept->id,
             'program_id' => $customerServiceProgram->id,
             'course_id' => $handlingCustomers->id,
         ]);
