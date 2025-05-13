@@ -35,27 +35,18 @@ const EmployeeManagement = () => {
     const [statusUpdate, setStatusUpdate] = useState('pending')
 
     useEffect(() => {
-        fetchAndSaveEmployees()
+        fetchRegular()
         fetchNewHires()
     }, [])
 
-    const fetchAndSaveEmployees = async () => {
+    const fetchRegular = async () => {
         try {
             const response = await axios.get('https://backend-hr1.axleshift.com/api/employees')
             const fetchedEmployees = response.data.data || response.data
 
-            // Save the fetched employees to the local database
-            saveEmployeesToDatabase(fetchedEmployees)
-
-            setEmployees(fetchedEmployees) // Update state
+            setEmployees(fetchedEmployees)
         } catch (error) {
             console.error('Error fetching external employees:', error)
-            try {
-                const localResponse = await api.get('/api/employee')
-                setEmployees(localResponse.data.data)
-            } catch (localError) {
-                console.error('Error fetching local employees:', localError)
-            }
         }
     }
 
@@ -65,29 +56,6 @@ const EmployeeManagement = () => {
             setNewHires(response.data.data || response.data)
         } catch (error) {
             console.error('Error fetching new hires:', error)
-        }
-    }
-
-    const saveEmployeesToDatabase = async (employeesToSave) => {
-        try {
-            for (const employee of employeesToSave) {
-                const employeeData = {
-                    employeeId: employee.employeeId,
-                    lastName: employee.lastName,
-                    firstName: employee.firstName,
-                    middleName: employee.middleName,
-                    position: employee.position,
-                    department: employee.department,
-                    dateHired: employee.dateHired,
-                    email: employee.email,
-                }
-
-                // Send data to the backend API to save it to the database
-                await api.post('/api/employee', employeeData)
-            }
-            console.log('Employees saved successfully')
-        } catch (error) {
-            console.error('Error saving employees:', error)
         }
     }
 
