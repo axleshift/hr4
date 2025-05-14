@@ -14,6 +14,7 @@ class BudgetReportResource extends JsonResource
             'form_id' => $this->form_id,
             'program' => new ProgramResource($this->whenLoaded('program')),
             'total_cost' => $this->total_cost,
+            'monthly_allocated_budget' => $this->monthly_allocated_budget,
             'status' => $this->status,
         ];
     }
