@@ -78,32 +78,32 @@ const navItems = [
     //     icon: cilCommentBubble,
     //     roles: ['superadmin', 'admin', 'staff', 'employee'],
     // },
-    { name: 'Extras', type: 'title', roles: ['superadmin'] },
+    // { name: 'Extras', type: 'title', roles: ['superadmin'] },
 
-    {
-        name: 'Pages',
-        icon: cilStar,
-        roles: ['superadmin', 'admin'],
-        items: [
-            { name: 'Login', to: '/login', roles: ['superadmin', 'admin', 'staff', 'employee'] },
-            { name: 'Database', to: '/database', roles: ['superadmin'] },
-            { name: 'Register', to: '/register', roles: ['superadmin'] },
-            { name: 'Error 404', to: '/404', roles: ['superadmin', 'admin', 'staff', 'employee'] },
-            { name: 'Error 500', to: '/500', roles: ['superadmin', 'admin', 'staff', 'employee'] },
-        ],
-    },
+    // {
+    //     name: 'Pages',
+    //     icon: cilStar,
+    //     roles: ['superadmin', 'admin'],
+    //     items: [
+    //         { name: 'Login', to: '/login', roles: ['superadmin', 'admin', 'staff', 'employee'] },
+    //         { name: 'Database', to: '/database', roles: ['superadmin'] },
+    //         { name: 'Register', to: '/register', roles: ['superadmin'] },
+    //         { name: 'Error 404', to: '/404', roles: ['superadmin', 'admin', 'staff', 'employee'] },
+    //         { name: 'Error 500', to: '/500', roles: ['superadmin', 'admin', 'staff', 'employee'] },
+    //     ],
+    // },
 
-    // TRAINING BUDGET REPORTS
-    {
-        name: 'ADMIN',
-        to: '/ui/Integration/Admin',
-        roles: ['superadmin'],
-    },
-    {
-        name: 'HR1',
-        to: '/ui/Integration/Hr1',
-        roles: ['superadmin'],
-    },
+    // // TRAINING BUDGET REPORTS
+    // {
+    //     name: 'ADMIN',
+    //     to: '/ui/Integration/Admin',
+    //     roles: ['superadmin'],
+    // },
+    // {
+    //     name: 'HR1',
+    //     to: '/ui/Integration/Hr1',
+    //     roles: ['superadmin'],
+    // },
 ]
 //admin
 
