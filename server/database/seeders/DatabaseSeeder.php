@@ -56,25 +56,26 @@ class DatabaseSeeder extends Seeder
         $introToFreightOps = Course::create(['title' => 'Introduction to Freight Operations', 'description' => 'Basic understanding of freight logistics, handling, and routing.', 'program_id' => $onboardingProgram->id]);
 
         // Trainings
-               // JANUARY
+
+        // JANUARY – Only Onboarding Trainings
         Training::create(['event_location' => 'Training Room A', 'schedule' => '2025-01-10', 'delivery_method' => 'In-person', 'department_id' => 'Human Resource', 'program_id' => $onboardingProgram->id, 'course_id' => $companyPolicies->id]);
-        Training::create(['event_location' => 'Training Room B', 'schedule' => '2025-01-15', 'delivery_method' => 'In-person', 'department_id' => 'Human Resource', 'program_id' => $onboardingProgram->id, 'course_id' => $workplaceSafety->id]);
-        Training::create(['event_location' => 'Training Room C', 'schedule' => '2025-01-20', 'delivery_method' => 'In-person', 'department_id' => 'Logistics', 'program_id' => $onboardingProgram->id, 'course_id' => $introToFreightOps->id]);
+        Training::create(['event_location' => 'Training Room B', 'schedule' => '2025-01-20', 'delivery_method' => 'In-person', 'department_id' => 'Human Resource', 'program_id' => $onboardingProgram->id, 'course_id' => $workplaceSafety->id]);
 
-        // FEBRUARY
-        Training::create(['event_location' => 'Training Room A', 'schedule' => '2025-02-05', 'delivery_method' => 'In-person', 'department_id' => 'Human Resource', 'program_id' => $onboardingProgram->id, 'course_id' => $companyPolicies->id]);
-        Training::create(['event_location' => 'Training Room B', 'schedule' => '2025-02-12', 'delivery_method' => 'In-person', 'department_id' => 'Human Resource', 'program_id' => $onboardingProgram->id, 'course_id' => $workplaceSafety->id]);
-        Training::create(['event_location' => 'Training Room C', 'schedule' => '2025-02-20', 'delivery_method' => 'In-person', 'department_id' => 'Logistics', 'program_id' => $onboardingProgram->id, 'course_id' => $introToFreightOps->id]);
+        // FEBRUARY – Inventory and DataTech
+        Training::create(['event_location' => 'Room 101', 'schedule' => '2025-02-05', 'delivery_method' => 'In-person', 'department_id' => 'Operations', 'program_id' => $inventoryProgram->id, 'course_id' => Course::where('title', 'Inventory Control Techniques')->first()->id]);
+        Training::create(['event_location' => 'Room 102', 'schedule' => '2025-02-20', 'delivery_method' => 'Online', 'department_id' => 'Logistics', 'program_id' => $dataTechProgram->id, 'course_id' => Course::where('title', 'Freight Management Systems (FMS)')->first()->id]);
 
-        // MARCH
-        Training::create(['event_location' => 'Training Room A', 'schedule' => '2025-03-05', 'delivery_method' => 'In-person', 'department_id' => 'Human Resource', 'program_id' => $onboardingProgram->id, 'course_id' => $companyPolicies->id]);
-        Training::create(['event_location' => 'Training Room B', 'schedule' => '2025-03-11', 'delivery_method' => 'In-person', 'department_id' => 'Human Resource', 'program_id' => $onboardingProgram->id, 'course_id' => $workplaceSafety->id]);
-        Training::create(['event_location' => 'Training Room C', 'schedule' => '2025-03-18', 'delivery_method' => 'In-person', 'department_id' => 'Logistics', 'program_id' => $onboardingProgram->id, 'course_id' => $introToFreightOps->id]);
+        // MARCH – Customer Service and Communication
+        Training::create(['event_location' => 'Room 201', 'schedule' => '2025-03-05', 'delivery_method' => 'In-person', 'department_id' => 'Customer Service', 'program_id' => $customerServiceProgram->id, 'course_id' => $effectiveCommunication->id]);
+        Training::create(['event_location' => 'Room 202', 'schedule' => '2025-03-18', 'delivery_method' => 'Online', 'department_id' => 'Customer Service', 'program_id' => $customerServiceProgram->id, 'course_id' => $handlingCustomers->id]);
 
-        // APRIL
-        Training::create(['event_location' => 'Training Room A', 'schedule' => '2025-04-09', 'delivery_method' => 'In-person', 'department_id' => 'Human Resource', 'program_id' => $onboardingProgram->id, 'course_id' => $companyPolicies->id]);
-        Training::create(['event_location' => 'Training Room B', 'schedule' => '2025-04-16', 'delivery_method' => 'In-person', 'department_id' => 'Human Resource', 'program_id' => $onboardingProgram->id, 'course_id' => $workplaceSafety->id]);
-        Training::create(['event_location' => 'Training Room C', 'schedule' => '2025-04-24', 'delivery_method' => 'In-person', 'department_id' => 'Logistics', 'program_id' => $onboardingProgram->id, 'course_id' => $introToFreightOps->id]);
+        // APRIL – Management and Planning
+        Training::create(['event_location' => 'Room 301', 'schedule' => '2025-04-09', 'delivery_method' => 'In-person', 'department_id' => 'Management', 'program_id' => $managementProgram->id, 'course_id' => $leadershipEssentials->id]);
+        Training::create(['event_location' => 'Room 302', 'schedule' => '2025-04-24', 'delivery_method' => 'Online', 'department_id' => 'Planning', 'program_id' => $inventoryProgram->id, 'course_id' => Course::where('title', 'Demand Forecasting and Planning')->first()->id]);
+
+        // MAY – Data & Logistics
+        Training::create(['event_location' => 'Zoom', 'schedule' => '2025-05-03', 'delivery_method' => 'Online', 'department_id' => 'Logistics', 'program_id' => $dataTechProgram->id, 'course_id' => Course::where('title', 'Data Analytics for Logistics')->first()->id]);
+        Training::create(['event_location' => 'Room 303', 'schedule' => '2025-05-20', 'delivery_method' => 'In-person', 'department_id' => 'Warehouse', 'program_id' => $inventoryProgram->id, 'course_id' => Course::where('title', 'Supply Chain Optimization')->first()->id]);
 
         // JUNE
         Training::create(['event_location' => 'Room 101', 'schedule' => '2025-06-10', 'delivery_method' => 'In-person', 'department_id' => 'Operations', 'program_id' => $inventoryProgram->id, 'course_id' => Course::where('title', 'Inventory Control Techniques')->first()->id]);
@@ -96,9 +97,9 @@ class DatabaseSeeder extends Seeder
         Training::create(['event_location' => 'Room 401', 'schedule' => '2025-10-08', 'delivery_method' => 'In-person', 'department_id' => 'Strategy', 'program_id' => $managementProgram->id, 'course_id' => $strategicPlanning->id]);
         Training::create(['event_location' => 'Google Meet', 'schedule' => '2025-10-21', 'delivery_method' => 'Online', 'department_id' => 'Documentation', 'program_id' => $dataTechProgram->id, 'course_id' => Course::where('title', 'Digital Documentation and E-BOLs')->first()->id]);
 
-        // NOVEMBER
-        Training::create(['event_location' => 'Room 501', 'schedule' => '2025-11-11', 'delivery_method' => 'In-person', 'department_id' => 'HR', 'program_id' => $onboardingProgram->id, 'course_id' => $companyPolicies->id]);
-        Training::create(['event_location' => 'Room 502', 'schedule' => '2025-11-20', 'delivery_method' => 'In-person', 'department_id' => 'HR', 'program_id' => $onboardingProgram->id, 'course_id' => $workplaceSafety->id]);
+        // NOVEMBER – No Onboarding
+        Training::create(['event_location' => 'Room 501', 'schedule' => '2025-11-11', 'delivery_method' => 'In-person', 'department_id' => 'IT', 'program_id' => $dataTechProgram->id, 'course_id' => Course::where('title', 'Freight Management Systems (FMS)')->first()->id]);
+        Training::create(['event_location' => 'Room 502', 'schedule' => '2025-11-20', 'delivery_method' => 'In-person', 'department_id' => 'Planning', 'program_id' => $inventoryProgram->id, 'course_id' => Course::where('title', 'Demand Forecasting and Planning')->first()->id]);
 
         // DECEMBER
         Training::create(['event_location' => 'Room 601', 'schedule' => '2025-12-09', 'delivery_method' => 'Online', 'department_id' => 'IT', 'program_id' => $dataTechProgram->id, 'course_id' => Course::where('title', 'Freight Management Systems (FMS)')->first()->id]);
