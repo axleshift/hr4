@@ -109,7 +109,7 @@ const TrainingSchedule = () => {
     const handleSubmit = async (e) => {
         e.preventDefault()
         try {
-            await api.post(`/training`, formData)
+            await api.post('/api/training', formData)
             setVisibleXL(false)
             fetchTrainings()
             setFormData({
