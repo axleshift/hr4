@@ -13,6 +13,7 @@ class BudgetReport extends Model
         'form_id',
         'program_id',
         'total_cost',
+        'monthly_allocated_budget',
         'status',
     ];
 
@@ -21,4 +22,3 @@ class BudgetReport extends Model
         return $this->belongsTo(Program::class);
     }
 }
-
