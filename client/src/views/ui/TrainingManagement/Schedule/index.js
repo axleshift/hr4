@@ -69,16 +69,11 @@ const TrainingSchedule = () => {
         try {
             const response = await axios.get('https://backend-hr1.axleshift.com/api/employees')
             const fetchedEmployees = response.data.data || response.data
-
-            // Extracting only the departments from the employees
             const departmentsList = fetchedEmployees.map((employee) => employee.department)
-
-            // Filter unique departments
             const uniqueDepartments = [...new Set(departmentsList)]
-
-            setDepartments(uniqueDepartments) // Set departments with unique values only
+            setDepartments(uniqueDepartments)
         } catch (error) {
-            console.error('Error fetching external employees:', error)
+            console.error('Error fetching departments:', error)
         }
     }
 
@@ -125,9 +120,16 @@ const TrainingSchedule = () => {
         }
     }
 
+    // Calendar Events derived from training data
+    const calendarEvents = trainings.map((training) => ({
+        title: `${training.course?.title || 'No Title'} (${training.delivery_method})`,
+        date: training.schedule,
+    }))
+
     return (
         <CRow>
             <CCol xs={12}>
+                {/* Calendar View */}
                 <CCard className="mb-4">
                     <CCardHeader>
                         <strong>Calendar View</strong>
@@ -136,12 +138,13 @@ const TrainingSchedule = () => {
                         <FullCalendar
                             plugins={[dayGridPlugin]}
                             initialView="dayGridMonth"
-                            events={[]}
+                            events={calendarEvents}
                             height="auto"
                         />
                     </CCardBody>
                 </CCard>
 
+                {/* Training List View */}
                 <CCard className="mb-4">
                     <CCardHeader>
                         <strong>Training Schedule</strong>
@@ -209,7 +212,7 @@ const TrainingSchedule = () => {
                 </CCard>
             </CCol>
 
-            {/* Modal */}
+            {/* Add Training Modal */}
             <CModal
                 alignment="center"
                 backdrop="static"
