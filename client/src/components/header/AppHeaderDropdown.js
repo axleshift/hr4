@@ -34,10 +34,6 @@ const AppHeaderDropdown = () => {
                         <CIcon icon={cilUser} className="me-2" />
                         Profile
                     </CDropdownItem>
-                    <CDropdownItem href="#">
-                        <CIcon icon={cilEnvelopeOpen} className="me-2" />
-                        Messages
-                    </CDropdownItem>
                     <CDropdownDivider />
                     <CDropdownItem onClick={() => navigate('/login')}>Logout</CDropdownItem>
                 </CDropdownMenu>
